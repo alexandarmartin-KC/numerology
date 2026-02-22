@@ -29,6 +29,16 @@
       font-weight: 700;
       line-height: 1.1;
     }
+    .cycle-reduced.chapter-start {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #333;
+      border-radius: 50%;
+      margin: 0 auto;
+    }
     .cycle-body {
       grid-column: 2;
       width: 90px;
@@ -296,13 +306,13 @@ function applyAge(state, ageReduced, lines) {
 // Render
 // -------------------------
 
-function renderYearBlock({ year, yearReduced, bodyLines }) {
+function renderYearBlock({ year, yearReduced, bodyLines, isChapterStart }) {
   return `
     <div class="card year-card mb-4" style="width: max-content; min-width: 200px; background-color: #f5f6f8; page-break-inside: avoid; break-inside: avoid;">
       <div class="card-body">
         <div class="cycle-grid">
           <div class="cycle-year">${year}</div>
-          <div class="cycle-reduced">${yearReduced}</div>
+          <div class="cycle-reduced${isChapterStart ? ' chapter-start' : ''}">${yearReduced}</div>
 
           <div class="cycle-body">
             ${bodyLines.map(item => `
@@ -356,22 +366,29 @@ function calculateYear() {
     addStep(state, data.bund, bodyLines, true);
 
     // CYCLE
+    let isChapterStart = false;
+
     if (cycleType === "9") {
       applyCycle9(yearReduced, state, data.soejle, bodyLines);
+      if (yearReduced === 9) isChapterStart = true;
     }
 
     if (cycleType === "3-6") {
       applyCycle36(yearReduced, birthYearReduced, state, data.soejle, bodyLines);
+      const key = birthYearReduced === 3 ? [3,6] : [6,3];
+      if (yearReduced === key[0] || yearReduced === key[1]) isChapterStart = true;
     }
 
     if (cycleType === "1-2-4-8-7-5") {
       applyCycle124875(year, data.birthYear, yearReduced, state, data.soejle, bodyLines);
+      const info = getChapterInfo(year, data.birthYear);
+      if (info && info.isFirstYear && year !== data.birthYear) isChapterStart = true;
     }
 
     // AGE
     applyAge(state, ageReduced, bodyLines);
 
-    finalBlocks.push({ year, yearReduced, bodyLines });
+    finalBlocks.push({ year, yearReduced, bodyLines, isChapterStart });
   }
 
   // Render diamond
