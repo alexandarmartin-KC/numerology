@@ -528,21 +528,44 @@ async function handleDocUpload(input) {
   let currentNum = null;
   let currentLines = [];
 
-  for (const line of lines) {
+  // Parse: split by lines that contain number(s) as headers
+  // Supports single number "16" or multi "31, 40, 49, 58, 67 og 76"
+  function parseHeaderNumbers(line) {
     const trimmed = line.trim();
-    // Check if line is just a number 1-82
-    const match = trimmed.match(/^(\d{1,2})$/);
-    if (match) {
-      const num = parseInt(match[1]);
-      if (num >= 1 && num <= 82) {
-        // Save previous section
-        if (currentNum !== null) {
-          sections[currentNum] = currentLines.join('\n').trim();
-        }
-        currentNum = num;
-        currentLines = [];
-        continue;
+    // Remove "og" and replace with comma for uniform splitting
+    const normalized = trimmed.replace(/\bog\b/g, ',');
+    // Split by comma, space, or other separators
+    const parts = normalized.split(/[,\s]+/).filter(Boolean);
+    const nums = [];
+    for (const p of parts) {
+      const n = parseInt(p);
+      if (!isNaN(n) && n >= 1 && n <= 82 && String(n) === p.trim()) {
+        nums.push(n);
       }
+    }
+    // Only treat as header if ALL non-empty parts are valid numbers
+    // and there's at least one number, and the line has no other text
+    const cleaned = trimmed.replace(/\bog\b/gi, '').replace(/[,\s]+/g, ' ').trim();
+    const allParts = cleaned.split(' ').filter(Boolean);
+    if (nums.length > 0 && nums.length === allParts.length) {
+      return nums;
+    }
+    return null;
+  }
+
+  for (const line of lines) {
+    const headerNums = parseHeaderNumbers(line);
+    if (headerNums) {
+      // Save previous section
+      if (currentNum !== null) {
+        const desc = currentLines.join('\n').trim();
+        for (const n of currentNum) {
+          sections[n] = desc;
+        }
+      }
+      currentNum = headerNums;
+      currentLines = [];
+      continue;
     }
     if (currentNum !== null) {
       currentLines.push(line);
@@ -550,7 +573,10 @@ async function handleDocUpload(input) {
   }
   // Save last section
   if (currentNum !== null) {
-    sections[currentNum] = currentLines.join('\n').trim();
+    const desc = currentLines.join('\n').trim();
+    for (const n of currentNum) {
+      sections[n] = desc;
+    }
   }
 
   if (Object.keys(sections).length === 0) {
