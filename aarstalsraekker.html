@@ -383,7 +383,7 @@ function calculateYear() {
     if (cycleType === "1-2-4-8-7-5") {
       applyCycle124875(year, data.birthYear, yearReduced, state, data.soejle, bodyLines);
       const info = getChapterInfo(year, data.birthYear);
-      if (info && info.isFirstYear && year !== data.birthYear) isChapterStart = true;
+      if (info && info.isFirstYear) isChapterStart = true;
     }
 
     // AGE
