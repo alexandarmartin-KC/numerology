@@ -281,11 +281,22 @@ function renderList() {
     EDITABLE_FIELDS.forEach(f => {
       if (f.key === 'grundenergi' && !isGrundtal) return;
       if (f.grundtalOnly && !isGrundtal) return;
+      // Skip kendte and billede — they are rendered together with planet
+      if (f.key === 'kendte' || f.key === 'billede') return;
 
-      if (f.type === 'image') {
+      // Planet: render as grouped block with Kendte (left) + Billede (right)
+      if (f.key === 'planet') {
+        const planetVal = energy['planet'] || '';
+        const kendteVal = energy['kendte'] || '';
         const imgData = images[key] || '';
-        html += `<div class="col-12">`;
-        html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">${esc(f.label)}</label>`;
+        html += `<div class="col-md-6">`;
+        html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">Planet</label>`;
+        html += `<input type="text" class="form-control mb-2" data-key="${esc(key)}" data-field="planet" value="${esc(planetVal)}" placeholder="Hvilken planet tilhører denne grundenergi">`;
+        html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">Kendte personer</label>`;
+        html += `<input type="text" class="form-control" data-key="${esc(key)}" data-field="kendte" value="${esc(kendteVal)}" placeholder="Kommaseparerede navne på kendte personer med denne grundenergi">`;
+        html += `</div>`;
+        html += `<div class="col-md-6">`;
+        html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">Billede (planet)</label>`;
         if (imgData) {
           const planetName = energy['planet'] || 'Planet';
           html += `<div class="img-upload-area has-image">`;
@@ -296,9 +307,9 @@ function renderList() {
           html += `</div>`;
           html += `</div>`;
         } else {
-          html += `<div class="img-upload-area d-inline-block" onclick="document.getElementById('imgUpload_${esc(key)}').click()" style="padding:8px 20px;">`;
-          html += `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#adb5bd" viewBox="0 0 16 16" style="vertical-align:-2px;"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-2.1a.5.5 0 0 1 1 0v2.1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5v-2.1a.5.5 0 0 1 .5-.5z"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/></svg>`;
-          html += `<span class="ms-2" style="font-size:12px;color:#adb5bd;">Upload JPG / PNG</span>`;
+          html += `<div class="img-upload-area" onclick="document.getElementById('imgUpload_${esc(key)}').click()">`;
+          html += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#adb5bd" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-2.1a.5.5 0 0 1 1 0v2.1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5v-2.1a.5.5 0 0 1 .5-.5z"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/></svg>`;
+          html += `<div class="mt-1" style="font-size:12px;color:#adb5bd;">Upload JPG / PNG</div>`;
           html += `<input type="file" id="imgUpload_${esc(key)}" accept=".jpg,.jpeg,.png" style="display:none" onchange="handleImageUpload(this, '${esc(key)}')">`;
           html += `</div>`;
         }
