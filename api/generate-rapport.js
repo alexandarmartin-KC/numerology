@@ -66,6 +66,7 @@ VIGTIGE REGLER:
 - Du må KUN bruge den viden der er givet nedenfor. Opfind IKKE ny numerologisk viden.
 - Specielle regler skal fortolkes isoleret ud fra deres egen beskrivelse — bland IKKE energibeskrivelser ind i fortolkningen af specielle regler.
 - Rapporten har to hoveddele: (1) Diamanten — beskrivelse af personen, (2) Årstalsrækker — beskrivelse af de enkelte år.
+- Livslinjen er IKKE en bevægelse eller et sekventielt forløb. Fornavn, mellemnavne og efternavn bidrager hver med deres energi, men alle energier er til stede samtidig. Fortolk dem IKKE som en rejse fra fornavn til efternavn.
 - Skriv i et varmt, personligt, men professionelt sprog.
 `;
 
