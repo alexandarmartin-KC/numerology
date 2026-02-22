@@ -36,6 +36,7 @@
           <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
           <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
           <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-rapport.html">Input Rapport</a></li>
           <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
         </ul>
       </div>
@@ -269,6 +270,12 @@ function gatherKnowledge() {
     // We'll determine the sign from the birthdate on the API side or pass it
   } catch { k.astrologyGenerelt = ''; }
 
+  // Rapportsektioner (fra Input Rapport)
+  try {
+    k.rapportSections = JSON.parse(localStorage.getItem('rapportSections') || '[]');
+  } catch { k.rapportSections = []; }
+  k.rapportGlobalInstruction = localStorage.getItem('rapportGlobalInstruction') || '';
+
   return k;
 }
 
@@ -312,7 +319,8 @@ function showKnowledgeStatus() {
     { label: 'Energibeskrivelser (år)', ok: Object.keys(k.aarEnergies).length > 0 },
     { label: 'Cyklusser', ok: !!k.cycles_about },
     { label: 'Regler (år)', ok: k.aarRules.length > 0 },
-    { label: 'Rapportstil', ok: !!k.rapportStil }
+    { label: 'Rapportstil', ok: !!k.rapportStil },
+    { label: 'Rapportsektioner', ok: k.rapportSections.length > 0 }
   ];
   const filled = checks.filter(c => c.ok).length;
   const el = document.getElementById('knowledgeStatus');

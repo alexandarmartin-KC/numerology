@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Rapport</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .section-card { background: #f8f9fa; transition: border-color 0.2s; }
+    .section-card:focus-within { border-color: #0d6efd !important; }
+    .section-card .form-control, .section-card .form-select { font-size: 13px; }
+    .section-num { font-size: 14px; font-weight: 700; color: #6c757d; min-width: 28px; }
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+    .move-btn { padding: 2px 6px; font-size: 14px; line-height: 1; }
+    .badge-source { font-size: 10px; margin: 1px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-rapport.html">Input Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Rapport</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+    </div>
+
+    <p class="text-muted mb-4">Definer rapportens struktur — sektioner, rækkefølge, datakilder og instruktioner til motoren. Motoren bygger rapporten sektion for sektion.</p>
+
+    <!-- Overordnet instruktion -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <label class="form-label fw-bold">Overordnet instruktion</label>
+        <p class="text-muted mb-2" style="font-size:12px;">Generelle retningslinjer for tone, stil og længde — gælder hele rapporten.</p>
+        <textarea id="globalInstruction" class="form-control" rows="4" placeholder="Fx: Skriv i et varmt, personligt sprog. Rapporten skal føles som en samtale. Undgå at være deterministisk om fremtiden — tal om energikvaliteter og tendenser." style="font-size:13px;"></textarea>
+      </div>
+    </div>
+
+    <!-- Sektioner -->
+    <div id="sectionsContainer"></div>
+
+    <button class="btn btn-outline-primary mt-2 mb-4" id="addSectionBtn">+ Tilføj sektion</button>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+
+const STORAGE_KEY = 'rapportSections';
+const GLOBAL_KEY = 'rapportGlobalInstruction';
+
+const DATA_SOURCES = [
+  { id: 'grundenergi', label: 'Grundenergi' },
+  { id: 'livslinje', label: 'Livslinje (fornavn, mellemnavne, efternavn)' },
+  { id: 'bundtal', label: 'Bundtal' },
+  { id: 'aura', label: 'Aura' },
+  { id: 'hjerte_solar', label: 'Hjertecenter + Solarplexus' },
+  { id: 'rygraden', label: 'Rygraden' },
+  { id: 'soejletal', label: 'Søjletal' },
+  { id: 'specielle_diamant', label: 'Specielle regler (diamant)' },
+  { id: 'helhedsvurdering', label: 'Helhedsvurdering (balanceret/ubalanceret)' },
+  { id: 'aarstalsraekker', label: 'Årstalsrækker (beregnede år)' },
+  { id: 'cyklusser', label: 'Cyklusser' },
+  { id: 'specielle_aar', label: 'Specielle regler (årstalsrækker)' },
+  { id: 'stjernetegn', label: 'Stjernetegn' }
+];
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ─── Load / Save ───
+
+function loadSections() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveSections(sections) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
+  flash();
+}
+
+function flash() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ─── Render ───
+
+function render() {
+  const sections = loadSections();
+  const container = document.getElementById('sectionsContainer');
+
+  if (sections.length === 0) {
+    container.innerHTML = '<p class="text-muted text-center py-4">Ingen sektioner endnu — klik "+ Tilføj sektion" for at begynde.</p>';
+    return;
+  }
+
+  let html = '';
+  sections.forEach((sec, i) => {
+    html += `<div class="card section-card mb-3 border" data-idx="${i}">`;
+    html += `<div class="card-body py-3 px-3">`;
+
+    // Header row
+    html += `<div class="d-flex align-items-center gap-2 mb-3">`;
+    html += `<span class="section-num">§${i + 1}</span>`;
+    html += `<input type="text" class="form-control form-control-sm fw-bold sec-title" data-idx="${i}" value="${esc(sec.title)}" placeholder="Sektionstitel (fx Din kerneenergi)">`;
+    html += `<div class="d-flex gap-1 flex-shrink-0">`;
+    html += `<button class="btn btn-outline-secondary move-btn sec-up" data-idx="${i}" title="Flyt op" ${i === 0 ? 'disabled' : ''}>▲</button>`;
+    html += `<button class="btn btn-outline-secondary move-btn sec-down" data-idx="${i}" title="Flyt ned" ${i === sections.length - 1 ? 'disabled' : ''}>▼</button>`;
+    html += `<button class="btn btn-outline-danger move-btn sec-delete" data-idx="${i}" title="Slet sektion">✕</button>`;
+    html += `</div></div>`;
+
+    // Data sources
+    html += `<div class="mb-3">`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Datakilder <span class="text-muted">(hvilke dele af numeroskopet denne sektion skal bruge)</span></label>`;
+    html += `<div class="d-flex flex-wrap gap-1">`;
+    const selected = sec.sources || [];
+    DATA_SOURCES.forEach(ds => {
+      const checked = selected.includes(ds.id);
+      html += `<label class="badge ${checked ? 'bg-primary' : 'bg-light text-dark border'} badge-source" style="cursor:pointer; font-weight:normal;">`;
+      html += `<input type="checkbox" class="d-none sec-source" data-idx="${i}" data-source="${ds.id}" ${checked ? 'checked' : ''}> ${esc(ds.label)}`;
+      html += `</label>`;
+    });
+    html += `</div></div>`;
+
+    // Instruction
+    html += `<div>`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Instruktion til motoren</label>`;
+    html += `<textarea class="form-control sec-instruction" data-idx="${i}" rows="3" placeholder="Forklar hvad motoren skal fokusere på i denne sektion...">${esc(sec.instruction)}</textarea>`;
+    html += `</div>`;
+
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ─── Events ───
+
+function setup() {
+  const container = document.getElementById('sectionsContainer');
+
+  // Title + instruction input
+  container.addEventListener('input', e => {
+    const el = e.target;
+    const idx = parseInt(el.dataset.idx);
+    if (isNaN(idx)) return;
+    const sections = loadSections();
+
+    if (el.classList.contains('sec-title')) {
+      sections[idx].title = el.value;
+      saveSections(sections);
+    }
+    if (el.classList.contains('sec-instruction')) {
+      sections[idx].instruction = el.value;
+      saveSections(sections);
+    }
+  });
+
+  // Source checkboxes
+  container.addEventListener('change', e => {
+    const el = e.target;
+    if (!el.classList.contains('sec-source')) return;
+    const idx = parseInt(el.dataset.idx);
+    const sourceId = el.dataset.source;
+    const sections = loadSections();
+
+    if (!sections[idx].sources) sections[idx].sources = [];
+    if (el.checked) {
+      if (!sections[idx].sources.includes(sourceId)) sections[idx].sources.push(sourceId);
+    } else {
+      sections[idx].sources = sections[idx].sources.filter(s => s !== sourceId);
+    }
+    saveSections(sections);
+    // Re-render to update badge colors
+    render();
+  });
+
+  // Move / delete buttons
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    if (isNaN(idx)) return;
+    const sections = loadSections();
+
+    if (btn.classList.contains('sec-up') && idx > 0) {
+      [sections[idx - 1], sections[idx]] = [sections[idx], sections[idx - 1]];
+      saveSections(sections);
+      render();
+    }
+    if (btn.classList.contains('sec-down') && idx < sections.length - 1) {
+      [sections[idx], sections[idx + 1]] = [sections[idx + 1], sections[idx]];
+      saveSections(sections);
+      render();
+    }
+    if (btn.classList.contains('sec-delete')) {
+      if (!confirm(`Slet sektion "${sections[idx].title || 'Unavngivet'}"?`)) return;
+      sections.splice(idx, 1);
+      saveSections(sections);
+      render();
+    }
+  });
+
+  // Add section
+  document.getElementById('addSectionBtn').addEventListener('click', () => {
+    const sections = loadSections();
+    sections.push({ title: '', sources: [], instruction: '' });
+    saveSections(sections);
+    render();
+    // Focus new title
+    setTimeout(() => {
+      const titles = document.querySelectorAll('.sec-title');
+      if (titles.length) titles[titles.length - 1].focus();
+    }, 50);
+  });
+
+  // Global instruction
+  const globalEl = document.getElementById('globalInstruction');
+  globalEl.value = localStorage.getItem(GLOBAL_KEY) || '';
+  globalEl.addEventListener('input', () => {
+    localStorage.setItem(GLOBAL_KEY, globalEl.value);
+    flash();
+  });
+}
+
+// ─── Init ───
+render();
+setup();
+
+  </script>
+</body>
+</html>

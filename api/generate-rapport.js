@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     const systemPrompt = buildSystemPrompt(knowledge);
-    const userPrompt = buildUserPrompt(diamond, aarstalsraekker);
+    const userPrompt = buildUserPrompt(diamond, aarstalsraekker, knowledge);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -65,10 +65,14 @@ function buildSystemPrompt(k) {
 VIGTIGE REGLER:
 - Du må KUN bruge den viden der er givet nedenfor. Opfind IKKE ny numerologisk viden.
 - Specielle regler skal fortolkes isoleret ud fra deres egen beskrivelse — bland IKKE energibeskrivelser ind i fortolkningen af specielle regler.
-- Rapporten har to hoveddele: (1) Diamanten — beskrivelse af personen, (2) Årstalsrækker — beskrivelse af de enkelte år.
 - Livslinjen er IKKE en bevægelse eller et sekventielt forløb. Fornavn, mellemnavne og efternavn bidrager hver med deres energi, men alle energier er til stede samtidig. Fortolk dem IKKE som en rejse fra fornavn til efternavn.
 - Skriv i et varmt, personligt, men professionelt sprog.
 `;
+
+  // Global instruction from Input Rapport
+  if (k.rapportGlobalInstruction) {
+    prompt += `\n## Overordnet instruktion\n${k.rapportGlobalInstruction}\n`;
+  }
 
   // Om numerologi
   if (k.aboutNumerology) prompt += `\n## Om numerologi\n${k.aboutNumerology}\n`;
@@ -153,7 +157,7 @@ VIGTIGE REGLER:
    User Prompt — the specific person's data
    ──────────────────────────────────────────── */
 
-function buildUserPrompt(diamond, aarstalsraekker) {
+function buildUserPrompt(diamond, aarstalsraekker, knowledge) {
   let prompt = `Skriv en komplet numerologisk rapport for denne person:\n\n`;
 
   prompt += `## Persondata\n`;
@@ -192,10 +196,47 @@ function buildUserPrompt(diamond, aarstalsraekker) {
     });
   }
 
-  prompt += `\nSkriv rapporten med to hoveddele:\n`;
-  prompt += `1. DIAMANTEN — beskriv personen baseret på diamantens energier og positioner\n`;
-  prompt += `2. ÅRSTALSRÆKKER — beskriv hvert år, de energier der optræder, og hvad personen skal være opmærksom på\n`;
-  prompt += `\nBrug formatering med overskrifter (##) og afsnit.`;
+  // Section-based structure from Input Rapport
+  const sections = knowledge?.rapportSections;
+  if (sections && sections.length > 0) {
+    prompt += `\n## Rapportstruktur\n`;
+    prompt += `Organiser rapporten i PRÆCIS følgende sektioner, i denne rækkefølge:\n\n`;
+    sections.forEach((sec, i) => {
+      prompt += `### Sektion ${i + 1}: ${sec.title || 'Unavngivet'}\n`;
+      if (sec.sources && sec.sources.length > 0) {
+        const sourceLabels = sec.sources.map(s => DATA_SOURCE_LABELS[s] || s);
+        prompt += `Datakilder at bruge: ${sourceLabels.join(', ')}\n`;
+      }
+      if (sec.instruction) {
+        prompt += `Instruktion: ${sec.instruction}\n`;
+      }
+      prompt += `\n`;
+    });
+    prompt += `Brug formatering med overskrifter (##) for hver sektion.`;
+  } else {
+    // Fallback: default 2-part structure
+    prompt += `\nSkriv rapporten med to hoveddele:\n`;
+    prompt += `1. DIAMANTEN — beskriv personen baseret på diamantens energier og positioner\n`;
+    prompt += `2. ÅRSTALSRÆKKER — beskriv hvert år, de energier der optræder, og hvad personen skal være opmærksom på\n`;
+    prompt += `\nBrug formatering med overskrifter (##) og afsnit.`;
+  }
 
   return prompt;
 }
+
+// Data source ID → readable label mapping
+const DATA_SOURCE_LABELS = {
+  grundenergi: 'Grundenergi',
+  livslinje: 'Livslinje (fornavn, mellemnavne, efternavn)',
+  bundtal: 'Bundtal',
+  aura: 'Aura',
+  hjerte_solar: 'Hjertecenter + Solarplexus',
+  rygraden: 'Rygraden',
+  soejletal: 'Søjletal',
+  specielle_diamant: 'Specielle regler (diamant)',
+  helhedsvurdering: 'Helhedsvurdering (balanceret/ubalanceret)',
+  aarstalsraekker: 'Årstalsrækker (beregnede år)',
+  cyklusser: 'Cyklusser',
+  specielle_aar: 'Specielle regler (årstalsrækker)',
+  stjernetegn: 'Stjernetegn'
+};
