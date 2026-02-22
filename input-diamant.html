@@ -202,7 +202,9 @@ function compressAndStore(file, energyKey) {
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      // Preserve PNG for transparency support
+      const isPng = file.type === 'image/png';
+      const dataUrl = isPng ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.85);
       saveImage(energyKey, dataUrl);
       renderList();
     };
