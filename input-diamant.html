@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Input Diamant</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
   <style>
     .energy-card { background: #f8f9fa; transition: border-color 0.2s; }
     .energy-card:focus-within { border-color: #0d6efd !important; }
@@ -83,6 +84,11 @@
             </select>
           </div>
           <div class="col-md-5 d-flex gap-2 justify-content-end">
+            <input type="file" id="docUpload" accept=".doc,.docx,.txt" style="display:none" onchange="handleDocUpload(this)">
+            <button class="btn btn-outline-secondary" onclick="document.getElementById('docUpload').click()" title="Upload .doc/.docx/.txt — teksten fordeles automatisk til energikortene">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1" style="vertical-align:-2px;"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-2.1a.5.5 0 0 1 1 0v2.1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5v-2.1a.5.5 0 0 1 .5-.5z"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/></svg>
+              Upload dokument
+            </button>
             <button class="btn btn-outline-primary" onclick="downloadJSON()">Download JSON</button>
             <span id="saveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
           </div>
@@ -478,6 +484,102 @@ document.getElementById('tab-rules').addEventListener('shown.bs.tab', () => {
 });
 
 init();
+
+// ─── Document Upload ───
+
+function digitReduceLocal(n) {
+  while (n > 9) n = n.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+  return n;
+}
+
+function numberToKey(num) {
+  if (num >= 1 && num <= 9) return String(num);
+  return num + '/' + digitReduceLocal(num);
+}
+
+async function handleDocUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  let text = '';
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'txt') {
+    text = await file.text();
+  } else if (ext === 'doc' || ext === 'docx') {
+    try {
+      const buf = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer: buf });
+      text = result.value;
+    } catch (e) {
+      alert('Kunne ikke læse dokumentet. Prøv at gemme som .docx eller .txt.');
+      input.value = '';
+      return;
+    }
+  } else {
+    alert('Understøtter kun .doc, .docx og .txt filer.');
+    input.value = '';
+    return;
+  }
+
+  // Parse: split by lines that are just a number (1-82)
+  const lines = text.split(/\r?\n/);
+  const sections = {};
+  let currentNum = null;
+  let currentLines = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    // Check if line is just a number 1-82
+    const match = trimmed.match(/^(\d{1,2})$/);
+    if (match) {
+      const num = parseInt(match[1]);
+      if (num >= 1 && num <= 82) {
+        // Save previous section
+        if (currentNum !== null) {
+          sections[currentNum] = currentLines.join('\n').trim();
+        }
+        currentNum = num;
+        currentLines = [];
+        continue;
+      }
+    }
+    if (currentNum !== null) {
+      currentLines.push(line);
+    }
+  }
+  // Save last section
+  if (currentNum !== null) {
+    sections[currentNum] = currentLines.join('\n').trim();
+  }
+
+  if (Object.keys(sections).length === 0) {
+    alert('Ingen energier fundet i dokumentet. Forventet format: et tal (1-82) på sin egen linje, efterfulgt af beskrivelsen.');
+    input.value = '';
+    return;
+  }
+
+  // Apply to energy cards
+  const edits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  let count = 0;
+
+  for (const [num, desc] of Object.entries(sections)) {
+    const key = numberToKey(parseInt(num));
+    if (!editedData[key]) continue;
+
+    editedData[key].beskrivelse = desc;
+    if (!edits[key]) edits[key] = {};
+    edits[key].beskrivelse = desc;
+    count++;
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+  renderList();
+  showSaveIndicator();
+
+  alert(`${count} energibeskrivelse${count !== 1 ? 'r' : ''} importeret fra dokumentet.`);
+  input.value = '';
+}
 
   </script>
 </body>
