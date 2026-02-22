@@ -69,6 +69,12 @@ VIGTIGE REGLER:
 - Skriv i et varmt, personligt, men professionelt sprog.
 `;
 
+  // Image placeholders instruction
+  if (k.energiesWithImages && k.energiesWithImages.length > 0) {
+    prompt += `\nBILLEDER:\nFølgende grundtal-energier har et tilknyttet billede: ${k.energiesWithImages.join(', ')}.\n`;
+    prompt += `Når du første gang omtaler en af disse energier i rapporten, indsæt pladsholder [BILLEDE:X] på en ny linje (hvor X er grundtallet). Fx [BILLEDE:1] for energi 1. Brug kun hver pladsholder én gang.\n`;
+  }
+
   // Global instruction from Input Rapport
   if (k.rapportGlobalInstruction) {
     prompt += `\n## Overordnet instruktion\n${k.rapportGlobalInstruction}\n`;

@@ -276,6 +276,12 @@ function gatherKnowledge() {
   } catch { k.rapportSections = []; }
   k.rapportGlobalInstruction = localStorage.getItem('rapportGlobalInstruction') || '';
 
+  // Track which energies have images (don't send actual image data to API)
+  try {
+    const imgs = JSON.parse(localStorage.getItem('energyImages') || '{}');
+    k.energiesWithImages = Object.keys(imgs).filter(key => !!imgs[key]);
+  } catch { k.energiesWithImages = []; }
+
   return k;
 }
 
@@ -320,7 +326,8 @@ function showKnowledgeStatus() {
     { label: 'Cyklusser', ok: !!k.cycles_about },
     { label: 'Regler (år)', ok: k.aarRules.length > 0 },
     { label: 'Rapportstil', ok: !!k.rapportStil },
-    { label: 'Rapportsektioner', ok: k.rapportSections.length > 0 }
+    { label: 'Rapportsektioner', ok: k.rapportSections.length > 0 },
+    { label: 'Energibilleder', ok: k.energiesWithImages.length > 0 }
   ];
   const filled = checks.filter(c => c.ok).length;
   const el = document.getElementById('knowledgeStatus');
@@ -422,8 +429,9 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     const data = await resp.json();
 
-    // Render rapport (markdown-ish → simple HTML)
-    const rapportHTML = markdownToHTML(data.rapport);
+    // Render rapport (markdown-ish → simple HTML, then inject images)
+    let rapportHTML = markdownToHTML(data.rapport);
+    rapportHTML = injectEnergyImages(rapportHTML);
     document.getElementById('rapportOutput').innerHTML = rapportHTML;
     document.getElementById('pdfBtn').disabled = false;
 
@@ -452,6 +460,21 @@ function markdownToHTML(md) {
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>');
   return '<p>' + html + '</p>';
+}
+
+// ─── Inject energy images where AI placed [BILLEDE:X] placeholders ───
+
+function injectEnergyImages(html) {
+  let images;
+  try { images = JSON.parse(localStorage.getItem('energyImages') || '{}'); } catch { return html; }
+  // Replace [BILLEDE:X] placeholders with actual <img> tags
+  return html.replace(/\[BILLEDE[:\s]*(\d)\]/gi, (match, num) => {
+    const dataUrl = images[num];
+    if (dataUrl) {
+      return `<img src="${dataUrl}" alt="Energi ${num}" style="max-width:100px;max-height:100px;border-radius:6px;display:block;margin:8px 0;">`;
+    }
+    return ''; // Remove placeholder if no image found
+  });
 }
 
 // ─── PDF ───

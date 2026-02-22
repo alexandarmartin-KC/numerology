@@ -18,6 +18,10 @@
     .save-indicator.show { opacity: 1; }
     .filter-active { background: #e8f0fe !important; }
     #searchInput:focus { box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15); }
+    .img-upload-area { border: 2px dashed #dee2e6; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .img-upload-area:hover { border-color: #0d6efd; }
+    .img-upload-area.has-image { border-style: solid; border-color: #198754; cursor: default; }
+    .img-preview { max-width: 120px; max-height: 120px; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -153,8 +157,52 @@ const EDITABLE_FIELDS = [
   { key: 'ubalance_i_urent_numeroskop', label: 'Ubalance, ubalanceret numeroskop', type: 'textarea', placeholder: 'Beskrivelse af ubalance' },
   { key: 'helheds_funktion', label: 'Helhedsfunktion', type: 'textarea', placeholder: 'Beskrivelse af helhedsfunktion' },
   { key: 'planet', label: 'Planet', type: 'text', placeholder: 'Hvilken planet tilhører denne grundenergi', grundtalOnly: true },
+  { key: 'billede', label: 'Billede (planet)', type: 'image', placeholder: 'Upload JPG eller PNG', grundtalOnly: true },
   { key: 'kendte', label: 'Kendte personer', type: 'text', placeholder: 'Kommaseparerede navne på kendte personer med denne grundenergi', grundtalOnly: true }
 ];
+
+const IMAGES_KEY = 'energyImages';
+
+function loadImages() {
+  try { return JSON.parse(localStorage.getItem(IMAGES_KEY) || '{}'); } catch { return {}; }
+}
+
+function saveImage(key, dataUrl) {
+  const imgs = loadImages();
+  imgs[key] = dataUrl;
+  localStorage.setItem(IMAGES_KEY, JSON.stringify(imgs));
+  showSaveIndicator();
+}
+
+function removeImage(key) {
+  const imgs = loadImages();
+  delete imgs[key];
+  localStorage.setItem(IMAGES_KEY, JSON.stringify(imgs));
+  showSaveIndicator();
+}
+
+function compressAndStore(file, energyKey) {
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 200;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      saveImage(energyKey, dataUrl);
+      renderList();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
 // ─── Load ───
 async function init() {
@@ -220,9 +268,31 @@ function renderList() {
 
     html += `<div class="row g-2">`;
     const isGrundtal = !key.includes('/');
+    const images = loadImages();
     EDITABLE_FIELDS.forEach(f => {
       if (f.key === 'grundenergi' && !isGrundtal) return;
       if (f.grundtalOnly && !isGrundtal) return;
+
+      if (f.type === 'image') {
+        const imgData = images[key] || '';
+        html += `<div class="col-md-6">`;
+        html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">${esc(f.label)}</label>`;
+        if (imgData) {
+          html += `<div class="img-upload-area has-image">`;
+          html += `<img src="${imgData}" class="img-preview d-block mx-auto mb-2" alt="Planet">`;
+          html += `<button class="btn btn-outline-danger btn-sm img-remove-btn" data-key="${esc(key)}">Fjern billede</button>`;
+          html += `</div>`;
+        } else {
+          html += `<div class="img-upload-area" onclick="document.getElementById('imgUpload_${esc(key)}').click()">`;
+          html += `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#999" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/></svg>`;
+          html += `<div class="mt-1" style="font-size:12px;color:#999;">Klik for at uploade JPG/PNG</div>`;
+          html += `<input type="file" id="imgUpload_${esc(key)}" accept=".jpg,.jpeg,.png" style="display:none" onchange="handleImageUpload(this, '${esc(key)}')">`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+        return;
+      }
+
       const val = energy[f.key] || '';
       const colClass = f.type === 'textarea' ? 'col-12' : 'col-md-6';
       html += `<div class="${colClass}">`;
@@ -276,6 +346,28 @@ function setupListeners() {
 
   document.getElementById('searchInput').addEventListener('input', renderList);
   document.getElementById('filterSelect').addEventListener('change', renderList);
+
+  // Image remove buttons (delegated)
+  document.getElementById('energyList').addEventListener('click', (e) => {
+    const btn = e.target.closest('.img-remove-btn');
+    if (!btn) return;
+    const key = btn.dataset.key;
+    if (key && confirm('Fjern billedet for energi ' + key + '?')) {
+      removeImage(key);
+      renderList();
+    }
+  });
+}
+
+// ─── Image upload handler (called from inline onchange) ───
+function handleImageUpload(input, energyKey) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.type.match(/^image\/(jpeg|png)$/)) {
+    alert('Kun JPG og PNG filer er understøttet.');
+    return;
+  }
+  compressAndStore(file, energyKey);
 }
 
 // ─── Save indicator flash ───
