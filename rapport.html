@@ -234,7 +234,10 @@ function gatherKnowledge() {
 
   // Positioner
   try {
-    k.positions = JSON.parse(localStorage.getItem('diamondPositions') || '[]');
+    const posData = JSON.parse(localStorage.getItem('diamondPositions') || '{}');
+    k.positions = Object.entries(posData)
+      .filter(([_, desc]) => desc)
+      .map(([id, description]) => ({ name: id, description }));
   } catch { k.positions = []; }
 
   // Specielle regler (diamant)
@@ -262,7 +265,7 @@ function gatherKnowledge() {
   // Astrologi
   try {
     const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
-    k.astrologyGenerelt = astro.generelt || '';
+    k.astrologyGenerelt = astro._generelt || '';
     // We'll determine the sign from the birthdate on the API side or pass it
   } catch { k.astrologyGenerelt = ''; }
 

@@ -86,10 +86,11 @@ VIGTIGE REGLER:
     k.energies.forEach(e => {
       prompt += `\n### Energi ${e.display || e.id}\n`;
       if (e.keywords) prompt += `Nøgleord (rent): ${e.keywords}\n`;
-      if (e.keywords_urent) prompt += `Nøgleord (urent): ${e.keywords_urent}\n`;
+      if (e.keywords_urent_numeroskop) prompt += `Nøgleord (urent): ${e.keywords_urent_numeroskop}\n`;
       if (e.grundenergi) prompt += `Grundenergi: ${e.grundenergi}\n`;
-      if (e.ubalance) prompt += `Ubalance: ${e.ubalance}\n`;
-      if (e.helhedsfunktion) prompt += `Helhedsfunktion: ${e.helhedsfunktion}\n`;
+      if (e.beskrivelse) prompt += `Beskrivelse: ${e.beskrivelse}\n`;
+      if (e.ubalance_i_urent_numeroskop) prompt += `Ubalance: ${e.ubalance_i_urent_numeroskop}\n`;
+      if (e.helheds_funktion) prompt += `Helhedsfunktion: ${e.helheds_funktion}\n`;
       if (e.planet) prompt += `Planet: ${e.planet}\n`;
       if (e.kendte) prompt += `Kendte: ${e.kendte}\n`;
     });
