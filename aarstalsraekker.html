@@ -266,6 +266,7 @@ function getChapterInfo(year, birthYear) {
       return {
         chapterValue: chapterValue,
         isFirstYear: pos === accumulated,
+        isLastYear: pos === accumulated + chapterValue - 1,
         prevChapterValue: cycleSeq[prevSeqIdx],
         isBirthChapter: i === 0
       };
@@ -291,6 +292,10 @@ function applyCycle124875(year, birthYear, yearReduced, state, soejle, lines) {
       addStep(state, 1, lines, true);  // ud af 1
     }
     // søjle
+    addStep(state, soejle, lines, true);
+  } else if (info.isLastYear) {
+    // Last year of chapter: ud (exiting this chapter) + søjle
+    addStep(state, info.chapterValue, lines, true);
     addStep(state, soejle, lines, true);
   }
 }

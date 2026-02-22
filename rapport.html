@@ -140,6 +140,7 @@ function getChapterInfo(year, birthYear) {
       return {
         chapterValue: chapterValue,
         isFirstYear: pos === accumulated,
+        isLastYear: pos === accumulated + chapterValue - 1,
         prevChapterValue: cycleSeq[prevSeqIdx],
         isBirthChapter: i === 0
       };
@@ -189,6 +190,9 @@ function computeYearEnergies(year, birthYear, grund, bund, soejle) {
         if (info.chapterValue === 1) {
           step(1);                              // ud af 1 (only 1 year)
         }
+        step(soejle);                           // søjle
+      } else if (info && info.isLastYear) {
+        step(info.chapterValue);                // ud (last year of chapter)
         step(soejle);                           // søjle
       }
     }
