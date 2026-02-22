@@ -287,27 +287,26 @@ function gatherKnowledge() {
 
 function getZodiacSign(day, month) {
   const signs = [
-    { name: 'Stenbukken', start: [12, 22], end: [1, 19] },
-    { name: 'Vandbæreren', start: [1, 20], end: [2, 18] },
-    { name: 'Fiskene', start: [2, 19], end: [3, 20] },
-    { name: 'Vædderen', start: [3, 21], end: [4, 19] },
-    { name: 'Tyren', start: [4, 20], end: [5, 20] },
-    { name: 'Tvillingerne', start: [5, 21], end: [6, 20] },
-    { name: 'Krebsen', start: [6, 21], end: [7, 22] },
-    { name: 'Løven', start: [7, 23], end: [8, 22] },
-    { name: 'Jomfruen', start: [8, 23], end: [9, 22] },
-    { name: 'Vægten', start: [9, 23], end: [10, 22] },
-    { name: 'Skorpionen', start: [10, 23], end: [11, 21] },
-    { name: 'Skytten', start: [11, 22], end: [12, 21] }
+    { name: 'Stenbukken', id: 'stenbukken', start: [12, 22], end: [1, 19] },
+    { name: 'Vandmanden', id: 'vandmanden', start: [1, 20], end: [2, 18] },
+    { name: 'Fiskene', id: 'fiskene', start: [2, 19], end: [3, 20] },
+    { name: 'Vædderen', id: 'vaedder', start: [3, 21], end: [4, 19] },
+    { name: 'Tyren', id: 'tyren', start: [4, 20], end: [5, 20] },
+    { name: 'Tvillingen', id: 'tvillingen', start: [5, 21], end: [6, 20] },
+    { name: 'Krebsen', id: 'krebsen', start: [6, 21], end: [7, 22] },
+    { name: 'Løven', id: 'loeven', start: [7, 23], end: [8, 22] },
+    { name: 'Jomfruen', id: 'jomfruen', start: [8, 23], end: [9, 22] },
+    { name: 'Vægten', id: 'vaegten', start: [9, 23], end: [10, 22] },
+    { name: 'Skorpionen', id: 'skorpionen', start: [10, 23], end: [11, 21] },
+    { name: 'Skytten', id: 'skytten', start: [11, 22], end: [12, 21] }
   ];
   for (const s of signs) {
     if (s.start[0] === s.end[0]) {
-      if (month === s.start[0] && day >= s.start[1] && day <= s.end[1]) return s.name;
+      if (month === s.start[0] && day >= s.start[1] && day <= s.end[1]) return s;
     } else if (s.start[0] > s.end[0]) {
-      // Stenbukken wraps around year
-      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s.name;
+      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s;
     } else {
-      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s.name;
+      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s;
     }
   }
   return null;
@@ -400,9 +399,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   if (sign) {
     try {
       const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
-      const signKey = sign.toLowerCase();
-      if (astro[signKey]) {
-        knowledge.astrologySign = { name: sign, text: astro[signKey] };
+      if (astro[sign.id]) {
+        knowledge.astrologySign = { name: sign.name, text: astro[sign.id] };
       }
     } catch {}
   }
