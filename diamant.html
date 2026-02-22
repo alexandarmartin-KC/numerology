@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diamant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-3 py-4" style="max-width: 1400px; margin: 0 auto;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Diamant</h1>
+    </div>
+
+    <!-- Input (fuld bredde, kompakt) -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body py-3">
+        <form id="diamondForm" novalidate>
+          <div class="row g-3 align-items-start">
+            <div class="col-md-5">
+              <label for="fullName" class="form-label mb-1">Fulde navn</label>
+              <input id="fullName" name="fullName" type="text" class="form-control" placeholder="Fx Anne-Marie Katje Jensen" required>
+              <div class="form-text">Bindestreg opdeles automatisk (Anne-Marie → Anne Marie)</div>
+            </div>
+            <div class="col-md-3">
+              <label for="birthDate" class="form-label mb-1">Fødselsdato</label>
+              <input id="birthDate" name="birthDate" type="date" class="form-control" required>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+              <div>
+                <label class="form-label mb-1">&nbsp;</label>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">Beregn diamant</button>
+                  <button type="button" id="exampleBtn" class="btn btn-outline-secondary">Brug eksempeldata</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Resultat (fuld bredde) -->
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5">Resultat</h2>
+
+        <div id="diamondCanvas" class="border rounded-3 bg-light mx-auto" style="max-width: 800px; aspect-ratio: 10/11;"></div>
+
+        <div id="energyDescriptions" class="mt-4"></div>
+
+        <div class="mt-3">
+          <h3 class="h6">Beregninger</h3>
+          <div id="diamondOutput" class="text-secondary">
+            Indtast navn og fødselsdato og tryk "Beregn diamant".
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/diamondEngine.js"></script>
+  <script src="assets/js/diamondRenderer.js"></script>
+  <script src="assets/js/diamant.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Navnegenerator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+    .recipe-card { background: #f0f4ff; border-left: 4px solid #0d6efd; }
+    .grundenergi-header { font-size: 20px; font-weight: 700; }
+    .recipe-label { font-size: 11px; color: #666; margin-bottom: 2px; }
+    .name-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Navnegenerator</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+    </div>
+
+    <p class="text-muted mb-4">Definer opskrifterne for et rent numeroskop per grundenergi (1–9). Hver opskrift angiver de mulige sammensatte energier for hver navnedel, kommasepareret. Fx <code>23/5, 14/5, 32/5</code> betyder at navnedelen skal give én af de tre værdier (alle reducerer til 5). Diamant-forhåndsvisningen bruger den første værdi.</p>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-2">Grundprincipper for navnegeneratoren</h5>
+        <p class="text-muted mb-2" style="font-size:13px;">Forklar motoren hvordan opskrifterne fungerer, hvad et rent numeroskop er, og de overordnede principper bag navnevalg.</p>
+        <textarea id="navnegeneratorPrincipper" class="form-control" rows="10" placeholder="Beskriv grundprincipperne bag navnegeneratoren og skabelonerne..."></textarea>
+      </div>
+    </div>
+
+    <div id="recipeCards"></div>
+    <button class="btn btn-outline-primary mt-2 mb-4" id="addRecipeBtn">+ Tilføj numeroskop</button>
+
+    <hr class="my-4">
+    <h2 class="h4 mb-3">Diamant-forhåndsvisning</h2>
+    <p class="text-muted mb-3">Vælg et numeroskop for at se den beregnede diamant.</p>
+
+    <div class="mb-4">
+      <select id="previewIdx" class="form-select form-select-sm" style="width:auto;"></select>
+    </div>
+
+    <div id="previewWarning" class="alert alert-warning d-none">Udfyld mindst fornavn og efternavn.</div>
+    <div id="diamondPreview" style="max-width:600px;"></div>
+  </main>
+
+  <script src="assets/js/diamondRenderer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+
+const STORAGE_KEY = 'nameGeneratorRecipes';
+const PRINCIPPER_KEY = 'nameGeneratorPrincipper';
+const NAME_PARTS = [
+  { id: 'fornavn', label: 'Fornavn' },
+  { id: 'mellemnavn1', label: 'Mellemnavn 1' },
+  { id: 'mellemnavn2', label: 'Mellemnavn 2' },
+  { id: 'mellemnavn3', label: 'Mellemnavn 3' },
+  { id: 'mellemnavn4', label: 'Mellemnavn 4' },
+  { id: 'mellemnavn5', label: 'Mellemnavn 5' },
+  { id: 'efternavn', label: 'Efternavn' }
+];
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function load() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return [];
+  const data = JSON.parse(saved);
+  // Migrate old format (object with keys 1-9) to array
+  if (!Array.isArray(data)) {
+    const arr = [];
+    for (let g = 1; g <= 9; g++) {
+      if (data[g]) {
+        data[g].forEach(recipe => {
+          if (recipe && (recipe.fornavn || recipe.efternavn)) {
+            arr.push({ grundenergi: g, ...recipe });
+          }
+        });
+      }
+    }
+    return arr;
+  }
+  return data;
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  flashSave();
+}
+
+function flashSave() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+function render() {
+  const recipes = load();
+  const container = document.getElementById('recipeCards');
+  let html = '';
+
+  if (recipes.length === 0) {
+    html = '<p class="text-muted text-center py-3">Ingen numeroskoper endnu — klik "+ Tilføj numeroskop" for at oprette det første.</p>';
+  }
+
+  recipes.forEach((recipe, i) => {
+    const g = recipe.grundenergi || 1;
+    html += `<div class="card mb-3" style="background:#f8f9fa;">`;
+    html += `<div class="card-body py-3 px-3">`;
+    html += `<div class="d-flex justify-content-between align-items-center mb-3">`;
+    html += `<div class="d-flex align-items-center gap-3">`;
+    html += `<span class="fw-bold" style="font-size:14px;">Numeroskop ${i + 1}</span>`;
+    html += `<div class="d-flex align-items-center gap-1">`;
+    html += `<label style="font-size:12px;white-space:nowrap;" class="text-muted mb-0">Grundenergi</label>`;
+    html += `<select class="form-select form-select-sm recipe-grundenergi" data-idx="${i}" style="width:70px;font-size:13px;">`;
+    for (let v = 1; v <= 9; v++) {
+      html += `<option value="${v}"${v === g ? ' selected' : ''}>${v}</option>`;
+    }
+    html += `</select>`;
+    html += `</div></div>`;
+    html += `<button class="btn btn-sm btn-outline-danger py-0 px-2 delete-recipe" data-idx="${i}" title="Slet numeroskop">&times;</button>`;
+    html += `</div>`;
+    html += `<div class="name-grid">`;
+
+    NAME_PARTS.forEach(part => {
+      const val = recipe[part.id] || '';
+      html += `<div>`;
+      html += `<div class="recipe-label">${esc(part.label)}</div>`;
+      html += `<input type="text" class="form-control form-control-sm recipe-field" `;
+      html += `data-idx="${i}" data-part="${part.id}" `;
+      html += `value="${esc(val)}" placeholder="Fx 23/5, 14/5" style="font-size:13px;">`;
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+  updatePreviewSelector();
+}
+
+// Event delegation
+const container = document.getElementById('recipeCards');
+
+container.addEventListener('input', (e) => {
+  const el = e.target;
+  const idx = parseInt(el.dataset.idx);
+  if (isNaN(idx)) return;
+  const recipes = load();
+  if (el.classList.contains('recipe-field')) {
+    recipes[idx][el.dataset.part] = el.value;
+  }
+  saveData(recipes);
+  updateDiamondPreview();
+});
+
+container.addEventListener('change', (e) => {
+  const el = e.target;
+  if (!el.classList.contains('recipe-grundenergi')) return;
+  const idx = parseInt(el.dataset.idx);
+  const recipes = load();
+  recipes[idx].grundenergi = parseInt(el.value);
+  saveData(recipes);
+  updatePreviewSelector();
+  updateDiamondPreview();
+});
+
+container.addEventListener('click', (e) => {
+  const btn = e.target.closest('.delete-recipe');
+  if (!btn) return;
+  const idx = parseInt(btn.dataset.idx);
+  const recipes = load();
+  recipes.splice(idx, 1);
+  saveData(recipes);
+  render();
+  updateDiamondPreview();
+});
+
+document.getElementById('addRecipeBtn').addEventListener('click', () => {
+  const recipes = load();
+  recipes.push({ grundenergi: 1 });
+  saveData(recipes);
+  render();
+  // Focus the grundenergi select of the new entry
+  const selects = document.querySelectorAll('.recipe-grundenergi');
+  if (selects.length) selects[selects.length - 1].focus();
+});
+
+render();
+
+// Grundprincipper textarea
+const principperEl = document.getElementById('navnegeneratorPrincipper');
+principperEl.value = localStorage.getItem(PRINCIPPER_KEY) || '';
+principperEl.addEventListener('input', () => {
+  localStorage.setItem(PRINCIPPER_KEY, principperEl.value);
+  flashSave();
+});
+
+/* ================================================================
+   Diamond preview
+   ================================================================ */
+
+function updatePreviewSelector() {
+  const recipes = load();
+  const sel = document.getElementById('previewIdx');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  if (recipes.length === 0) {
+    sel.innerHTML = '<option value="">Ingen numeroskoper</option>';
+    return;
+  }
+  recipes.forEach((r, i) => {
+    const g = r.grundenergi || '?';
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = `Numeroskop ${i + 1} (grundenergi ${g})`;
+    sel.appendChild(o);
+  });
+  // Restore selection if still valid
+  if (prev !== '' && parseInt(prev) < recipes.length) sel.value = prev;
+}
+
+function digitReduce(n) {
+  while (n >= 10) n = String(n).split('').reduce((s, d) => s + Number(d), 0);
+  return n;
+}
+
+function displayValue(compound) {
+  const reduced = digitReduce(compound);
+  return compound < 10 ? `${compound}` : `${compound}/${reduced}`;
+}
+
+function parseSingleVal(s) {
+  s = s.trim();
+  if (!s) return null;
+  if (s.includes('/')) {
+    const [c, r] = s.split('/').map(Number);
+    if (isNaN(c) || isNaN(r)) return null;
+    return { compound: c, reduced: r, display: s };
+  }
+  const n = Number(s);
+  if (isNaN(n)) return null;
+  return { compound: n, reduced: digitReduce(n), display: displayValue(n) };
+}
+
+function parseRecipeVal(val) {
+  if (!val || !val.trim()) return null;
+  const parts = val.split(',').map(s => parseSingleVal(s)).filter(Boolean);
+  if (parts.length === 0) return null;
+  return parts[0];
+}
+
+function computeDiamondFromRecipe(grundenergi, recipe) {
+  const top = grundenergi;
+  const fornavn = parseRecipeVal(recipe.fornavn);
+  const efternavn = parseRecipeVal(recipe.efternavn);
+  if (!fornavn || !efternavn) return null;
+
+  const middles = [];
+  for (let i = 1; i <= 5; i++) {
+    const m = parseRecipeVal(recipe['mellemnavn' + i]);
+    if (m) middles.push(m);
+  }
+
+  const livslinje = [
+    { role: 'fornavn', display: fornavn.display, compound: fornavn.compound, reduced: fornavn.reduced },
+    ...middles.map(m => ({ role: 'mellemnavn', display: m.display, compound: m.compound, reduced: m.reduced })),
+    { role: 'efternavn', display: efternavn.display, compound: efternavn.compound, reduced: efternavn.reduced }
+  ];
+
+  const bottomCompound = livslinje.reduce((s, e) => s + e.reduced, 0);
+  const bottomReduced = digitReduce(bottomCompound);
+
+  function auraCalc(a, b) {
+    const compound = a + b;
+    return { compound, reduced: digitReduce(compound), display: displayValue(compound) };
+  }
+  const upperLeft  = auraCalc(top, fornavn.reduced);
+  const upperRight = auraCalc(top, efternavn.reduced);
+  const lowerLeft  = auraCalc(bottomReduced, fornavn.reduced);
+  const lowerRight = auraCalc(bottomReduced, efternavn.reduced);
+
+  const heartCompound = upperLeft.reduced + upperRight.reduced;
+  const heartReduced = digitReduce(heartCompound);
+  const heartExtras = middles.map(m => {
+    const hc = m.reduced + heartReduced;
+    return { compound: hc, reduced: digitReduce(hc), display: displayValue(hc) };
+  });
+
+  const solarCompound = lowerLeft.reduced + lowerRight.reduced;
+  const solarReduced = digitReduce(solarCompound);
+  const solarExtras = middles.map(m => {
+    const sc = m.reduced + solarReduced;
+    return { compound: sc, reduced: digitReduce(sc), display: displayValue(sc) };
+  });
+
+  const squareCompound = top + bottomReduced;
+  const triangleCompound = top + bottomReduced + heartReduced
+    + heartExtras.reduce((s, e) => s + e.reduced, 0)
+    + solarReduced
+    + solarExtras.reduce((s, e) => s + e.reduced, 0)
+    + middles.reduce((s, m) => s + m.reduced, 0);
+
+  return {
+    grundenergi: { value: top, display: String(top) },
+    livslinje,
+    bundtal: { compound: bottomCompound, reduced: bottomReduced, display: displayValue(bottomCompound) },
+    aura: { auraUpperLeft: upperLeft, auraUpperRight: upperRight, auraLowerLeft: lowerLeft, auraLowerRight: lowerRight },
+    body: {
+      hjertecenter: {
+        centerTal: { compound: heartCompound, reduced: heartReduced, display: displayValue(heartCompound) },
+        mellemnavnsBidrag: heartExtras
+      },
+      solarplexus: {
+        centerTal: { compound: solarCompound, reduced: solarReduced, display: displayValue(solarCompound) },
+        mellemnavnsBidrag: solarExtras
+      }
+    },
+    firkanttal: { compound: squareCompound, reduced: digitReduce(squareCompound), display: displayValue(squareCompound) },
+    soejletal: { compound: triangleCompound, reduced: digitReduce(triangleCompound) }
+  };
+}
+
+function updateDiamondPreview() {
+  const sel = document.getElementById('previewIdx');
+  const idx = parseInt(sel.value);
+  const warning = document.getElementById('previewWarning');
+  const container = document.getElementById('diamondPreview');
+
+  if (isNaN(idx)) {
+    warning.classList.add('d-none');
+    container.innerHTML = '';
+    return;
+  }
+
+  const recipes = load();
+  const recipe = recipes[idx];
+  if (!recipe) { container.innerHTML = ''; return; }
+
+  const diamond = computeDiamondFromRecipe(recipe.grundenergi || 1, recipe);
+  if (!diamond) {
+    warning.classList.remove('d-none');
+    container.innerHTML = '';
+    return;
+  }
+  warning.classList.add('d-none');
+  renderDiamond(container, diamond);
+}
+
+document.getElementById('previewIdx').addEventListener('change', updateDiamondPreview);
+updateDiamondPreview();
+
+  </script>
+</body>
+</html>

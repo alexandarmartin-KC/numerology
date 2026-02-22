@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Årstalsrækker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Årstalsrækker</h1>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-energies" data-bs-toggle="tab" data-bs-target="#panel-energies" type="button" role="tab">Energibeskrivelser (1–31/4)</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-cyklusser" data-bs-toggle="tab" data-bs-target="#panel-cyklusser" type="button" role="tab">Cyklusser</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-rules" data-bs-toggle="tab" data-bs-target="#panel-rules" type="button" role="tab">Specielle regler</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-general" data-bs-toggle="tab" data-bs-target="#panel-general" type="button" role="tab">Generelt om årstalsrækker</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+    <!-- ═══ TAB 1: Energibeskrivelser ═══ -->
+    <div class="tab-pane fade show active" id="panel-energies" role="tabpanel">
+
+      <p class="text-muted mb-3">Keywords og beskrivelse af hvert tal (1–31/4) — bruges som kontekst til AI-motoren ved årstalsrækker.</p>
+
+      <div id="aarEnergyList"></div>
+
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <span id="aarEnergySaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-energies -->
+
+    <!-- ═══ TAB 2: Generelt om årstalsrækker ═══ -->
+    <div class="tab-pane fade" id="panel-general" role="tabpanel">
+
+      <h5 class="mb-2">Om årstalsrækker</h5>
+      <p class="text-muted mb-2" style="font-size:13px;">Forklar hvad årstalsrækker er, hvordan cyklusserne fungerer, og hvad motoren skal vide for at tolke dem korrekt.</p>
+      <textarea id="aboutCycles" class="form-control general-field" rows="12" placeholder="Forklar årstalsrækkernes system, den 9-årige cyklus, og hvordan personlige år beregnes og tolkes..." style="font-size:14px;line-height:1.7;"></textarea>
+
+      <h5 class="mt-4 mb-2">Rapportens tone og stil (årstalsrækker)</h5>
+      <p class="text-muted mb-2" style="font-size:13px;">Beskriv hvordan årstalsrække-rapporten skal formuleres — dette kan afvige fra diamant-rapporten.</p>
+      <textarea id="cycleStyle" class="form-control general-field" rows="8" placeholder="Fx: Årstalsrække-rapporten skal fokusere på fremtiden og give konkrete råd..." style="font-size:14px;line-height:1.7;"></textarea>
+
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <span id="generalSaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-general -->
+
+    <!-- ═══ TAB 2: Cyklusser ═══ -->
+    <div class="tab-pane fade" id="panel-cyklusser" role="tabpanel">
+
+      <p class="text-muted mb-3">Der findes 3 forskellige cyklusser i årstalsrækkerne. Beskriv hver cyklus — denne viden bruges som kontekst til AI-motoren.</p>
+
+      <div class="card mb-4" style="background:#f8f9fa;">
+        <div class="card-body py-3 px-3">
+          <h5 class="mb-1">Cyklus 1-2-4-8-7-5</h5>
+          <p class="text-muted mb-2" style="font-size:13px;">Den store cyklus med seks trin.</p>
+          <textarea id="cycle_124875" class="form-control cycle-field" rows="14" placeholder="Beskriv cyklus 1-2-4-8-7-5 i detaljer..." style="font-size:14px;line-height:1.7;"></textarea>
+        </div>
+      </div>
+
+      <div class="card mb-4" style="background:#f8f9fa;">
+        <div class="card-body py-3 px-3">
+          <h5 class="mb-1">Cyklus 3-6</h5>
+          <p class="text-muted mb-2" style="font-size:13px;">Cyklussen med to trin.</p>
+          <textarea id="cycle_36" class="form-control cycle-field" rows="14" placeholder="Beskriv cyklus 3-6 i detaljer..." style="font-size:14px;line-height:1.7;"></textarea>
+        </div>
+      </div>
+
+      <div class="card mb-4" style="background:#f8f9fa;">
+        <div class="card-body py-3 px-3">
+          <h5 class="mb-1">Cyklus 9</h5>
+          <p class="text-muted mb-2" style="font-size:13px;">Cyklussen med ét trin.</p>
+          <textarea id="cycle_9" class="form-control cycle-field" rows="14" placeholder="Beskriv cyklus 9 i detaljer..." style="font-size:14px;line-height:1.7;"></textarea>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <span id="cycleSaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-cyklusser -->
+
+    <!-- ═══ Specielle regler ═══ -->
+    <div class="tab-pane fade" id="panel-rules" role="tabpanel">
+
+      <p class="text-muted mb-3">Definer specielle regler som motoren skal kigge efter i årstalsrækkerne. Fx "Hvis personen går fra et 9-år til et 1-år → stor forandring."</p>
+
+      <div id="aarRulesCards"></div>
+
+      <button class="btn btn-outline-primary mt-2 mb-3" id="addAarRuleBtn">+ Tilføj regel</button>
+
+      <div class="d-flex justify-content-end gap-2">
+        <span id="aarRulesSaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-rules -->
+
+    </div><!-- end tab-content -->
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+
+// ─── Escape ───
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ─── Generelt om årstalsrækker ───
+const GENERAL_FIELDS = [
+  { id: 'aboutCycles', storageKey: 'cycles_about' },
+  { id: 'cycleStyle',  storageKey: 'cycles_style' }
+];
+
+function initGeneral() {
+  GENERAL_FIELDS.forEach(f => {
+    const ta = document.getElementById(f.id);
+    ta.value = localStorage.getItem(f.storageKey) || '';
+    ta.addEventListener('input', () => {
+      localStorage.setItem(f.storageKey, ta.value);
+      const el = document.getElementById('generalSaveIndicator');
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+    });
+  });
+}
+
+// ─── Cyklusser ───
+const CYCLE_FIELDS = [
+  { id: 'cycle_124875', storageKey: 'cycles_124875' },
+  { id: 'cycle_36',     storageKey: 'cycles_36' },
+  { id: 'cycle_9',      storageKey: 'cycles_9' }
+];
+
+function initCycles() {
+  CYCLE_FIELDS.forEach(f => {
+    const ta = document.getElementById(f.id);
+    ta.value = localStorage.getItem(f.storageKey) || '';
+    ta.addEventListener('input', () => {
+      localStorage.setItem(f.storageKey, ta.value);
+      const el = document.getElementById('cycleSaveIndicator');
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+    });
+  });
+}
+
+let cyclesInitialized = false;
+document.getElementById('tab-cyklusser').addEventListener('shown.bs.tab', () => {
+  if (!cyclesInitialized) {
+    initCycles();
+    cyclesInitialized = true;
+  }
+});
+
+// ─── Energibeskrivelser (1–31/4) ───
+const AAR_ENERGY_KEY = 'aarEnergies';
+
+// Build ordered list of keys: 1..9, 10/1..31/4
+const AAR_ENERGY_KEYS = [];
+for (let i = 1; i <= 9; i++) AAR_ENERGY_KEYS.push(String(i));
+for (let i = 10; i <= 31; i++) {
+  let r = i; while (r > 9) { r = String(r).split('').reduce((s,d) => s + +d, 0); }
+  AAR_ENERGY_KEYS.push(i + '/' + r);
+}
+
+function loadAarEnergies() {
+  const saved = localStorage.getItem(AAR_ENERGY_KEY);
+  return saved ? JSON.parse(saved) : {};
+}
+
+function saveAarEnergies(data) {
+  localStorage.setItem(AAR_ENERGY_KEY, JSON.stringify(data));
+  const el = document.getElementById('aarEnergySaveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+function renderAarEnergies() {
+  const data = loadAarEnergies();
+  const container = document.getElementById('aarEnergyList');
+  let html = '';
+
+  AAR_ENERGY_KEYS.forEach(key => {
+    const entry = data[key] || {};
+    const kw = entry.keywords || '';
+    const desc = entry.beskrivelse || '';
+
+    html += `<div class="card mb-2" style="background:#f8f9fa;">`;
+    html += `<div class="card-body py-2 px-3">`;
+    html += `<span class="fw-bold" style="font-size:16px;">${esc(key)}</span>`;
+    html += `<div class="row g-2 mt-1">`;
+    html += `<div class="col-12">`;
+    html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">Keywords</label>`;
+    html += `<input type="text" class="form-control" data-aar-key="${esc(key)}" data-aar-field="keywords" value="${esc(kw)}" placeholder="Kommaseparerede n\u00f8gleord">`;
+    html += `</div>`;
+    html += `<div class="col-12">`;
+    html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">Beskrivelse af tallet</label>`;
+    html += `<textarea class="form-control" data-aar-key="${esc(key)}" data-aar-field="beskrivelse" rows="6" placeholder="Beskrivelse af tallet i kontekst af \u00e5rstalsr\u00e6kker..." style="font-size:13px;">${esc(desc)}</textarea>`;
+    html += `</div>`;
+    html += `</div>`;
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+
+  container.addEventListener('input', (e) => {
+    const el = e.target;
+    const key = el.dataset.aarKey;
+    const field = el.dataset.aarField;
+    if (!key || !field) return;
+    const current = loadAarEnergies();
+    if (!current[key]) current[key] = {};
+    current[key][field] = el.value;
+    saveAarEnergies(current);
+  });
+}
+
+// ─── Specielle regler (årstalsrækker) ───
+const AAR_RULES_KEY = 'aarRules';
+
+function loadAarRules() {
+  const saved = localStorage.getItem(AAR_RULES_KEY);
+  return saved ? JSON.parse(saved) : [];
+}
+
+function saveAarRules(rules) {
+  localStorage.setItem(AAR_RULES_KEY, JSON.stringify(rules));
+  const el = document.getElementById('aarRulesSaveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+function renderAarRules() {
+  const rules = loadAarRules();
+  const container = document.getElementById('aarRulesCards');
+  let html = '';
+
+  rules.forEach((rule, i) => {
+    html += `<div class="card mb-3" style="background:#f8f9fa;" data-rule-idx="${i}">`;
+    html += `<div class="card-body py-3 px-3">`;
+    html += `<div class="d-flex justify-content-between align-items-start mb-2">`;
+    html += `<span class="fw-bold" style="font-size:14px;">Regel ${i + 1}</span>`;
+    html += `<button class="btn btn-sm btn-outline-danger py-0 px-2 delete-aar-rule" data-idx="${i}" title="Slet regel">&times;</button>`;
+    html += `</div>`;
+    html += `<div class="mb-2">`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Betingelse <span class="text-muted">(hvilke tal/m\u00f8nstre skal forekomme)</span></label>`;
+    html += `<input type="text" class="form-control aar-rule-condition" data-idx="${i}" value="${esc(rule.condition || '')}" placeholder="Fx overgang fra 9-\u00e5r til 1-\u00e5r" style="font-size:13px;">`;
+    html += `</div>`;
+    html += `<div>`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Betydning / beskrivelse</label>`;
+    html += `<textarea class="form-control aar-rule-description" data-idx="${i}" rows="2" placeholder="Hvad betyder det n\u00e5r betingelsen er opfyldt..." style="font-size:13px;">${esc(rule.description || '')}</textarea>`;
+    html += `</div>`;
+    html += `</div></div>`;
+  });
+
+  if (rules.length === 0) {
+    html = `<p class="text-muted text-center py-3">Ingen regler endnu \u2014 klik \"+ Tilf\u00f8j regel\" for at oprette den f\u00f8rste.</p>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function setupAarRulesListeners() {
+  const container = document.getElementById('aarRulesCards');
+
+  container.addEventListener('input', (e) => {
+    const el = e.target;
+    const idx = parseInt(el.dataset.idx);
+    if (isNaN(idx)) return;
+    const rules = loadAarRules();
+    if (el.classList.contains('aar-rule-condition')) rules[idx].condition = el.value;
+    if (el.classList.contains('aar-rule-description')) rules[idx].description = el.value;
+    saveAarRules(rules);
+  });
+
+  container.addEventListener('click', (e) => {
+    const btn = e.target.closest('.delete-aar-rule');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    const rules = loadAarRules();
+    rules.splice(idx, 1);
+    saveAarRules(rules);
+    renderAarRules();
+  });
+
+  document.getElementById('addAarRuleBtn').addEventListener('click', () => {
+    const rules = loadAarRules();
+    rules.push({ condition: '', description: '' });
+    saveAarRules(rules);
+    renderAarRules();
+    const inputs = document.querySelectorAll('.aar-rule-condition');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+}
+
+let aarRulesInitialized = false;
+document.getElementById('tab-rules').addEventListener('shown.bs.tab', () => {
+  if (!aarRulesInitialized) {
+    renderAarRules();
+    setupAarRulesListeners();
+    aarRulesInitialized = true;
+  }
+});
+
+// Init
+renderAarEnergies();
+initGeneral();
+
+  </script>
+</body>
+</html>

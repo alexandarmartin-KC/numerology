@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rapport</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .spinner-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.85); display: flex;
+      align-items: center; justify-content: center; z-index: 9999;
+    }
+    .rapport-output { font-size: 15px; line-height: 1.8; }
+    .rapport-output h2 { margin-top: 2rem; font-size: 20px; }
+    .rapport-output h3 { margin-top: 1.5rem; font-size: 17px; }
+    @media print {
+      .no-print { display: none !important; }
+      .rapport-output { font-size: 12px; line-height: 1.6; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom no-print">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <!-- INPUT FORM -->
+    <div id="inputSection" class="no-print">
+      <h1 class="h3 mb-4">Generer rapport</h1>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-5">
+          <label class="form-label fw-bold">Fulde navn</label>
+          <input type="text" id="fullName" class="form-control" placeholder="Fx Anne-Marie Katje Jensen">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Fødselsdato</label>
+          <input type="date" id="birthDate" class="form-control">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">Fra år</label>
+          <input type="number" id="fromYear" class="form-control" placeholder="2025">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">Antal år</label>
+          <input type="number" id="numYears" class="form-control" value="9" min="1" max="27">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mb-4">
+        <button class="btn btn-dark" id="generateBtn">Generer rapport</button>
+        <button class="btn btn-outline-dark" id="pdfBtn" disabled>Print / PDF</button>
+      </div>
+
+      <div id="errorBox" class="alert alert-danger d-none"></div>
+      <div id="knowledgeStatus" class="mb-3"></div>
+    </div>
+
+    <!-- DIAMOND PREVIEW -->
+    <div id="diamondSection" style="max-width:500px;margin:0 auto 2rem;"></div>
+
+    <!-- RAPPORT OUTPUT -->
+    <div id="rapportOutput" class="rapport-output"></div>
+  </main>
+
+  <div id="spinnerOverlay" class="spinner-overlay d-none">
+    <div class="text-center">
+      <div class="spinner-border text-dark" style="width:3rem;height:3rem;" role="status"></div>
+      <p class="mt-3 fw-bold">Genererer rapport...</p>
+      <p class="text-muted" style="font-size:13px;">Dette kan tage 30-60 sekunder</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="assets/js/diamondEngine.js"></script>
+  <script src="assets/js/diamondRenderer.js"></script>
+  <script>
+
+/* ================================================================
+   Rapport page — glues together diamond + årstalsrækker + knowledge
+   and sends to the API motor
+   ================================================================ */
+
+// ─── Utils ───
+
+function digitReduce(n) {
+  if (n === 0) return 0;
+  while (n > 9) n = n.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+  return n;
+}
+
+function formatNumber(compound) {
+  const r = digitReduce(compound);
+  return compound < 10 ? String(compound) : compound + '/' + r;
+}
+
+// ─── Årstalsrække beregning (same logic as aarstalsraekker.html) ───
+
+const cycleSeq = [1,2,4,8,7,5];
+
+function getCycleType(birthYear) {
+  const r = digitReduce(birthYear);
+  if (r === 9) return '9';
+  if (r === 3 || r === 6) return '3-6';
+  return '1-2-4-8-7-5';
+}
+
+// Chapter info for the 1-2-4-8-7-5 cycle (same as aarstalsraekker.html)
+function getChapterInfo(year, birthYear) {
+  const birthYearReduced = digitReduce(birthYear);
+  const startIdx = cycleSeq.indexOf(birthYearReduced);
+  if (startIdx === -1) return null;
+  const yearsFromBirth = year - birthYear;
+  let pos = ((yearsFromBirth % 27) + 27) % 27;
+  let accumulated = 0;
+  for (let i = 0; i < 6; i++) {
+    const seqIdx = (startIdx + i) % 6;
+    const chapterValue = cycleSeq[seqIdx];
+    if (pos < accumulated + chapterValue) {
+      const prevSeqIdx = (seqIdx - 1 + 6) % 6;
+      return {
+        chapterValue: chapterValue,
+        isFirstYear: pos === accumulated,
+        prevChapterValue: cycleSeq[prevSeqIdx],
+        isBirthChapter: i === 0
+      };
+    }
+    accumulated += chapterValue;
+  }
+  return null;
+}
+
+function computeYearEnergies(year, birthYear, grund, bund, soejle) {
+  const yearReduced = digitReduce(year);
+  const birthYearReduced = digitReduce(birthYear);
+  const ageReduced = digitReduce(year - birthYear);
+  const cycleType = getCycleType(birthYear);
+
+  const energies = [yearReduced];
+  let compound = yearReduced;
+
+  function step(val) {
+    const base = digitReduce(compound);
+    compound = base + val;
+    energies.push(val);
+    energies.push(compound);
+  }
+
+  // Top (grundenergi)
+  step(grund);
+  // Bund (bundtal)
+  step(bund);
+
+  // Cycle
+  if (cycleType === '9') {
+    if (yearReduced === 8) { step(9); step(soejle); }
+    if (yearReduced === 9) { step(9); step(9); step(soejle); }
+  }
+  if (cycleType === '3-6') {
+    const key = birthYearReduced === 3 ? [3,6] : [6,3];
+    if (yearReduced === key[1]) { step(key[0]); step(key[1]); step(soejle); }
+    if (yearReduced === key[0]) { step(key[1]); step(soejle); }
+  }
+  if (cycleType === '1-2-4-8-7-5') {
+    if (year !== birthYear) {
+      const info = getChapterInfo(year, birthYear);
+      if (info && info.isFirstYear) {
+        step(info.prevChapterValue);            // ud
+        step(info.chapterValue);                // ind
+        if (info.chapterValue === 1) {
+          step(1);                              // ud af 1 (only 1 year)
+        }
+        step(soejle);                           // søjle
+      }
+    }
+  }
+
+  // Age
+  step(ageReduced);
+
+  return {
+    year,
+    yearReduced,
+    cycleType,
+    energies: energies.map(e => formatNumber(e))
+  };
+}
+
+// ─── Gather all knowledge from localStorage ───
+
+function gatherKnowledge() {
+  const k = {};
+
+  // Input Generelt
+  k.aboutNumerology = localStorage.getItem('numerologyAbout') || '';
+  k.defRent = localStorage.getItem('numerologyDefRent') || '';
+  k.defUrent = localStorage.getItem('numerologyDefUrent') || '';
+  k.blokkeAfTal = localStorage.getItem('numerologyBlokke') || '';
+  k.diamantAar = localStorage.getItem('numerologyDiamantAar') || '';
+  k.udrensning = localStorage.getItem('numerologyUdrensning') || '';
+  k.numerologiAlder = localStorage.getItem('numerologyAlder') || '';
+  k.rapportStil = localStorage.getItem('numerologyRapportStil') || '';
+  k.eksempelRapport = localStorage.getItem('numerologyEksempel') || '';
+
+  // Energibeskrivelser (diamant) — merge base + edits
+  try {
+    const edits = JSON.parse(localStorage.getItem('energiesEdits') || '{}');
+    // We send the edits — the API doesn't need the full base file, only what was edited
+    k.energies = Object.entries(edits).map(([id, data]) => ({ id, ...data }));
+  } catch { k.energies = []; }
+
+  // Positioner
+  try {
+    k.positions = JSON.parse(localStorage.getItem('diamondPositions') || '[]');
+  } catch { k.positions = []; }
+
+  // Specielle regler (diamant)
+  try {
+    k.diamondRules = JSON.parse(localStorage.getItem('diamondRules') || '[]');
+  } catch { k.diamondRules = []; }
+
+  // Energibeskrivelser (årstalsrækker)
+  try {
+    k.aarEnergies = JSON.parse(localStorage.getItem('aarEnergies') || '{}');
+  } catch { k.aarEnergies = {}; }
+
+  // Specielle regler (årstalsrækker)
+  try {
+    k.aarRules = JSON.parse(localStorage.getItem('aarRules') || '[]');
+  } catch { k.aarRules = []; }
+
+  // Cyklusser
+  k.cycles_about = localStorage.getItem('cycles_about') || '';
+  k.cycles_style = localStorage.getItem('cycles_style') || '';
+  k.cycles_124875 = localStorage.getItem('cycles_124875') || '';
+  k.cycles_36 = localStorage.getItem('cycles_36') || '';
+  k.cycles_9 = localStorage.getItem('cycles_9') || '';
+
+  // Astrologi
+  try {
+    const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
+    k.astrologyGenerelt = astro.generelt || '';
+    // We'll determine the sign from the birthdate on the API side or pass it
+  } catch { k.astrologyGenerelt = ''; }
+
+  return k;
+}
+
+function getZodiacSign(day, month) {
+  const signs = [
+    { name: 'Stenbukken', start: [12, 22], end: [1, 19] },
+    { name: 'Vandbæreren', start: [1, 20], end: [2, 18] },
+    { name: 'Fiskene', start: [2, 19], end: [3, 20] },
+    { name: 'Vædderen', start: [3, 21], end: [4, 19] },
+    { name: 'Tyren', start: [4, 20], end: [5, 20] },
+    { name: 'Tvillingerne', start: [5, 21], end: [6, 20] },
+    { name: 'Krebsen', start: [6, 21], end: [7, 22] },
+    { name: 'Løven', start: [7, 23], end: [8, 22] },
+    { name: 'Jomfruen', start: [8, 23], end: [9, 22] },
+    { name: 'Vægten', start: [9, 23], end: [10, 22] },
+    { name: 'Skorpionen', start: [10, 23], end: [11, 21] },
+    { name: 'Skytten', start: [11, 22], end: [12, 21] }
+  ];
+  for (const s of signs) {
+    if (s.start[0] === s.end[0]) {
+      if (month === s.start[0] && day >= s.start[1] && day <= s.end[1]) return s.name;
+    } else if (s.start[0] > s.end[0]) {
+      // Stenbukken wraps around year
+      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s.name;
+    } else {
+      if ((month === s.start[0] && day >= s.start[1]) || (month === s.end[0] && day <= s.end[1])) return s.name;
+    }
+  }
+  return null;
+}
+
+// ─── Knowledge status indicator ───
+
+function showKnowledgeStatus() {
+  const k = gatherKnowledge();
+  const checks = [
+    { label: 'Om numerologi', ok: !!k.aboutNumerology },
+    { label: 'Energibeskrivelser (diamant)', ok: k.energies.length > 0 },
+    { label: 'Positioner', ok: k.positions.length > 0 },
+    { label: 'Regler (diamant)', ok: k.diamondRules.length > 0 },
+    { label: 'Energibeskrivelser (år)', ok: Object.keys(k.aarEnergies).length > 0 },
+    { label: 'Cyklusser', ok: !!k.cycles_about },
+    { label: 'Regler (år)', ok: k.aarRules.length > 0 },
+    { label: 'Rapportstil', ok: !!k.rapportStil }
+  ];
+  const filled = checks.filter(c => c.ok).length;
+  const el = document.getElementById('knowledgeStatus');
+  el.innerHTML = `<div class="card"><div class="card-body py-2 px-3">
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <strong style="font-size:13px;">Vidensbase: ${filled}/${checks.length} udfyldt</strong>
+      <div class="progress flex-grow-1" style="height:6px;">
+        <div class="progress-bar ${filled === checks.length ? 'bg-success' : 'bg-warning'}" style="width:${(filled/checks.length)*100}%"></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#666;">${checks.map(c => `<span class="${c.ok ? 'text-success' : 'text-danger'}">${c.ok ? '✓' : '✗'} ${c.label}</span>`).join(' &nbsp;·&nbsp; ')}</div>
+  </div></div>`;
+}
+
+// ─── Generate ───
+
+document.getElementById('generateBtn').addEventListener('click', async () => {
+  const fullName = document.getElementById('fullName').value.trim();
+  const birthDate = document.getElementById('birthDate').value;
+  const fromYear = parseInt(document.getElementById('fromYear').value);
+  const numYears = parseInt(document.getElementById('numYears').value) || 9;
+
+  const errorBox = document.getElementById('errorBox');
+  errorBox.classList.add('d-none');
+
+  if (!fullName || !birthDate) {
+    errorBox.textContent = 'Udfyld venligst navn og fødselsdato.';
+    errorBox.classList.remove('d-none');
+    return;
+  }
+  if (!fromYear) {
+    errorBox.textContent = 'Angiv venligst et startår.';
+    errorBox.classList.remove('d-none');
+    return;
+  }
+
+  // Compute diamond
+  let diamondResult;
+  try {
+    diamondResult = computeDiamond(fullName, birthDate);
+  } catch (e) {
+    errorBox.textContent = 'Fejl i diamant-beregning: ' + e.message;
+    errorBox.classList.remove('d-none');
+    return;
+  }
+
+  // Render diamond
+  const diamondEl = document.getElementById('diamondSection');
+  diamondEl.innerHTML = '';
+  renderDiamond(diamondEl, diamondResult.diamond);
+
+  // Compute årstalsrækker
+  const birthYear = diamondResult.input.birthDate.year;
+  const grund = diamondResult.diamond.grundenergi.value;
+  const bund = diamondResult.diamond.bundtal.reduced;
+  const soejle = diamondResult.diamond.soejletal.reduced;
+
+  const aarstalsraekker = [];
+  for (let i = 0; i < numYears; i++) {
+    aarstalsraekker.push(computeYearEnergies(fromYear + i, birthYear, grund, bund, soejle));
+  }
+
+  // Gather knowledge
+  const knowledge = gatherKnowledge();
+
+  // Add zodiac sign info
+  const day = diamondResult.input.birthDate.day;
+  const month = diamondResult.input.birthDate.month;
+  const sign = getZodiacSign(day, month);
+  if (sign) {
+    try {
+      const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
+      const signKey = sign.toLowerCase();
+      if (astro[signKey]) {
+        knowledge.astrologySign = { name: sign, text: astro[signKey] };
+      }
+    } catch {}
+  }
+
+  // Show spinner
+  document.getElementById('spinnerOverlay').classList.remove('d-none');
+  document.getElementById('generateBtn').disabled = true;
+
+  try {
+    const resp = await fetch('/api/generate-rapport', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        diamond: diamondResult,
+        aarstalsraekker,
+        knowledge
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({ error: 'Ukendt fejl' }));
+      throw new Error(err.error || 'Server fejl ' + resp.status);
+    }
+
+    const data = await resp.json();
+
+    // Render rapport (markdown-ish → simple HTML)
+    const rapportHTML = markdownToHTML(data.rapport);
+    document.getElementById('rapportOutput').innerHTML = rapportHTML;
+    document.getElementById('pdfBtn').disabled = false;
+
+    if (data.usage) {
+      console.log('OpenAI usage:', data.usage);
+    }
+  } catch (e) {
+    errorBox.textContent = 'Fejl: ' + e.message;
+    errorBox.classList.remove('d-none');
+  } finally {
+    document.getElementById('spinnerOverlay').classList.add('d-none');
+    document.getElementById('generateBtn').disabled = false;
+  }
+});
+
+// ─── Simple markdown → HTML ───
+
+function markdownToHTML(md) {
+  if (!md) return '';
+  let html = md
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  return '<p>' + html + '</p>';
+}
+
+// ─── PDF ───
+
+document.getElementById('pdfBtn').addEventListener('click', () => {
+  window.print();
+});
+
+// ─── Init ───
+
+showKnowledgeStatus();
+
+// Pre-fill from year
+document.getElementById('fromYear').value = document.getElementById('fromYear').value || new Date().getFullYear();
+
+  </script>
+</body>
+</html>

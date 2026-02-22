@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Årstalsrækker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    #output {
+      margin-top: 40px;
+    }
+    .cycle-grid {
+      display: grid;
+      grid-template-columns: auto 90px;
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
+    }
+    .cycle-year {
+      font-size: 16px;
+      font-weight: 700;
+      text-align: right;
+      line-height: 1.1;
+    }
+    .cycle-reduced {
+      width: 90px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .cycle-body {
+      grid-column: 2;
+      width: 90px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+    .cycle-line {
+      position: relative;
+      padding-bottom: 4px;
+      margin: 0;
+    }
+    .cycle-line.has-underline::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 1px;
+      width: 18px;
+      height: 2px;
+      background: #000;
+      border-radius: 1px;
+    }
+
+    /* ---------- Print styles ---------- */
+    @media print {
+      body { margin: 0; padding: 0; }
+      nav, .no-print, h2 { display: none !important; }
+      .row.g-3 { display: none !important; }
+      main { padding: 0 !important; }
+      main .container { max-width: 100%; padding: 0 15px; }
+      #output { margin-top: 0 !important; }
+
+      .diamond-page {
+        page-break-after: always;
+        break-after: page;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+      }
+      .diamond-page img {
+        max-width: 500px !important;
+        width: 100% !important;
+      }
+
+      .year-card {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-bottom: 10px !important;
+      }
+
+      .beregninger-page {
+        display: block !important;
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-5">
+    <div class="container">
+      <h2>Årstalsrækker</h2>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label>År</label>
+          <input type="number" id="targetYear" class="form-control">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-dark w-100" onclick="calculateYear()">Beregn</button>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-outline-dark w-100" onclick="exportPDF()" id="pdfBtn" disabled>PDF</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div id="output"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="assets/js/diamondEngine.js"></script>
+  <script src="assets/js/diamondRenderer.js"></script>
+  <script>
+
+// -------------------------
+// Utils
+// -------------------------
+
+function digitReduce(n) {
+  if (n === 0) return 0;
+  while (n > 9) {
+    n = n.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+  }
+  return n;
+}
+
+function formatNumber(compound) {
+  const reduced = digitReduce(compound);
+  if (compound < 10) return compound.toString();
+  return compound + "/" + reduced;
+}
+
+// -------------------------
+// Load stored diamant data
+// -------------------------
+
+function getStoredData() {
+  const raw = localStorage.getItem("numerologyData");
+  if (!raw) return null;
+  return JSON.parse(raw);
+}
+
+// -------------------------
+// Cycle Classification
+// -------------------------
+
+function getCycleType(birthYear) {
+  const r = digitReduce(birthYear);
+
+  if (r === 9) return "9";
+  if (r === 3 || r === 6) return "3-6";
+  return "1-2-4-8-7-5";
+}
+
+// -------------------------
+// Step helper
+// -------------------------
+
+function addStep(state, addValue, lines, underline = true) {
+  const base = digitReduce(state.compound);
+  const newCompound = base + addValue;
+  state.compound = newCompound;
+
+  lines.push({ text: String(addValue), underline });
+  lines.push({ text: formatNumber(state.compound), underline: false });
+}
+
+// -------------------------
+// 9 Cycle Logic
+// -------------------------
+
+function applyCycle9(yearReduced, state, soejle, lines) {
+  if (yearReduced === 8) {
+    addStep(state, 9, lines, true);       // ud
+    addStep(state, soejle, lines, true);  // søjle
+  }
+
+  if (yearReduced === 9) {
+    addStep(state, 9, lines, true);       // ud
+    addStep(state, 9, lines, true);       // ind
+    addStep(state, soejle, lines, true);  // søjle
+  }
+}
+
+// -------------------------
+// 3-6 Cycle Logic
+// -------------------------
+
+function applyCycle36(yearReduced, birthYearReduced, state, soejle, lines) {
+  const key = birthYearReduced === 3 ? [3,6] : [6,3];
+
+  if (yearReduced === key[1]) {
+    addStep(state, key[0], lines, true);    // ud
+    addStep(state, key[1], lines, true);    // ind
+    addStep(state, soejle, lines, true);    // søjle
+  }
+
+  if (yearReduced === key[0]) {
+    addStep(state, key[1], lines, true);    // ud
+    addStep(state, soejle, lines, true);    // søjle
+  }
+}
+
+// -------------------------
+// 1-2-4-8-7-5 Cycle Logic
+// -------------------------
+
+const cycleSeq = [1,2,4,8,7,5];
+
+// Determine which chapter a given year falls in, based on birth year.
+// The cycle repeats every 27 years (1+2+4+8+7+5).
+// Each chapter's number = its duration in years AND its cycle energy.
+function getChapterInfo(year, birthYear) {
+  const birthYearReduced = digitReduce(birthYear);
+  const startIdx = cycleSeq.indexOf(birthYearReduced);
+  if (startIdx === -1) return null;
+
+  const yearsFromBirth = year - birthYear;
+  let pos = ((yearsFromBirth % 27) + 27) % 27;
+
+  let accumulated = 0;
+  for (let i = 0; i < 6; i++) {
+    const seqIdx = (startIdx + i) % 6;
+    const chapterValue = cycleSeq[seqIdx];
+    if (pos < accumulated + chapterValue) {
+      const prevSeqIdx = (seqIdx - 1 + 6) % 6;
+      return {
+        chapterValue: chapterValue,
+        isFirstYear: pos === accumulated,
+        prevChapterValue: cycleSeq[prevSeqIdx],
+        isBirthChapter: i === 0
+      };
+    }
+    accumulated += chapterValue;
+  }
+  return null;
+}
+
+function applyCycle124875(year, birthYear, yearReduced, state, soejle, lines) {
+  if (year === birthYear) return;  // no cycle transition at actual birth year
+
+  const info = getChapterInfo(year, birthYear);
+  if (!info) return;
+
+  if (info.isFirstYear) {
+    // ud (exiting previous chapter)
+    addStep(state, info.prevChapterValue, lines, true);
+    // ind (entering new chapter)
+    addStep(state, info.chapterValue, lines, true);
+    // Special: chapter 1 is only 1 year, so exit it immediately too
+    if (info.chapterValue === 1) {
+      addStep(state, 1, lines, true);  // ud af 1
+    }
+    // søjle
+    addStep(state, soejle, lines, true);
+  }
+}
+
+// -------------------------
+// Age
+// -------------------------
+
+function applyAge(state, ageReduced, lines) {
+  addStep(state, ageReduced, lines, true);
+}
+
+// -------------------------
+// Render
+// -------------------------
+
+function renderYearBlock({ year, yearReduced, bodyLines }) {
+  return `
+    <div class="card year-card mb-4" style="width: max-content; min-width: 200px; background-color: #f5f6f8; page-break-inside: avoid; break-inside: avoid;">
+      <div class="card-body">
+        <div class="cycle-grid">
+          <div class="cycle-year">${year}</div>
+          <div class="cycle-reduced">${yearReduced}</div>
+
+          <div class="cycle-body">
+            ${bodyLines.map(item => `
+              <div class="cycle-line ${item.underline ? "has-underline" : ""}">
+                ${item.text}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// -------------------------
+// Main
+// -------------------------
+
+function calculateYear() {
+
+  const data = getStoredData();
+  if (!data) {
+    alert("Indtast først data på Diamant-siden.");
+    return;
+  }
+
+  const startYear = parseInt(document.getElementById("targetYear").value);
+  const cycleType = getCycleType(data.birthYear);
+
+  let cycleLength = 9;
+  if (cycleType === "1-2-4-8-7-5") cycleLength = 27;
+
+  let finalBlocks = [];
+
+  for (let i = 0; i < cycleLength; i++) {
+
+    const year = startYear + i;
+    const yearReduced = digitReduce(year);
+    const birthYearReduced = digitReduce(data.birthYear);
+    const ageReduced = digitReduce(year - data.birthYear);
+
+    let bodyLines = [];
+
+    // State holder compound som helt tal
+    const state = { compound: yearReduced };
+
+    // TOP
+    addStep(state, data.grund, bodyLines, true);
+
+    // BUND
+    addStep(state, data.bund, bodyLines, true);
+
+    // CYCLE
+    if (cycleType === "9") {
+      applyCycle9(yearReduced, state, data.soejle, bodyLines);
+    }
+
+    if (cycleType === "3-6") {
+      applyCycle36(yearReduced, birthYearReduced, state, data.soejle, bodyLines);
+    }
+
+    if (cycleType === "1-2-4-8-7-5") {
+      applyCycle124875(year, data.birthYear, yearReduced, state, data.soejle, bodyLines);
+    }
+
+    // AGE
+    applyAge(state, ageReduced, bodyLines);
+
+    finalBlocks.push({ year, yearReduced, bodyLines });
+  }
+
+  // Render diamond
+  const outputEl = document.getElementById("output");
+  outputEl.innerHTML = '';
+
+  let beregningerHTML = '';
+
+  if (data.fullName && data.birthDateISO) {
+    try {
+      const diamondResult = computeDiamond(data.fullName, data.birthDateISO);
+
+      // Build beregninger list
+      beregningerHTML = buildBeregninger(diamondResult);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'diamond-page';
+      wrapper.style.maxWidth = '500px';
+      wrapper.style.margin = '0 auto';
+      renderDiamond(wrapper, diamondResult.diamond);
+      outputEl.appendChild(wrapper);
+    } catch(e) { console.warn('Diamant kunne ikke genskabes:', e); }
+  }
+
+  outputEl.innerHTML += finalBlocks.map(renderYearBlock).join("");
+
+  // Add beregninger section (hidden on screen, included in PDF)
+  if (beregningerHTML) {
+    outputEl.innerHTML += '<div class="beregninger-page" style="display:none;">' + beregningerHTML + '</div>';
+  }
+
+  document.getElementById("pdfBtn").disabled = false;
+}
+
+// -------------------------
+// Build Beregninger HTML
+// -------------------------
+
+function buildBeregninger(result) {
+  const d = result.diamond;
+  const middles = d.livslinje.filter(e => e.role === "mellemnavn");
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function item(label, value) {
+    return '<li style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-bottom:1px solid #eee;font-size:13px;"><span>' + label + '</span><strong>' + value + '</strong></li>';
+  }
+  function header(text) {
+    return '<li style="padding:6px 12px;background:#f0f0f0;text-transform:uppercase;font-size:11px;font-weight:700;border-bottom:1px solid #eee;">' + text + '</li>';
+  }
+
+  let html = '<h4 style="margin-bottom:12px;font-size:16px;">Beregninger</h4>';
+  html += '<ul style="list-style:none;padding:0;margin:0;">';
+
+  html += item('Grundenergi (fødselsdag)', d.grundenergi.display);
+
+  html += header('Livslinje');
+  d.livslinje.forEach(function(e) {
+    var label = e.role === 'fornavn' ? 'Fornavn' : e.role === 'efternavn' ? 'Efternavn' : 'Mellemnavn';
+    html += item(label + ': ' + esc(e.name), e.display);
+  });
+
+  html += item('Bundtal', d.bundtal.display);
+
+  html += header('Aura');
+  html += item('Øverst venstre', d.aura.auraUpperLeft.display);
+  html += item('Øverst højre', d.aura.auraUpperRight.display);
+  html += item('Nederst venstre', d.aura.auraLowerLeft.display);
+  html += item('Nederst højre', d.aura.auraLowerRight.display);
+
+  html += header('Hjertecenter');
+  html += item('Hjertecenter', d.body.hjertecenter.centerTal.display);
+  d.body.hjertecenter.mellemnavnsBidrag.forEach(function(ex, i) {
+    html += item('Hjerte-ekstra (' + esc(middles[i]?.name || '') + ')', ex.display);
+  });
+
+  html += header('Solarplexus');
+  html += item('Solarplexus', d.body.solarplexus.centerTal.display);
+  d.body.solarplexus.mellemnavnsBidrag.forEach(function(ex, i) {
+    html += item('Solar-ekstra (' + esc(middles[i]?.name || '') + ')', ex.display);
+  });
+
+  html += header('Rygraden');
+  html += item('Rygraden', d.firkanttal.display);
+
+  html += header('Søjletal');
+  html += item('Søjletal', d.soejletal.compound + '/' + d.soejletal.reduced);
+
+  html += '</ul>';
+  return html;
+}
+
+function exportPDF() {
+  window.print();
+}
+
+  </script>
+</body>
+</html>

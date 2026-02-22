@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Diamant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .energy-card { background: #f8f9fa; transition: border-color 0.2s; }
+    .energy-card:focus-within { border-color: #0d6efd !important; }
+    .energy-card .form-control, .energy-card textarea { font-size: 13px; }
+    .energy-key { font-size: 18px; font-weight: 700; min-width: 60px; }
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+    .filter-active { background: #e8f0fe !important; }
+    #searchInput:focus { box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15); }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Diamant</h1>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-energies" data-bs-toggle="tab" data-bs-target="#panel-energies" type="button" role="tab">Energibeskrivelser</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-positions" data-bs-toggle="tab" data-bs-target="#panel-positions" type="button" role="tab">Positioner i diamanten</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-rules" data-bs-toggle="tab" data-bs-target="#panel-rules" type="button" role="tab">Specielle regler</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+    <!-- ═══ TAB 1: Energibeskrivelser ═══ -->
+    <div class="tab-pane fade show active" id="panel-energies" role="tabpanel">
+
+    <!-- Toolbar -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body py-3">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label for="searchInput" class="form-label mb-1">Søg energi</label>
+            <input id="searchInput" type="text" class="form-control" placeholder="Fx 10/1, held, kærlighed...">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label mb-1">Vis kun</label>
+            <select id="filterSelect" class="form-select">
+              <option value="all">Alle energier</option>
+              <option value="1-9">Grundtal (1–9)</option>
+              <option value="10+">Sammensatte (10+)</option>
+              <option value="edited">Redigerede</option>
+              <option value="empty">Tomme beskrivelser</option>
+            </select>
+          </div>
+          <div class="col-md-5 d-flex gap-2 justify-content-end">
+            <button class="btn btn-outline-primary" onclick="downloadJSON()">Download JSON</button>
+            <span id="saveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Energy list -->
+    <div id="energyList"></div>
+
+    <div class="text-center py-4 text-muted" id="noResults" style="display:none;">
+      Ingen energier matcher din søgning.
+    </div>
+
+    </div><!-- end panel-energies -->
+
+    <!-- ═══ TAB 2: Positioner i diamanten ═══ -->
+    <div class="tab-pane fade" id="panel-positions" role="tabpanel">
+
+      <p class="text-muted mb-4">Beskriv hvad hver position i diamanten betyder — denne viden bruges til rapportgenerering og som system-prompt til AI.</p>
+
+      <div id="positionCards"></div>
+
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <span id="posSaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-positions -->
+
+    <!-- ═══ TAB 3: Specielle regler ═══ -->
+    <div class="tab-pane fade" id="panel-rules" role="tabpanel">
+
+      <p class="text-muted mb-3">Definer specielle regler som motoren skal kigge efter i numeroskopet. Fx "Hvis tallene 4, 8, 9 forekommer → krig, bål og brand."</p>
+
+      <div id="rulesCards"></div>
+
+      <button class="btn btn-outline-primary mt-2 mb-3" id="addRuleBtn">+ Tilføj regel</button>
+
+      <div class="d-flex justify-content-end gap-2">
+        <span id="rulesSaveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
+      </div>
+
+    </div><!-- end panel-rules -->
+
+    </div><!-- end tab-content -->
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+
+// ─── State ───
+let originalData = null;   // from JSON file
+let editedData = null;     // merged (original + localStorage overrides)
+
+const STORAGE_KEY = 'energiesEdits';
+const EDITABLE_FIELDS = [
+  { key: 'keywords', label: 'Keywords', type: 'text', placeholder: 'Kommaseparerede nøgleord' },
+  { key: 'keywords_urent_numeroskop', label: 'Keywords, urent numeroskop', type: 'text', placeholder: 'Keywords ved urent numeroskop' },
+  { key: 'grundenergi', label: 'Grundenergi', type: 'textarea', placeholder: 'Beskrivelse af grundenergien' },
+  { key: 'ubalance_i_urent_numeroskop', label: 'Ubalance, urent numeroskop', type: 'textarea', placeholder: 'Beskrivelse af ubalance' },
+  { key: 'helheds_funktion', label: 'Helhedsfunktion', type: 'textarea', placeholder: 'Beskrivelse af helhedsfunktion' },
+  { key: 'planet', label: 'Planet', type: 'text', placeholder: 'Hvilken planet tilhører denne grundenergi', grundtalOnly: true },
+  { key: 'kendte', label: 'Kendte personer', type: 'text', placeholder: 'Kommaseparerede navne på kendte personer med denne grundenergi', grundtalOnly: true }
+];
+
+// ─── Load ───
+async function init() {
+  try {
+    const res = await fetch('energies.v1.json');
+    const json = await res.json();
+    originalData = json.energies;
+  } catch(e) {
+    document.getElementById('energyList').innerHTML =
+      '<div class="alert alert-danger">Kunne ikke hente energies.v1.json</div>';
+    return;
+  }
+
+  // Load edits from localStorage
+  const saved = localStorage.getItem(STORAGE_KEY);
+  const edits = saved ? JSON.parse(saved) : {};
+
+  // Merge: original + overrides
+  editedData = {};
+  for (const [key, val] of Object.entries(originalData)) {
+    editedData[key] = { ...val, ...(edits[key] || {}) };
+  }
+
+  renderList();
+  setupListeners();
+}
+
+// ─── Render ───
+function renderList() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const filter = document.getElementById('filterSelect').value;
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+  const container = document.getElementById('energyList');
+  let html = '';
+  let visibleCount = 0;
+
+  for (const [key, energy] of Object.entries(editedData)) {
+    // Filter
+    if (filter === '1-9' && key.includes('/')) continue;
+    if (filter === '10+' && !key.includes('/')) continue;
+    if (filter === 'edited' && !saved[key]) continue;
+    if (filter === 'empty') {
+      const hasContent = energy.grundenergi && !energy.grundenergi.startsWith('Sammensat energi');
+      if (hasContent) continue;
+    }
+
+    // Search
+    if (search) {
+      const haystack = (key + ' ' + (energy.label || '') + ' ' + (energy.keywords || '') + ' ' + (energy.grundenergi || '')).toLowerCase();
+      if (!haystack.includes(search)) continue;
+    }
+
+    const isEdited = !!saved[key];
+
+    html += `<div class="card energy-card mb-2 ${isEdited ? 'border-primary' : ''}" data-key="${esc(key)}">`;
+    html += `<div class="card-body py-2 px-3">`;
+    html += `<div class="d-flex align-items-center gap-3 mb-2">`;
+    html += `<span class="energy-key">${esc(key)}</span>`;
+    html += `<span class="text-muted" style="font-size:12px;">reduceret: ${energy.reduced}</span>`;
+    if (isEdited) html += `<span class="badge bg-primary" style="font-size:10px;">Redigeret</span>`;
+    html += `</div>`;
+
+    html += `<div class="row g-2">`;
+    const isGrundtal = !key.includes('/');
+    EDITABLE_FIELDS.forEach(f => {
+      if (f.key === 'grundenergi' && !isGrundtal) return;
+      if (f.grundtalOnly && !isGrundtal) return;
+      const val = energy[f.key] || '';
+      const colClass = f.type === 'textarea' ? 'col-12' : 'col-md-6';
+      html += `<div class="${colClass}">`;
+      html += `<label class="form-label mb-0" style="font-size:11px;color:#666;">${esc(f.label)}</label>`;
+      if (f.type === 'textarea') {
+        const rows = f.key === 'grundenergi' ? 12 : 3;
+        html += `<textarea class="form-control" data-key="${esc(key)}" data-field="${f.key}" rows="${rows}" placeholder="${esc(f.placeholder)}">${esc(val)}</textarea>`;
+      } else {
+        html += `<input type="text" class="form-control" data-key="${esc(key)}" data-field="${f.key}" value="${esc(val)}" placeholder="${esc(f.placeholder)}">`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+
+    html += `</div></div>`;
+    visibleCount++;
+  }
+
+  container.innerHTML = html;
+  document.getElementById('noResults').style.display = visibleCount === 0 ? '' : 'none';
+}
+
+// ─── Save on input ───
+function setupListeners() {
+  document.getElementById('energyList').addEventListener('input', (e) => {
+    const el = e.target;
+    const key = el.dataset.key;
+    const field = el.dataset.field;
+    if (!key || !field) return;
+
+    // Update in-memory
+    editedData[key][field] = el.value;
+
+    // Compute diff from original
+    const edits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const orig = originalData[key] || {};
+
+    if (el.value !== (orig[field] || '')) {
+      if (!edits[key]) edits[key] = {};
+      edits[key][field] = el.value;
+    } else {
+      if (edits[key]) {
+        delete edits[key][field];
+        if (Object.keys(edits[key]).length === 0) delete edits[key];
+      }
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+    showSaveIndicator();
+  });
+
+  document.getElementById('searchInput').addEventListener('input', renderList);
+  document.getElementById('filterSelect').addEventListener('change', renderList);
+}
+
+// ─── Save indicator flash ───
+function showSaveIndicator() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ─── Reset ───
+function resetAll() {
+  if (!confirm('Er du sikker? Alle redigeringer nulstilles til den originale JSON-fil.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  // Reload from original
+  for (const [key, val] of Object.entries(originalData)) {
+    editedData[key] = { ...val };
+  }
+  renderList();
+}
+
+// ─── Download JSON ───
+function downloadJSON() {
+  const output = {
+    version: '1.0.0',
+    updated_at: new Date().toISOString().split('T')[0],
+    energies: editedData
+  };
+  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'energies.v1.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── Escape ───
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+const POSITIONS_KEY = 'diamondPositions';
+const POSITIONS = [
+  { id: 'grundenergi', title: 'Grundenergi', subtitle: 'Fødselsdagens energi — personens kerne', placeholder: 'Beskriv hvad grundenergien repræsenterer og dens indflydelse på personen...' },
+  { id: 'livslinje_fornavn', title: 'Livslinje — Fornavn', subtitle: 'Fornavnets energi', placeholder: 'Hvad fortæller fornavnets energi om personen...' },
+  { id: 'livslinje_mellemnavn', title: 'Livslinje — Mellemnavn', subtitle: 'Mellemnavnes energi', placeholder: 'Hvordan påvirker mellemnavne helheden...' },
+  { id: 'livslinje_efternavn', title: 'Livslinje — Efternavn', subtitle: 'Efternavnets energi', placeholder: 'Hvad repræsenterer efternavnets energi...' },
+  { id: 'bundtal', title: 'Bundtal', subtitle: 'Summering af livslinjens energier', placeholder: 'Hvad viser bundtallet om personen...' },
+  { id: 'aura_generelt', title: 'Aura — Generelt', subtitle: 'Overordnet forklaring af auraen i diamanten', placeholder: 'Beskriv hvad auraen er, dens rolle i numeroskopet, og hvordan de fire aura-felter tilsammen påvirker personen...' },
+  { id: 'aura_upper_left', title: 'Aura — Øverst venstre', subtitle: 'Øverste venstre aura-felt', placeholder: 'Hvad repræsenterer denne aura-position...' },
+  { id: 'aura_upper_right', title: 'Aura — Øverst højre', subtitle: 'Øverste højre aura-felt', placeholder: 'Hvad repræsenterer denne aura-position...' },
+  { id: 'aura_lower_left', title: 'Aura — Nederst venstre', subtitle: 'Nederste venstre aura-felt', placeholder: 'Hvad repræsenterer denne aura-position...' },
+  { id: 'aura_lower_right', title: 'Aura — Nederst højre', subtitle: 'Nederste højre aura-felt', placeholder: 'Hvad repræsenterer denne aura-position...' },
+  { id: 'hjertecenter', title: 'Hjertecenter', subtitle: 'Personens indre følelsesmæssige kerne', placeholder: 'Beskriv hjertecenterets betydning og indflydelse...' },
+  { id: 'hjertecenter_udregning', title: 'Hjertecenter — Udregning', subtitle: 'Aura øverst venstre + aura øverst højre = hjertecenter', placeholder: 'Forklar denne udregning og hvilken indflydelse det har at disse to aura-felter danner hjertecentret...' },
+  { id: 'solarplexus', title: 'Solarplexus', subtitle: 'Personens ydre udstråling og handlekraft', placeholder: 'Beskriv solarplexus-centerets betydning og indflydelse...' },
+  { id: 'solarplexus_udregning', title: 'Solarplexus — Udregning', subtitle: 'Aura nederst venstre + aura nederst højre = solarplexus', placeholder: 'Forklar denne udregning og hvilken indflydelse det har at disse to aura-felter danner solarplexus...' },
+  { id: 'hjerte_solar_samspil', title: 'Hjerte- & Solarplexuscenter — Samspil', subtitle: 'Sammenspil og påvirkning mellem de to centre', placeholder: 'Forklar samspillet og den gensidige påvirkning mellem hjerte- og solarplexuscentret...' },
+  { id: 'rygraden', title: 'Rygraden', subtitle: 'Forbindelsen mellem hjerte og solar', placeholder: 'Hvad repræsenterer rygraden i diamanten...' },
+  { id: 'hjerte_ekstra', title: 'Hjerte-ekstra', subtitle: 'Mellemnavn(e) + hjertecenter-tal', placeholder: 'Forklar hvilken ekstra betydning det har når mellemnavne kombineres med hjertecentret...' },
+  { id: 'solar_ekstra', title: 'Solar-ekstra', subtitle: 'Mellemnavn(e) + solarplexus-tal', placeholder: 'Forklar hvilken ekstra betydning det har når mellemnavne kombineres med solarplexus...' },
+  { id: 'soejletal', title: 'Søjletal', subtitle: 'Personens livssøjle', placeholder: 'Hvad fortæller søjletallet om personen...' }
+];
+
+function loadPositions() {
+  const saved = localStorage.getItem(POSITIONS_KEY);
+  return saved ? JSON.parse(saved) : {};
+}
+
+function savePositions(data) {
+  localStorage.setItem(POSITIONS_KEY, JSON.stringify(data));
+  const el = document.getElementById('posSaveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+function renderPositions() {
+  const data = loadPositions();
+  const container = document.getElementById('positionCards');
+  let html = '';
+
+  POSITIONS.forEach(pos => {
+    const val = data[pos.id] || '';
+    html += `<div class="card mb-3" style="background:#f8f9fa;">`;
+    html += `<div class="card-body py-3 px-3">`;
+    html += `<div class="mb-2">`;
+    html += `<span class="fw-bold" style="font-size:15px;">${esc(pos.title)}</span>`;
+    html += `<span class="text-muted ms-2" style="font-size:12px;">${esc(pos.subtitle)}</span>`;
+    html += `</div>`;
+    html += `<textarea class="form-control" data-pos-id="${pos.id}" rows="3" placeholder="${esc(pos.placeholder)}" style="font-size:13px;">${esc(val)}</textarea>`;
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Listen for input
+  container.addEventListener('input', (e) => {
+    const el = e.target;
+    const posId = el.dataset.posId;
+    if (!posId) return;
+    const current = loadPositions();
+    current[posId] = el.value;
+    savePositions(current);
+  });
+}
+
+// Init positions when tab is shown
+document.getElementById('tab-positions').addEventListener('shown.bs.tab', () => {
+  if (!document.getElementById('positionCards').innerHTML) renderPositions();
+});
+
+// ─── Specielle regler ───
+const RULES_KEY = 'diamondRules';
+
+function loadRules() {
+  const saved = localStorage.getItem(RULES_KEY);
+  return saved ? JSON.parse(saved) : [];
+}
+
+function saveRules(rules) {
+  localStorage.setItem(RULES_KEY, JSON.stringify(rules));
+  const el = document.getElementById('rulesSaveIndicator');
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+function renderRules() {
+  const rules = loadRules();
+  const container = document.getElementById('rulesCards');
+  let html = '';
+
+  rules.forEach((rule, i) => {
+    html += `<div class="card mb-3" style="background:#f8f9fa;" data-rule-idx="${i}">`;
+    html += `<div class="card-body py-3 px-3">`;
+    html += `<div class="d-flex justify-content-between align-items-start mb-2">`;
+    html += `<span class="fw-bold" style="font-size:14px;">Regel ${i + 1}</span>`;
+    html += `<button class="btn btn-sm btn-outline-danger py-0 px-2 delete-rule" data-idx="${i}" title="Slet regel">&times;</button>`;
+    html += `</div>`;
+    html += `<div class="mb-2">`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Betingelse <span class="text-muted">(hvilke tal/positioner skal forekomme)</span></label>`;
+    html += `<input type="text" class="form-control rule-condition" data-idx="${i}" value="${esc(rule.condition || '')}" placeholder="Fx 4, 8, 9 forekommer i numeroskopet" style="font-size:13px;">`;
+    html += `</div>`;
+    html += `<div>`;
+    html += `<label class="form-label mb-1" style="font-size:12px;">Betydning / beskrivelse</label>`;
+    html += `<textarea class="form-control rule-description" data-idx="${i}" rows="2" placeholder="Hvad betyder det når betingelsen er opfyldt..." style="font-size:13px;">${esc(rule.description || '')}</textarea>`;
+    html += `</div>`;
+    html += `</div></div>`;
+  });
+
+  if (rules.length === 0) {
+    html = `<p class="text-muted text-center py-3">Ingen regler endnu — klik "+ Tilføj regel" for at oprette den første.</p>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function setupRulesListeners() {
+  const container = document.getElementById('rulesCards');
+
+  container.addEventListener('input', (e) => {
+    const el = e.target;
+    const idx = parseInt(el.dataset.idx);
+    if (isNaN(idx)) return;
+    const rules = loadRules();
+    if (el.classList.contains('rule-condition')) rules[idx].condition = el.value;
+    if (el.classList.contains('rule-description')) rules[idx].description = el.value;
+    saveRules(rules);
+  });
+
+  container.addEventListener('click', (e) => {
+    const btn = e.target.closest('.delete-rule');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    const rules = loadRules();
+    rules.splice(idx, 1);
+    saveRules(rules);
+    renderRules();
+  });
+
+  document.getElementById('addRuleBtn').addEventListener('click', () => {
+    const rules = loadRules();
+    rules.push({ condition: '', description: '' });
+    saveRules(rules);
+    renderRules();
+    // Focus the new condition input
+    const inputs = document.querySelectorAll('.rule-condition');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+}
+
+// Init rules when tab is shown
+let rulesInitialized = false;
+document.getElementById('tab-rules').addEventListener('shown.bs.tab', () => {
+  if (!rulesInitialized) {
+    renderRules();
+    setupRulesListeners();
+    rulesInitialized = true;
+  }
+});
+
+init();
+
+  </script>
+</body>
+</html>
