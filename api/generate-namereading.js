@@ -16,12 +16,17 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'OPENAI_API_KEY not configured' });
 
   try {
-    const { firstName, nameData, energyDescriptions } = req.body;
+    const { firstName, nameData, energyDescriptions, customSystemPrompt } = req.body;
     if (!firstName || !nameData) {
       return res.status(400).json({ error: 'Missing name data' });
     }
 
-    const systemPrompt = `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons fulde numerologiske diamant.
+    // Use custom system prompt from admin config if provided, otherwise fall back to default
+    let systemPrompt;
+    if (customSystemPrompt) {
+      systemPrompt = customSystemPrompt + `\n\nNUMEROLOGISK VIDEN:\n${energyDescriptions || 'Ingen energibeskrivelser tilgængelige.'}`;
+    } else {
+      systemPrompt = `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons fulde numerologiske diamant.
 
 Du modtager de præcise diamantpositioner: grundenergi (top/fødselsdagstal), livslinje (navnedele), bundtal, aura (4 hjørner), hjertecenter, solarplexus, firkanttal og søjletal.
 
@@ -40,6 +45,7 @@ REGLER:
 
 NUMEROLOGISK VIDEN:
 ${energyDescriptions || 'Ingen energibeskrivelser tilgængelige.'}`;
+    }
 
     const userPrompt = `Personen hedder ${firstName}.
 
