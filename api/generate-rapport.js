@@ -186,7 +186,7 @@ function buildUserPrompt(diamond, aarstalsraekker, knowledge) {
   if (diamond.diamond.body.solarplexus.mellemnavnsBidrag.length > 0) {
     prompt += `Solar-ekstra: ${diamond.diamond.body.solarplexus.mellemnavnsBidrag.map(e => e.display).join(', ')}\n`;
   }
-  prompt += `Firkanttal (rygrad): ${diamond.diamond.firkanttal.display}\n`;
+  prompt += `Rygraden: ${diamond.diamond.rygraden.display}\n`;
   prompt += `Søjletal: ${diamond.diamond.soejletal.compound}/${diamond.diamond.soejletal.reduced}\n`;
 
   if (aarstalsraekker && aarstalsraekker.length > 0) {

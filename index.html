@@ -699,7 +699,7 @@
       const d = result.diamond;
       const inp = result.input;
       const cfg = getGratisConfig();
-      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','firkanttal','soejletal'];
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
       let text = '';
 
       text += `--- DIAMANT for ${inp.fullName} (${inp.birthDate.day}/${inp.birthDate.month}/${inp.birthDate.year}) ---\n\n`;
@@ -716,8 +716,8 @@
         text += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
       if (pos.includes('solarplexus'))
         text += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
-      if (pos.includes('firkanttal'))
-        text += `Firkanttal: ${d.firkanttal.display}\n`;
+      if (pos.includes('rygraden'))
+        text += `Rygraden: ${d.rygraden.display}\n`;
       if (pos.includes('soejletal'))
         text += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
 
@@ -742,7 +742,7 @@
     // ─── Collect unique reduced numbers from diamond (respects position config) ───
     function collectNumbers(diamond) {
       const cfg = getGratisConfig();
-      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','firkanttal','soejletal'];
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
       const nums = new Set();
       if (pos.includes('grundenergi'))   nums.add(diamond.grundenergi.value);
       if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => nums.add(e.reduced));
@@ -755,7 +755,7 @@
       }
       if (pos.includes('hjertecenter'))  nums.add(diamond.body.hjertecenter.centerTal.reduced);
       if (pos.includes('solarplexus'))   nums.add(diamond.body.solarplexus.centerTal.reduced);
-      if (pos.includes('firkanttal'))    nums.add(diamond.firkanttal.reduced);
+      if (pos.includes('rygraden'))      nums.add(diamond.rygraden.reduced);
       if (pos.includes('soejletal'))     nums.add(diamond.soejletal.reduced);
       return [...nums];
     }
@@ -860,7 +860,7 @@
       const POS_LABELS = {
         grundenergi: 'Grundenergi (top)', livslinje: 'Livslinje', bundtal: 'Bundtal',
         aura: 'Aura (4 hjørner)', hjertecenter: 'Hjertecenter', solarplexus: 'Solarplexus',
-        firkanttal: 'Firkanttal', soejletal: 'Søjletal'
+        rygraden: 'Rygraden', soejletal: 'Søjletal'
       };
       const FOCUS_LABELS = {
         personlighed: 'Personlighed & kerneenergi', styrker: 'Styrker & talenter',

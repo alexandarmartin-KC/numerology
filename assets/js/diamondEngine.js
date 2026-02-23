@@ -182,7 +182,7 @@ function computeDiamond(fullName, birthDateISO) {
           mellemnavnsBidrag: solarExtras
         }
       },
-      firkanttal: { compound: squareCompound, reduced: squareReduced, display: squareDisplay },
+      rygraden: { compound: squareCompound, reduced: squareReduced, display: squareDisplay },
       soejletal:  { compound: triangleCompound, reduced: triangleReduced }
     }
   };
@@ -198,7 +198,7 @@ function computeDiamond(fullName, birthDateISO) {
     console.log("NameLine reduced:", d.livslinje.map(e => e.reduced).join(","), "(expected 7,4,4,6)");
     console.log("Bottom:", d.bundtal.display, "(expected 21/3)");
     console.log("Aura UR:", d.aura.auraUpperRight.display, "(expected 15/6)");
-    console.log("Square:", d.firkanttal.display, "(expected 12/3)");
+    console.log("Rygraden:", d.rygraden.display, "(expected 12/3)");
     console.log("Soejletal:", d.soejletal.compound, "(" + d.soejletal.reduced + ")", "(expected 51 (6))");
   } catch (err) {
     console.error("Diamond test failed:", err);

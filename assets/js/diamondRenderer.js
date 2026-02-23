@@ -184,7 +184,7 @@ function renderDiamond(container, diamond) {
   }
 
   // ── Rygraden (inde i buen) ──
-  txt(RIGHT.x - 55, LIFE_Y - 20, diamond.firkanttal?.display, 20);
+  txt(RIGHT.x - 55, LIFE_Y - 20, diamond.rygraden?.display, 20);
 
   // ── Søjletal (lille trekant, nederst venstre) ──
   const tx = 120, th = 60, tw = 45;

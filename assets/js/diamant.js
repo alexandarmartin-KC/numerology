@@ -78,7 +78,7 @@
 
     // Rygraden
     html += header("Rygraden");
-    html += item("Rygraden", d.firkanttal.display);
+    html += item("Rygraden", d.rygraden.display);
 
     // Søjletal
     html += header("Søjletal");
@@ -146,7 +146,7 @@
       },
       {
         title: 'Rygraden',
-        items: [{ display: d.firkanttal.display, label: 'Rygraden' }]
+        items: [{ display: d.rygraden.display, label: 'Rygraden' }]
       },
       {
         title: 'Søjletal',
