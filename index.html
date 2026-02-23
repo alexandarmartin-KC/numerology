@@ -724,30 +724,29 @@
       return text;
     }
 
-    // ─── Strip planet names from text to avoid GPT leaking them ───
+    // ─── Strip planet names from text ───
     function stripPlanets(text) {
       if (!text) return text;
       const planets = /\b(Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto)\b/gi;
-      // Remove lines that are purely "N PlanetNavn" headers (e.g. "1 Solen", "6 Venus")
       let cleaned = text.replace(/^\d+\s+(Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto)\s*$/gm, '');
-      // Remove planet names inline
       cleaned = cleaned.replace(planets, '');
-      // Remove phrases like "vibrerer med [planet]" or "[planet]s indflydelse"
       cleaned = cleaned.replace(/vibrerer med\s*,?/gi, '');
-      // Collapse multiple blank lines
       cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
       return cleaned;
     }
 
     // ─── Fetch energy descriptions from localStorage ───
     function getEnergyDescriptions(relevantNumbers) {
+      const cfg = getGratisConfig();
+      const shouldStripPlanets = cfg ? (cfg.avoids || []).includes('planeter') : true;
+
       const edits = JSON.parse(localStorage.getItem('energiesEdits') || '{}');
       let desc = '';
       relevantNumbers.forEach(num => {
         const e = edits[String(num)];
         if (e) {
           desc += `\n--- Energi ${num} ---\n`;
-          if (e.grundenergi) desc += `Grundenergi: ${stripPlanets(e.grundenergi)}\n`;
+          if (e.grundenergi) desc += `Grundenergi: ${shouldStripPlanets ? stripPlanets(e.grundenergi) : e.grundenergi}\n`;
           if (e.keywords) desc += `Nøgleord: ${e.keywords}\n`;
         }
       });
