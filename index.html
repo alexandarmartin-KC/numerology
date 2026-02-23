@@ -724,29 +724,73 @@
       return text;
     }
 
-    // ─── Strip planet names from text ───
-    function stripPlanets(text) {
+    // ─── Clean energy text based on admin "Undgå" config ───
+    function cleanEnergyText(text) {
       if (!text) return text;
-      const planets = /\b(Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto)\b/gi;
-      let cleaned = text.replace(/^\d+\s+(Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto)\s*$/gm, '');
-      cleaned = cleaned.replace(planets, '');
-      cleaned = cleaned.replace(/vibrerer med\s*,?/gi, '');
-      cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
-      return cleaned;
+      const cfg = getGratisConfig();
+      const avoids = cfg ? (cfg.avoids || []) : ['planeter'];
+      const customAvoids = cfg ? (cfg.customAvoids || []) : [];
+      let t = text;
+
+      // Planeter — strip planet names and planet-header lines
+      if (avoids.includes('planeter')) {
+        const planetNames = 'Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto';
+        t = t.replace(new RegExp('^\\d+\\s+(' + planetNames + ')\\s*$', 'gm'), '');
+        t = t.replace(new RegExp('\\b(' + planetNames + ')\\b', 'gi'), '');
+        t = t.replace(/vibrerer med\s*,?\s*/gi, '');
+        t = t.replace(/Tallet \d+ ,? som repræsenterer/gi, 'Tallet repræsenterer');
+      }
+
+      // Horoskop / stjernetegn — strip zodiac references
+      if (avoids.includes('horoskop')) {
+        const zodiacNames = 'Vædderen?|Tyren?|Tvillingen?e?|Krebsen?|Løven?|Jomfruen?|Vægten?|Skorpionen?|Skytten?|Stenbukken?e?|Vandmanden?|Fiskene?';
+        t = t.replace(new RegExp('\\b(' + zodiacNames + ')\\b', 'gi'), '');
+        t = t.replace(/soltegn\w*/gi, '');
+        t = t.replace(/fødselshoroskop\w*/gi, '');
+        t = t.replace(/horoskop\w*/gi, '');
+        t = t.replace(/stjernetegn\w*/gi, '');
+        t = t.replace(/zodiak\w*/gi, '');
+        // Remove sentences referencing "Sol eller Måne i [zodiac]"
+        t = t.replace(/[^.]*Sol eller Måne i [^.]*\./gi, '');
+      }
+
+      // Teknisk — strip technical sections (lykketal, lykkedage, amulet)
+      if (avoids.includes('teknisk')) {
+        // Remove "Lykketal: ..." lines
+        t = t.replace(/^Lykketal:.*$/gm, '');
+        // Remove "Lykkedage: ..." lines
+        t = t.replace(/^Lykkedage:.*$/gm, '');
+        // Remove "Amulet: ..." blocks (can span multiple lines until double newline)
+        t = t.replace(/^Amulet:\s*[\s\S]*?(?=\n\n|\n---)/gm, '');
+        // Remove "Tallet X vibrerer med..." opening lines
+        t = t.replace(/Tallet \d+\s+\w*\s*,?\s*som repræsenterer[^.]*\./gi, '');
+        // Remove digit-reduce explanations
+        t = t.replace(/\d+\s*\+\s*\d+\s*=\s*\d+/g, '');
+      }
+
+      // Custom avoids — strip any word/phrase the admin added
+      customAvoids.forEach(phrase => {
+        if (phrase && phrase.trim()) {
+          const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          t = t.replace(new RegExp(escaped, 'gi'), '');
+        }
+      });
+
+      // Collapse excessive whitespace
+      t = t.replace(/\n{3,}/g, '\n\n');
+      t = t.replace(/  +/g, ' ');
+      return t.trim();
     }
 
     // ─── Fetch energy descriptions from localStorage ───
     function getEnergyDescriptions(relevantNumbers) {
-      const cfg = getGratisConfig();
-      const shouldStripPlanets = cfg ? (cfg.avoids || []).includes('planeter') : true;
-
       const edits = JSON.parse(localStorage.getItem('energiesEdits') || '{}');
       let desc = '';
       relevantNumbers.forEach(num => {
         const e = edits[String(num)];
         if (e) {
           desc += `\n--- Energi ${num} ---\n`;
-          if (e.grundenergi) desc += `Grundenergi: ${shouldStripPlanets ? stripPlanets(e.grundenergi) : e.grundenergi}\n`;
+          if (e.grundenergi) desc += `Grundenergi: ${cleanEnergyText(e.grundenergi)}\n`;
           if (e.keywords) desc += `Nøgleord: ${e.keywords}\n`;
         }
       });
