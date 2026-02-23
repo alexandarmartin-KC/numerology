@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Numerologi — Hvad siger dit navn om dig?</title>
+  <title>Numerologi — Hvad siger dine tal om dig?</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -189,12 +189,15 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ─── NAME INPUT ─── */
-    .name-input-group {
-      display: flex; gap: 0.75rem;
+    /* ─── HERO FORM ─── */
+    .hero-form {
       max-width: 480px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 0.75rem;
     }
-    .name-input-group input {
+    .hero-form-row {
+      display: flex; gap: 0.75rem;
+    }
+    .hero-form input {
       flex: 1; padding: 0.9rem 1.2rem;
       font-family: var(--font-body); font-size: 1rem;
       color: var(--clr-text);
@@ -203,12 +206,19 @@
       border-radius: 50px;
       outline: none; transition: border-color 0.2s;
     }
-    .name-input-group input::placeholder { color: var(--clr-muted); }
-    .name-input-group input:focus { border-color: var(--clr-gold); }
+    .hero-form input::placeholder { color: var(--clr-muted); }
+    .hero-form input:focus { border-color: var(--clr-gold); }
+    .hero-form input[type="date"] {
+      color-scheme: dark;
+    }
+    .hero-form input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg);
+      cursor: pointer;
+    }
+    .hero-form .btn-gold { width: 100%; }
 
     @media (max-width: 500px) {
-      .name-input-group { flex-direction: column; }
-      .name-input-group input, .name-input-group button { width: 100%; }
+      .hero-form-row { flex-direction: column; }
     }
 
     /* ─── BUTTONS ─── */
@@ -515,12 +525,17 @@
     <div class="hero-diamond"></div>
     <div class="hero-diamond"></div>
     <div class="hero-content">
-      <div class="hero-label">Gratis navneanalyse</div>
-      <h1>Hvad siger dit navn<br>om <span>dig</span>?</h1>
-      <p class="hero-sub">Indtast dit fulde navn og få en personlig numerologisk analyse — helt gratis, på 10 sekunder.</p>
+      <div class="hero-label">Gratis numerologisk analyse</div>
+      <h1>Hvad siger dine tal<br>om <span>dig</span>?</h1>
+      <p class="hero-sub">Indtast dit navn og din fødselsdato — og få en personlig numerologisk analyse helt gratis.</p>
       <div class="hero-form-wrap">
-        <div class="name-input-group">
-          <input type="text" id="nameInput" placeholder="Dit fulde navn…" autocomplete="name" autofocus>
+        <div class="hero-form">
+          <div class="hero-form-row">
+            <input type="text" id="nameInput" placeholder="Dit fulde navn…" autocomplete="name" autofocus>
+          </div>
+          <div class="hero-form-row">
+            <input type="date" id="birthInput" max="2026-12-31">
+          </div>
           <button class="btn-gold" id="calcBtn">Beregn gratis</button>
         </div>
       </div>
@@ -723,13 +738,48 @@
       };
     }
 
+    // ─── Birth date calculations ───
+    function calcBirthData(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      if (!y || !m || !d) return null;
+
+      // Fødselsdagstal (day reduced)
+      const dayReduced = digitReduce(d);
+
+      // Livsvejstal (full date reduced)
+      const dateSum = String(d).split('').concat(
+        String(m).split(''),
+        String(y).split('')
+      ).reduce((s, ch) => s + Number(ch), 0);
+      const lifePathReduced = digitReduce(dateSum);
+
+      // Year energy
+      const yearSum = String(y).split('').reduce((s, ch) => s + Number(ch), 0);
+      const yearReduced = digitReduce(yearSum);
+
+      return {
+        day: d, month: m, year: y,
+        dayReduced,
+        lifePathSum: dateSum,
+        lifePathReduced,
+        yearReduced
+      };
+    }
+
     // ─── Build description for the API ───
-    function buildNameDataText(data) {
-      let text = '';
-      data.parts.forEach(p => {
+    function buildAnalysisText(nameData, birthData) {
+      let text = '--- NAVN ---\n';
+      nameData.parts.forEach(p => {
         text += `Navnedel "${p.name}": sum ${p.compound}, grundtal ${p.reduced}\n`;
       });
-      text += `\nSamlet navnetal: ${data.totalCompound} → grundtal ${data.totalReduced}`;
+      text += `Samlet navnetal: ${nameData.totalCompound} → grundtal ${nameData.totalReduced}\n`;
+
+      if (birthData) {
+        text += `\n--- FØDSELSDATO (${birthData.day}/${birthData.month}/${birthData.year}) ---\n`;
+        text += `Fødselsdagstal: ${birthData.day} → grundtal ${birthData.dayReduced}\n`;
+        text += `Livsvejstal: ${birthData.lifePathSum} → grundtal ${birthData.lifePathReduced}\n`;
+        text += `Årstal-energi: grundtal ${birthData.yearReduced}\n`;
+      }
       return text;
     }
 
@@ -751,6 +801,7 @@
 
     // ─── Main flow ───
     const nameInput = document.getElementById('nameInput');
+    const birthInput = document.getElementById('birthInput');
     const calcBtn = document.getElementById('calcBtn');
     const loadSpinner = document.getElementById('loadSpinner');
     const resultBox = document.getElementById('resultBox');
@@ -760,18 +811,20 @@
 
     async function runAnalysis() {
       const name = nameInput.value.trim();
-      if (!name) {
-        nameInput.focus();
-        return;
-      }
+      const dateVal = birthInput.value;
 
-      const data = calcNameData(name);
-      if (!data) return;
+      if (!name) { nameInput.focus(); return; }
+      if (!dateVal) { birthInput.focus(); return; }
 
-      // Collect all unique reduced numbers
+      const nameData = calcNameData(name);
+      if (!nameData) return;
+      const birthData = calcBirthData(dateVal);
+
+      // Collect all unique reduced numbers for energy lookup
       const relevantNums = [...new Set([
-        data.totalReduced,
-        ...data.parts.map(p => p.reduced)
+        nameData.totalReduced,
+        ...nameData.parts.map(p => p.reduced),
+        ...(birthData ? [birthData.dayReduced, birthData.lifePathReduced, birthData.yearReduced] : [])
       ])];
 
       // Show spinner
@@ -787,8 +840,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            firstName: data.firstName,
-            nameData: buildNameDataText(data),
+            firstName: nameData.firstName,
+            nameData: buildAnalysisText(nameData, birthData),
             energyDescriptions: getEnergyDescriptions(relevantNums)
           })
         });
@@ -797,8 +850,9 @@
 
         const result = await resp.json();
 
-        // Show result
-        resultNumber.textContent = data.totalReduced;
+        // Show the life path number as the headline number
+        const headlineNum = birthData ? birthData.lifePathReduced : nameData.totalReduced;
+        resultNumber.textContent = headlineNum;
         resultText.textContent = result.reading;
 
         loadSpinner.classList.remove('visible');
@@ -818,9 +872,8 @@
     }
 
     calcBtn.addEventListener('click', runAnalysis);
-    nameInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') runAnalysis();
-    });
+    nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); birthInput.focus(); } });
+    birthInput.addEventListener('keydown', e => { if (e.key === 'Enter') runAnalysis(); });
   </script>
 </body>
 </html>

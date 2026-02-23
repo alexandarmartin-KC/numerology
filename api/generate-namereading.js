@@ -21,26 +21,26 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing name data' });
     }
 
-    const systemPrompt = `Du er en erfaren numerolog. Du laver en kort og personlig navneanalyse på dansk.
+    const systemPrompt = `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons navn OG fødselsdato.
 
 REGLER:
-- Skriv præcis 8-10 korte, personlige linjer (sætninger), som beskriver personen baseret på deres navne-tal.
+- Skriv præcis 8-10 korte, personlige linjer (sætninger), som beskriver personen.
 - Brug personens fornavn naturligt 1-2 gange.
+- Inddrag BÅDE navnetal og fødselsdato-tal (livsvejstal, fødselsdagstal) i analysen.
 - Tonen skal være varm, indsigtsfuld og lidt mystisk — som om du kender dem.
 - Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst, ét afsnit.
 - Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed og egenskaber.
 - Hold det positivt men ærligt — nævn gerne en mild udfordring.
-- Slut med en sætning der antyder at der er meget mere at opdage.
+- Slut med en sætning der antyder at der er meget mere at opdage i den fulde diamant.
 
 NUMEROLOGISK VIDEN:
 ${energyDescriptions || 'Ingen energibeskrivelser tilgængelige.'}`;
 
     const userPrompt = `Personen hedder ${firstName}.
 
-Navneanalyse:
 ${nameData}
 
-Skriv en kort, personlig numerologisk navneanalyse (8-10 sætninger i ét afsnit).`;
+Skriv en kort, personlig numerologisk analyse (8-10 sætninger i ét afsnit).`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
