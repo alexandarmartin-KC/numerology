@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'OPENAI_API_KEY not configured' });
 
   try {
-    const { firstName, nameData, energyDescriptions, customSystemPrompt } = req.body;
+    const { firstName, nameData, energyDescriptions, customSystemPrompt, sentenceRange } = req.body;
     if (!firstName || !nameData) {
       return res.status(400).json({ error: 'Missing name data' });
     }
@@ -47,11 +47,12 @@ NUMEROLOGISK VIDEN:
 ${energyDescriptions || 'Ingen energibeskrivelser tilgængelige.'}`;
     }
 
+    const sRange = sentenceRange || '8–10';
     const userPrompt = `Personen hedder ${firstName}.
 
 ${nameData}
 
-Skriv en kort, personlig numerologisk analyse (8-10 sætninger i ét afsnit).`;
+Skriv en kort, personlig numerologisk analyse (${sRange} sætninger i ét afsnit).`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

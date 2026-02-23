@@ -739,20 +739,24 @@
       return desc || '';
     }
 
-    // ─── Collect all unique reduced numbers from diamond ───
+    // ─── Collect unique reduced numbers from diamond (respects position config) ───
     function collectNumbers(diamond) {
+      const cfg = getGratisConfig();
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','firkanttal','soejletal'];
       const nums = new Set();
-      nums.add(diamond.grundenergi.value);
-      diamond.livslinje.forEach(e => nums.add(e.reduced));
-      nums.add(diamond.bundtal.reduced);
-      nums.add(diamond.aura.auraUpperLeft.reduced);
-      nums.add(diamond.aura.auraUpperRight.reduced);
-      nums.add(diamond.aura.auraLowerLeft.reduced);
-      nums.add(diamond.aura.auraLowerRight.reduced);
-      nums.add(diamond.body.hjertecenter.centerTal.reduced);
-      nums.add(diamond.body.solarplexus.centerTal.reduced);
-      nums.add(diamond.firkanttal.reduced);
-      nums.add(diamond.soejletal.reduced);
+      if (pos.includes('grundenergi'))   nums.add(diamond.grundenergi.value);
+      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => nums.add(e.reduced));
+      if (pos.includes('bundtal'))       nums.add(diamond.bundtal.reduced);
+      if (pos.includes('aura')) {
+        nums.add(diamond.aura.auraUpperLeft.reduced);
+        nums.add(diamond.aura.auraUpperRight.reduced);
+        nums.add(diamond.aura.auraLowerLeft.reduced);
+        nums.add(diamond.aura.auraLowerRight.reduced);
+      }
+      if (pos.includes('hjertecenter'))  nums.add(diamond.body.hjertecenter.centerTal.reduced);
+      if (pos.includes('solarplexus'))   nums.add(diamond.body.solarplexus.centerTal.reduced);
+      if (pos.includes('firkanttal'))    nums.add(diamond.firkanttal.reduced);
+      if (pos.includes('soejletal'))     nums.add(diamond.soejletal.reduced);
       return [...nums];
     }
 
@@ -796,8 +800,12 @@
       // Build custom system prompt from admin config if available
       const gratisConfig = getGratisConfig();
       let customSystemPrompt = null;
+      let sentenceRange = null;
       if (gratisConfig) {
         customSystemPrompt = buildGratisSystemPrompt(gratisConfig);
+        const lo = gratisConfig.length || 8;
+        const hi = Math.min(lo + 2, 16);
+        sentenceRange = `${lo}–${hi}`;
         // Update teaser text dynamically
         if (gratisConfig.teaserText && gratisConfig.teaserText.trim()) {
           const tLine = document.querySelector('.teaser-line');
@@ -815,7 +823,8 @@
             firstName: firstNameDisplay,
             nameData: buildDiamondText(result),
             energyDescriptions: getEnergyDescriptions(relevantNums),
-            customSystemPrompt
+            customSystemPrompt,
+            sentenceRange
           })
         });
 
