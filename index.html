@@ -656,6 +656,7 @@
   <!-- ═══════════════════════════════════════════════════════════
        SCRIPTS
        ═══════════════════════════════════════════════════════════ -->
+  <script src="assets/js/diamondEngine.js"></script>
   <script>
     // ─── Mobile nav ───
     const toggle = document.getElementById('navToggle');
@@ -685,101 +686,38 @@
     }, { threshold: 0.15 });
     reveals.forEach(el => observer.observe(el));
 
-    // ─── Chaldean letter mapping (1-8, no 9) ───
-    const LETTER_VALUES = {
-      A:1,I:1,J:1,Q:1,Y:1,Å:1,
-      B:2,K:2,R:2,
-      C:3,G:3,L:3,S:3,
-      D:4,M:4,T:4,
-      E:5,H:5,N:5,X:5,
-      U:6,V:6,W:6,Æ:6,
-      O:7,Z:7,Ø:7,
-      F:8,P:8
-    };
+    // ─── Build diamond summary text for the API ───
+    function buildDiamondText(result) {
+      const d = result.diamond;
+      const inp = result.input;
+      let text = '';
 
-    function digitReduce(n) {
-      while (n >= 10) n = String(n).split('').reduce((s, d) => s + Number(d), 0);
-      return n;
-    }
+      text += `--- DIAMANT for ${inp.fullName} (${inp.birthDate.day}/${inp.birthDate.month}/${inp.birthDate.year}) ---\n\n`;
 
-    function normalizeName(str) {
-      return str.trim().toUpperCase()
-        .replace(/-/g, ' ')
-        .replace(/[^A-ZÆØÅ ]/g, '')
-        .split(/\s+/)
-        .filter(Boolean);
-    }
+      // Grundenergi (top — from birth day)
+      text += `Grundenergi (top): ${d.grundenergi.value}\n`;
 
-    function calcNameData(fullName) {
-      const parts = normalizeName(fullName);
-      if (!parts.length) return null;
+      // Livslinje (name parts)
+      text += `Livslinje: ${d.livslinje.map(e => `${e.role} "${e.name}" = ${e.display}`).join(', ')}\n`;
 
-      const firstName = parts[0];
-      let totalCompound = 0;
-      const partResults = [];
+      // Bundtal
+      text += `Bundtal: ${d.bundtal.display}\n`;
 
-      parts.forEach(part => {
-        let compound = 0;
-        for (const ch of part) {
-          compound += LETTER_VALUES[ch] || 0;
-        }
-        const reduced = digitReduce(compound);
-        totalCompound += compound;
-        partResults.push({ name: part, compound, reduced });
-      });
+      // Aura
+      text += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
 
-      const totalReduced = digitReduce(totalCompound);
+      // Hjertecenter
+      text += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
 
-      return {
-        firstName: parts[0][0] + parts[0].slice(1).toLowerCase(),
-        parts: partResults,
-        totalCompound,
-        totalReduced
-      };
-    }
+      // Solarplexus
+      text += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
 
-    // ─── Birth date calculations ───
-    function calcBirthData(dateStr) {
-      const [y, m, d] = dateStr.split('-').map(Number);
-      if (!y || !m || !d) return null;
+      // Firkanttal
+      text += `Firkanttal: ${d.firkanttal.display}\n`;
 
-      // Fødselsdagstal (day reduced)
-      const dayReduced = digitReduce(d);
+      // Søjletal
+      text += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
 
-      // Livsvejstal (full date reduced)
-      const dateSum = String(d).split('').concat(
-        String(m).split(''),
-        String(y).split('')
-      ).reduce((s, ch) => s + Number(ch), 0);
-      const lifePathReduced = digitReduce(dateSum);
-
-      // Year energy
-      const yearSum = String(y).split('').reduce((s, ch) => s + Number(ch), 0);
-      const yearReduced = digitReduce(yearSum);
-
-      return {
-        day: d, month: m, year: y,
-        dayReduced,
-        lifePathSum: dateSum,
-        lifePathReduced,
-        yearReduced
-      };
-    }
-
-    // ─── Build description for the API ───
-    function buildAnalysisText(nameData, birthData) {
-      let text = '--- NAVN ---\n';
-      nameData.parts.forEach(p => {
-        text += `Navnedel "${p.name}": sum ${p.compound}, grundtal ${p.reduced}\n`;
-      });
-      text += `Samlet navnetal: ${nameData.totalCompound} → grundtal ${nameData.totalReduced}\n`;
-
-      if (birthData) {
-        text += `\n--- FØDSELSDATO (${birthData.day}/${birthData.month}/${birthData.year}) ---\n`;
-        text += `Fødselsdagstal: ${birthData.day} → grundtal ${birthData.dayReduced}\n`;
-        text += `Livsvejstal: ${birthData.lifePathSum} → grundtal ${birthData.lifePathReduced}\n`;
-        text += `Årstal-energi: grundtal ${birthData.yearReduced}\n`;
-      }
       return text;
     }
 
@@ -799,6 +737,23 @@
       return desc || '';
     }
 
+    // ─── Collect all unique reduced numbers from diamond ───
+    function collectNumbers(diamond) {
+      const nums = new Set();
+      nums.add(diamond.grundenergi.value);
+      diamond.livslinje.forEach(e => nums.add(e.reduced));
+      nums.add(diamond.bundtal.reduced);
+      nums.add(diamond.aura.auraUpperLeft.reduced);
+      nums.add(diamond.aura.auraUpperRight.reduced);
+      nums.add(diamond.aura.auraLowerLeft.reduced);
+      nums.add(diamond.aura.auraLowerRight.reduced);
+      nums.add(diamond.body.hjertecenter.centerTal.reduced);
+      nums.add(diamond.body.solarplexus.centerTal.reduced);
+      nums.add(diamond.firkanttal.reduced);
+      nums.add(diamond.soejletal.reduced);
+      return [...nums];
+    }
+
     // ─── Main flow ───
     const nameInput = document.getElementById('nameInput');
     const birthInput = document.getElementById('birthInput');
@@ -816,23 +771,24 @@
       if (!name) { nameInput.focus(); return; }
       if (!dateVal) { birthInput.focus(); return; }
 
-      const nameData = calcNameData(name);
-      if (!nameData) return;
-      const birthData = calcBirthData(dateVal);
+      // Use the real diamond engine
+      let result;
+      try {
+        result = computeDiamond(name, dateVal);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
 
-      // Collect all unique reduced numbers for energy lookup
-      const relevantNums = [...new Set([
-        nameData.totalReduced,
-        ...nameData.parts.map(p => p.reduced),
-        ...(birthData ? [birthData.dayReduced, birthData.lifePathReduced, birthData.yearReduced] : [])
-      ])];
+      const diamond = result.diamond;
+      const relevantNums = collectNumbers(diamond);
+      const firstName = name.trim().split(/\s+/)[0];
+      const firstNameDisplay = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
 
       // Show spinner
       resultBox.classList.remove('visible');
       teaserSection.classList.remove('visible');
       loadSpinner.classList.add('visible');
-
-      // Smooth scroll to result area
       document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       try {
@@ -840,28 +796,23 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            firstName: nameData.firstName,
-            nameData: buildAnalysisText(nameData, birthData),
+            firstName: firstNameDisplay,
+            nameData: buildDiamondText(result),
             energyDescriptions: getEnergyDescriptions(relevantNums)
           })
         });
 
         if (!resp.ok) throw new Error('Server fejl');
+        const data = await resp.json();
 
-        const result = await resp.json();
-
-        // Show the life path number as the headline number
-        const headlineNum = birthData ? birthData.lifePathReduced : nameData.totalReduced;
-        resultNumber.textContent = headlineNum;
-        resultText.textContent = result.reading;
+        // Show grundenergi (top) as the headline number
+        resultNumber.textContent = diamond.grundenergi.value;
+        resultText.textContent = data.reading;
 
         loadSpinner.classList.remove('visible');
         resultBox.classList.add('visible');
 
-        // Show teaser after slight delay
-        setTimeout(() => {
-          teaserSection.classList.add('visible');
-        }, 1200);
+        setTimeout(() => { teaserSection.classList.add('visible'); }, 1200);
 
       } catch (err) {
         loadSpinner.classList.remove('visible');
