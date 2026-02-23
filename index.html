@@ -288,6 +288,102 @@
       box-shadow: 0 8px 24px rgba(201,168,76,0.12);
     }
 
+    /* ─── PRICING ─── */
+    .section-pricing {
+      padding: 6rem 1.5rem;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .section-pricing .container {
+      max-width: 1060px; margin: 0 auto;
+    }
+    .section-pricing .pricing-header {
+      text-align: center; margin-bottom: 3.5rem;
+    }
+    .section-pricing .pricing-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 0 0 1rem;
+    }
+    .section-pricing .pricing-header p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); max-width: 550px; margin: 0 auto;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+    }
+    .pricing-card {
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .pricing-card.featured {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 0 1px var(--clr-gold), 0 8px 32px rgba(201,168,76,0.15);
+    }
+    .pricing-card-head {
+      padding: 1.5rem 1.5rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .pricing-card.featured .pricing-card-head {
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border-bottom-color: transparent;
+    }
+    .pricing-card-head h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem; font-weight: 600;
+      color: var(--clr-text); margin: 0;
+    }
+    .pricing-card.featured .pricing-card-head h3 {
+      color: var(--clr-bg);
+    }
+    .pricing-card-body {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .pricing-price {
+      font-family: var(--font-heading);
+      font-size: 3rem; font-weight: 700;
+      color: var(--clr-text); line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .pricing-price span {
+      font-size: 1rem; font-weight: 400;
+      color: var(--clr-muted);
+    }
+    .pricing-features {
+      list-style: none; padding: 0; margin: 0 0 2rem;
+      flex: 1;
+    }
+    .pricing-features li {
+      padding: 0.5rem 0;
+      font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-muted);
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-card-body .btn-gold,
+    .pricing-card-body .btn-outline-gold {
+      width: 100%; text-align: center;
+      padding: 0.75rem 1.5rem;
+    }
+
     /* ─── CTA BOTTOM ─── */
     .section-cta {
       padding: 5rem 1.5rem;
@@ -392,6 +488,67 @@
     <div class="number-cell">8</div>
     <div class="number-cell">9</div>
   </div>
+
+  <!-- PRICING -->
+  <section class="section-pricing reveal">
+    <div class="container">
+      <div class="pricing-header">
+        <div class="section-label">Priser</div>
+        <h2>Vælg den rette løsning</h2>
+        <p>Find den plan der passer til dine behov — fra gratis adgang til fuld numerologisk analyse.</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- Free -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Free</h3>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$0<span>/md</span></div>
+            <ul class="pricing-features">
+              <li>10 users included</li>
+              <li>2 GB of storage</li>
+              <li>Email support</li>
+              <li>Help center access</li>
+            </ul>
+            <a href="#" class="btn-outline-gold">Sign up for free</a>
+          </div>
+        </div>
+        <!-- Pro -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Pro</h3>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$15<span>/md</span></div>
+            <ul class="pricing-features">
+              <li>20 users included</li>
+              <li>10 GB of storage</li>
+              <li>Priority email support</li>
+              <li>Help center access</li>
+            </ul>
+            <a href="#" class="btn-gold">Get started</a>
+          </div>
+        </div>
+        <!-- Enterprise -->
+        <div class="pricing-card featured">
+          <div class="pricing-card-head">
+            <h3>Enterprise</h3>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$29<span>/md</span></div>
+            <ul class="pricing-features">
+              <li>30 users included</li>
+              <li>15 GB of storage</li>
+              <li>Phone and email support</li>
+              <li>Help center access</li>
+            </ul>
+            <a href="#" class="btn-gold">Contact us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- CTA -->
   <section class="section-cta reveal">
