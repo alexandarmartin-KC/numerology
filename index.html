@@ -426,6 +426,26 @@
       width: 100%; text-align: center;
       padding: 0.75rem 1.5rem;
     }
+    .pricing-description {
+      font-size: 0.88rem; font-weight: 300; font-style: italic;
+      color: var(--clr-muted); line-height: 1.6;
+      margin-bottom: 1.2rem; padding: 0 0.25rem;
+    }
+    .pricing-tagline {
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--clr-gold-light);
+      margin-bottom: 1.5rem;
+    }
+    .pricing-subtitle {
+      font-size: 0.92rem; font-weight: 400;
+      color: var(--clr-gold-light); margin-top: 0.3rem;
+    }
+    .pricing-badge {
+      display: inline-block; font-size: 1.2rem; margin-bottom: 0.2rem;
+    }
+    .pricing-features li.highlight {
+      color: var(--clr-text); font-weight: 400;
+    }
 
     /* ─── ABOUT ─── */
     .section-about {
@@ -575,50 +595,72 @@
     <div class="container">
       <div class="pricing-header">
         <div class="section-label">Priser</div>
-        <h2>Vælg den rette løsning</h2>
-        <p>Find den plan der passer til dine behov — fra gratis adgang til fuld numerologisk analyse.</p>
+        <h2>Vælg din dybde</h2>
+        <p>Tre niveauer af indsigt — fra fundament til fuld aktivering af dit potentiale.</p>
       </div>
       <div class="pricing-grid">
-        <!-- Free -->
+        <!-- FUNDAMENT -->
         <div class="pricing-card">
-          <div class="pricing-card-head"><h3>Free</h3></div>
+          <div class="pricing-card-head">
+            <h3>Fundament</h3>
+            <div class="pricing-subtitle">Forstå din grundstruktur</div>
+          </div>
           <div class="pricing-card-body">
-            <div class="pricing-price">$0<span>/md</span></div>
+            <div class="pricing-price">$35</div>
             <ul class="pricing-features">
-              <li>10 users included</li>
-              <li>2 GB of storage</li>
-              <li>Email support</li>
-              <li>Help center access</li>
+              <li class="highlight">Analyse af din Grundenergi</li>
+              <li class="highlight">Fuld udregning af Diamanten</li>
+              <li>Dine styrker og naturlige kompetencer</li>
+              <li>Dine udfordringer og udviklingsmønstre</li>
+              <li>Hvordan dit navn præger din personlighed</li>
             </ul>
-            <a href="#" class="btn-outline-gold">Sign up for free</a>
+            <p class="pricing-description">Denne rapport giver dig et klart billede af din indre struktur og de mønstre, der påvirker dine valg og relationer.</p>
+            <p class="pricing-tagline">Et stærkt fundament for personlig forståelse.</p>
+            <a href="#" class="btn-outline-gold">Start med indsigt</a>
           </div>
         </div>
-        <!-- Pro -->
+        <!-- RETNING -->
         <div class="pricing-card">
-          <div class="pricing-card-head"><h3>Pro</h3></div>
+          <div class="pricing-card-head">
+            <div class="pricing-badge">🥈</div>
+            <h3>Retning</h3>
+            <div class="pricing-subtitle">Forstå dig selv – og hvornår du står stærkest</div>
+          </div>
           <div class="pricing-card-body">
-            <div class="pricing-price">$15<span>/md</span></div>
+            <div class="pricing-price">$75</div>
             <ul class="pricing-features">
-              <li>20 users included</li>
-              <li>10 GB of storage</li>
-              <li>Priority email support</li>
-              <li>Help center access</li>
+              <li class="highlight">Alt fra Fundament, plus:</li>
+              <li class="highlight">Personlige Årstalsrækker</li>
+              <li class="highlight">Analyse af de næste 9+ år</li>
+              <li>Perioder med fremdrift og momentum</li>
+              <li>Perioder hvor du bør konsolidere og justere</li>
+              <li>Strategiske beslutningsvinduer</li>
             </ul>
-            <a href="#" class="btn-gold">Get started</a>
+            <p class="pricing-description">Denne analyse giver dig overblik over dine kommende energicyklusser, så du kan træffe større beslutninger med større klarhed.</p>
+            <p class="pricing-tagline">Fra indsigt til strategisk retning.</p>
+            <a href="#" class="btn-gold">Planlæg med bevidsthed</a>
           </div>
         </div>
-        <!-- Enterprise -->
+        <!-- AKTIVERING -->
         <div class="pricing-card featured">
-          <div class="pricing-card-head"><h3>Enterprise</h3></div>
+          <div class="pricing-card-head">
+            <div class="pricing-badge">🥇</div>
+            <h3>Aktivering</h3>
+            <div class="pricing-subtitle">Optimering af dit potentiale</div>
+          </div>
           <div class="pricing-card-body">
-            <div class="pricing-price">$29<span>/md</span></div>
+            <div class="pricing-price">$149</div>
             <ul class="pricing-features">
-              <li>30 users included</li>
-              <li>15 GB of storage</li>
-              <li>Phone and email support</li>
-              <li>Help center access</li>
+              <li class="highlight">Alt fra Retning, plus:</li>
+              <li class="highlight">Analyse af navnevariationer</li>
+              <li class="highlight">Beregning af optimalt navn</li>
+              <li>Sammenligning af nuværende og alternativt navn</li>
+              <li>Konsekvenser for karriere, synlighed og gennemslagskraft</li>
+              <li>Konkrete anbefalinger</li>
             </ul>
-            <a href="#" class="btn-gold">Contact us</a>
+            <p class="pricing-description">Denne pakke er for dig, der ikke kun vil forstå din struktur og timing – men aktivt arbejde med at styrke din position.</p>
+            <p class="pricing-tagline">Her går vi fra analyse til justering.</p>
+            <a href="#" class="btn-gold">Tag aktiv kontrol over din udvikling</a>
           </div>
         </div>
       </div>
