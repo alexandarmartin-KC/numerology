@@ -127,10 +127,10 @@ function computeDiamond(fullName, birthDateISO) {
     return { compound: sc, reduced: sr, display: displayValue(sc) };
   });
 
-  /* ---------- 8. Square ---------- */
-  const squareCompound = top + bottomReduced;
-  const squareReduced  = digitReduce(squareCompound);
-  const squareDisplay  = displayValue(squareCompound);
+  /* ---------- 8. Rygraden ---------- */
+  const rygradCompound = top + bottomReduced;
+  const rygradReduced  = digitReduce(rygradCompound);
+  const rygradDisplay  = displayValue(rygradCompound);
 
   /* ---------- 9. Triangle ---------- */
   const triangleCompound =
@@ -182,7 +182,7 @@ function computeDiamond(fullName, birthDateISO) {
           mellemnavnsBidrag: solarExtras
         }
       },
-      rygraden: { compound: squareCompound, reduced: squareReduced, display: squareDisplay },
+      rygraden: { compound: rygradCompound, reduced: rygradReduced, display: rygradDisplay },
       soejletal:  { compound: triangleCompound, reduced: triangleReduced }
     }
   };

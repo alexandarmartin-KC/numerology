@@ -332,7 +332,7 @@ function computeDiamondFromRecipe(grundenergi, recipe) {
     return { compound: sc, reduced: digitReduce(sc), display: displayValue(sc) };
   });
 
-  const squareCompound = top + bottomReduced;
+  const rygradCompound = top + bottomReduced;
   const triangleCompound = top + bottomReduced + heartReduced
     + heartExtras.reduce((s, e) => s + e.reduced, 0)
     + solarReduced
@@ -354,7 +354,7 @@ function computeDiamondFromRecipe(grundenergi, recipe) {
         mellemnavnsBidrag: solarExtras
       }
     },
-    rygraden: { compound: squareCompound, reduced: digitReduce(squareCompound), display: displayValue(squareCompound) },
+    rygraden: { compound: rygradCompound, reduced: digitReduce(rygradCompound), display: displayValue(rygradCompound) },
     soejletal: { compound: triangleCompound, reduced: digitReduce(triangleCompound) }
   };
 }
