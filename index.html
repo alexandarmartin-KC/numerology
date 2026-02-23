@@ -458,6 +458,7 @@
     .portrait-wrapper {
       width: 100%;
       overflow: hidden;
+      position: relative;
     }
     .portrait-wrapper img {
       width: 100%;
@@ -467,10 +468,11 @@
       display: block;
     }
     .portrait-text {
-      max-width: 700px;
-      margin: 0 auto;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
       text-align: center;
-      padding: 3rem 1.5rem 4rem;
+      padding: 6rem 1.5rem 2.5rem;
+      background: linear-gradient(to top, rgba(11,11,18,0.95) 0%, rgba(11,11,18,0.7) 50%, transparent 100%);
     }
     .portrait-text p {
       font-size: 1.05rem; font-weight: 300;
@@ -482,6 +484,11 @@
       font-weight: 400;
       margin-top: 1rem;
       font-style: italic;
+    }
+    @media (max-width: 768px) {
+      .portrait-wrapper img { height: 400px; }
+      .portrait-text { padding: 4rem 1rem 1.5rem; }
+      .portrait-text p { font-size: 0.92rem; line-height: 1.6; }
     }
 
     /* ─── ABOUT ─── */
@@ -708,11 +715,11 @@
   <section class="section-portrait reveal">
     <div class="portrait-wrapper">
       <img src="assets/images/lunamila-og-mauren.png" alt="Lunamila og Mauren" loading="lazy">
-    </div>
-    <div class="portrait-text">
-      <p>Luna Mila og Mauren har tilsammen over 60 års erfaring med numerologi.</p>
-      <p>Gennem årtiers praksis har de hjulpet mennesker med at skabe klarhed og retning.</p>
-      <p class="portrait-highlight">Den samme erfaring er nu tilgængelig for dig.</p>
+      <div class="portrait-text">
+        <p>Luna Mila og Mauren har tilsammen over 60 års erfaring med numerologi.</p>
+        <p>Gennem årtiers praksis har de hjulpet mennesker med at skabe klarhed og retning.</p>
+        <p class="portrait-highlight">Den samme erfaring er nu tilgængelig for dig.</p>
+      </div>
     </div>
   </section>
 
