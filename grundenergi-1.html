@@ -42,8 +42,15 @@
     .nav-brand {
       font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
       color: var(--clr-gold); text-decoration: none; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; line-height: 1.15;
     }
     .nav-brand:hover { color: var(--clr-gold-light); }
+    .nav-brand .brandline {
+      font-family: var(--font-body);
+      font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--clr-muted); opacity: 0.7;
+    }
     .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
     .nav-links a {
       display: block; padding: 0.5rem 0.75rem; font-size: 0.82rem; font-weight: 400;
@@ -568,7 +575,7 @@
   <!-- ─── NAV ─── -->
   <nav class="site-nav">
     <div class="container">
-      <a class="nav-brand" href="index.html">StrategicNumerology</a>
+      <a class="nav-brand" href="index.html">StrategicNumerology<span class="brandline">Understand yourself. Plan your timing.</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
