@@ -345,6 +345,233 @@
       color: var(--clr-muted);
     }
 
+    /* ═══════════════════════════════
+       MINI CALCULATOR
+    ═══════════════════════════════ */
+    .calc-section {
+      padding: 5rem 1.5rem;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      text-align: center;
+    }
+    .calc-section .calc-inner {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .calc-section .section-label {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--clr-gold); margin-bottom: 1rem;
+    }
+    .calc-section h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 0 0 0.8rem;
+    }
+    .calc-section > .calc-inner > p {
+      font-size: 1rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.7;
+      margin: 0 0 2rem;
+    }
+    .calc-form {
+      display: flex; gap: 0.75rem;
+      justify-content: center; align-items: stretch;
+      flex-wrap: wrap;
+    }
+    .calc-form input[type="date"] {
+      flex: 1; min-width: 180px; max-width: 240px;
+      padding: 0.85rem 1rem;
+      font-family: var(--font-body); font-size: 0.95rem;
+      color: var(--clr-text);
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .calc-form input[type="date"]:focus {
+      border-color: var(--clr-gold);
+    }
+    .calc-form input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.7) sepia(1) hue-rotate(10deg);
+    }
+    .calc-form button {
+      padding: 0.85rem 2rem;
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
+      color: var(--clr-bg);
+      background: linear-gradient(135deg, var(--clr-gold), #b8943f);
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .calc-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.3);
+    }
+    .calc-result {
+      display: none;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 12px;
+    }
+    .calc-result.show { display: block; animation: fadeUp 0.5s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: none; } }
+    .calc-result .result-number {
+      font-family: var(--font-heading);
+      font-size: 3.5rem; font-weight: 700;
+      color: var(--clr-gold); line-height: 1;
+      margin: 0 0 0.5rem;
+    }
+    .calc-result .result-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem; font-weight: 600;
+      color: var(--clr-text); margin: 0 0 0.8rem;
+    }
+    .calc-result .result-text {
+      font-size: 0.95rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.7;
+      margin: 0 0 1.5rem;
+    }
+    .calc-result .btn-outline-gold {
+      display: inline-block;
+      padding: 0.65rem 1.8rem;
+      font-family: var(--font-body); font-size: 0.85rem; font-weight: 500;
+      color: var(--clr-gold); background: transparent;
+      border: 1px solid var(--clr-gold); border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .calc-result .btn-outline-gold:hover {
+      background: rgba(201,168,76,0.08);
+    }
+
+    /* ═══════════════════════════════
+       PRICING
+    ═══════════════════════════════ */
+    .section-pricing {
+      padding: 5rem 1.5rem;
+      background: var(--clr-bg);
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-pricing .container {
+      max-width: 1060px; margin: 0 auto;
+    }
+    .pricing-header {
+      text-align: center; margin-bottom: 3.5rem;
+    }
+    .pricing-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 0 0 1rem;
+    }
+    .pricing-header p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); max-width: 560px; margin: 0 auto;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+    }
+    .pricing-card {
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .pricing-card.featured {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 0 1px var(--clr-gold), 0 8px 32px rgba(201,168,76,0.15);
+    }
+    .pricing-card-head {
+      padding: 1.5rem 1.5rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .pricing-card.featured .pricing-card-head {
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border-bottom-color: transparent;
+    }
+    .pricing-card-head h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem; font-weight: 600;
+      color: var(--clr-text); margin: 0;
+    }
+    .pricing-card.featured .pricing-card-head h3 { color: var(--clr-bg); }
+    .pricing-subtitle {
+      font-size: 0.88rem; font-weight: 400;
+      color: var(--clr-gold-light); margin-top: 0.3rem;
+    }
+    .pricing-card.featured .pricing-subtitle { color: rgba(11,11,18,0.7); }
+    .pricing-card-body {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .pricing-price {
+      font-family: var(--font-heading);
+      font-size: 3rem; font-weight: 700;
+      color: var(--clr-text); line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .pricing-price span {
+      font-size: 1rem; font-weight: 400;
+      color: var(--clr-muted);
+    }
+    .pricing-features {
+      list-style: none; padding: 0; margin: 0 0 1.5rem;
+      text-align: left;
+    }
+    .pricing-features li {
+      padding: 0.5rem 0; padding-left: 1.4rem; position: relative;
+      font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-text);
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li::before {
+      content: '✓'; position: absolute; left: 0; color: var(--clr-gold); font-weight: 600;
+    }
+    .pricing-features li.highlight { font-weight: 400; }
+    .pricing-description {
+      font-size: 0.88rem; font-weight: 300; font-style: italic;
+      color: var(--clr-muted); line-height: 1.6;
+      margin-top: auto; margin-bottom: 1.5rem;
+    }
+    .pricing-card-body .btn-gold,
+    .pricing-card-body .btn-outline-gold {
+      width: 100%; text-align: center;
+      padding: 0.75rem 1.5rem;
+    }
+    .btn-outline-gold {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 500;
+      color: var(--clr-gold);
+      background: transparent;
+      border: 1px solid var(--clr-gold);
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline-gold:hover {
+      background: rgba(201,168,76,0.08);
+      transform: translateY(-2px);
+    }
+
     /* ─── REVEAL ─── */
     .reveal {
       opacity: 0; transform: translateY(30px);
@@ -482,6 +709,99 @@
   </article>
 
   <!-- ═══════════════════════════════
+       MINI GRATIS BEREGNING
+  ═══════════════════════════════ -->
+  <section class="calc-section reveal">
+    <div class="calc-inner">
+      <div class="section-label">Gratis beregning</div>
+      <h2>Find din grundenergi</h2>
+      <p>Indtast din fødselsdato og se øjeblikkeligt, hvilken grundenergi der præger dig mest — og hvad den betyder for dit liv.</p>
+      <div class="calc-form">
+        <input type="date" id="calcDate" aria-label="Fødselsdato">
+        <button onclick="calcGrundenergi()" class="btn-gold">Beregn</button>
+      </div>
+      <div class="calc-result" id="calcResult">
+        <div class="result-number" id="resultNum"></div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-text" id="resultText"></div>
+        <a href="#" id="resultLink" class="btn-outline-gold">Læs om din grundenergi →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       PRICING
+  ═══════════════════════════════ -->
+  <section class="section-pricing reveal">
+    <div class="container">
+      <div class="pricing-header">
+        <div class="section-label">Gå dybere</div>
+        <h2>Forstå hele din numerologiske profil</h2>
+        <p>Grundenergien er kun begyndelsen. Få en komplet analyse af din diamant, dine årstalsrækker og dit navns indflydelse.</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- FUNDAMENT -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Fundament</h3>
+            <div class="pricing-subtitle">Forstå din grundstruktur</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$35</div>
+            <ul class="pricing-features">
+              <li class="highlight">Analyse af din Grundenergi</li>
+              <li class="highlight">Fuld udregning af Diamanten</li>
+              <li>Dine styrker og naturlige kompetencer</li>
+              <li>Dine udfordringer og udviklingsmønstre</li>
+              <li>Hvordan dit navn præger din personlighed</li>
+            </ul>
+            <p class="pricing-description">Et klart billede af din indre struktur og de mønstre, der påvirker dine valg og relationer.</p>
+            <a href="#" class="btn-outline-gold">Start med indsigt</a>
+          </div>
+        </div>
+        <!-- RETNING -->
+        <div class="pricing-card featured">
+          <div class="pricing-card-head">
+            <h3>Retning</h3>
+            <div class="pricing-subtitle">Se hvornår du står stærkest</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$75</div>
+            <ul class="pricing-features">
+              <li class="highlight">Alt fra Fundament, plus:</li>
+              <li class="highlight">Personlige Årstalsrækker</li>
+              <li class="highlight">Analyse af de næste 9+ år</li>
+              <li>Perioder med fremdrift og momentum</li>
+              <li>Strategiske beslutningsvinduer</li>
+            </ul>
+            <p class="pricing-description">Overblik over dine kommende energicyklusser, så du kan træffe større beslutninger med større klarhed.</p>
+            <a href="#" class="btn-gold">Planlæg med bevidsthed</a>
+          </div>
+        </div>
+        <!-- AKTIVERING -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Aktivering</h3>
+            <div class="pricing-subtitle">Optimering af dit potentiale</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$149</div>
+            <ul class="pricing-features">
+              <li class="highlight">Alt fra Retning, plus:</li>
+              <li class="highlight">Analyse af navnevariationer</li>
+              <li class="highlight">Beregning af optimalt navn</li>
+              <li>Sammenligning af nuværende og alternativt navn</li>
+              <li>Konkrete anbefalinger</li>
+            </ul>
+            <p class="pricing-description">For dig der ikke kun vil forstå — men aktivt arbejde med at styrke din position.</p>
+            <a href="#" class="btn-gold">Tag aktivt kontrol</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
        BOTTOM NAV
   ═══════════════════════════════ -->
   <nav class="energy-nav reveal">
@@ -498,11 +818,6 @@
       <a href="grundenergi-9.html">9</a>
     </div>
   </nav>
-
-  <div class="energy-cta reveal">
-    <p>Vil du se, hvordan din 1-energi spiller sammen med resten af din numerologiske diamant?</p>
-    <a href="index.html#gratis" class="btn-gold">Få din gratis analyse</a>
-  </div>
 
   <!-- ─── FOOTER ─── -->
   <footer class="site-footer">
@@ -537,6 +852,37 @@
       });
     }, { threshold: 0.15 });
     reveals.forEach(el => observer.observe(el));
+
+    // Grundenergi calculator
+    const energiData = {
+      1: { title: 'Lederen', desc: 'Du bærer Solens kraft — viljestyrke, selvstændighed og naturligt lederskab. Din energi driver dig mod succes og anerkendelse.' },
+      2: { title: 'Diplomaten', desc: 'Månen giver dig intuition, følsomhed og en naturlig evne til at skabe harmoni. Du er mester i samarbejde og empati.' },
+      3: { title: 'Den kreative', desc: 'Jupiter skænker dig kreativitet, optimisme og kommunikationsevner. Du inspirerer andre med din udtryksfuldhed.' },
+      4: { title: 'Bygmesteren', desc: 'Uranus giver dig struktur, stabilitet og en stærk arbejdsmoral. Du bygger holdbare fundamenter i alt, du gør.' },
+      5: { title: 'Eventyren', desc: 'Merkur fylder dig med eventyrlyst, frihed og tilpasningsevne. Du trives med forandring og nye oplevelser.' },
+      6: { title: 'Omsorgsgiveren', desc: 'Venus giver dig kærlighed, ansvar og skønhedssans. Du skaber trygge rammer for dem omkring dig.' },
+      7: { title: 'Tænkeren', desc: 'Neptun forstærker din intuition, dybde og søgen efter sandhed. Du er den reflekterende filosof.' },
+      8: { title: 'Den ambitiøse', desc: 'Saturn giver dig ambition, disciplin og forretningssans. Du har en naturlig evne til at manifestere materiel succes.' },
+      9: { title: 'Den vise', desc: 'Mars giver dig passion, medfølelse og et globalt perspektiv. Du er her for at tjene en større mening.' }
+    };
+
+    function calcGrundenergi() {
+      const dateInput = document.getElementById('calcDate');
+      if (!dateInput.value) return;
+      const day = new Date(dateInput.value).getDate();
+      let num = day;
+      while (num > 9) {
+        num = String(num).split('').reduce((a, b) => a + parseInt(b), 0);
+      }
+      const data = energiData[num];
+      document.getElementById('resultNum').textContent = num;
+      document.getElementById('resultTitle').textContent = 'Grundenergi ' + num + ' — ' + data.title;
+      document.getElementById('resultText').textContent = data.desc;
+      const link = document.getElementById('resultLink');
+      link.href = 'grundenergi-' + num + '.html';
+      link.textContent = 'Læs om Grundenergi ' + num + ' →';
+      document.getElementById('calcResult').classList.add('show');
+    }
   </script>
 </body>
 </html>
