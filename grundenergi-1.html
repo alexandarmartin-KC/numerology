@@ -346,7 +346,7 @@
     }
 
     /* ═══════════════════════════════
-       MINI CALCULATOR
+       MINI CALCULATOR (same as frontpage)
     ═══════════════════════════════ */
     .calc-section {
       padding: 5rem 1.5rem;
@@ -358,63 +358,46 @@
       max-width: 520px;
       margin: 0 auto;
     }
-    .calc-section .section-label {
-      display: inline-block;
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--clr-gold); margin-bottom: 1rem;
-    }
     .calc-section h2 {
       font-family: var(--font-heading);
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-      font-weight: 600; color: var(--clr-text);
-      margin: 0 0 0.8rem;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700; color: var(--clr-text);
+      margin: 0 0 0.8rem; line-height: 1.15;
     }
-    .calc-section > .calc-inner > p {
+    .calc-section h2 span { color: var(--clr-gold); }
+    .calc-section .calc-sub {
       font-size: 1rem; font-weight: 300;
       color: var(--clr-muted); line-height: 1.7;
       margin: 0 0 2rem;
     }
     .calc-form {
-      display: flex; gap: 0.75rem;
-      justify-content: center; align-items: stretch;
-      flex-wrap: wrap;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      max-width: 480px; margin: 0 auto;
     }
-    .calc-form input[type="date"] {
-      flex: 1; min-width: 180px; max-width: 240px;
-      padding: 0.85rem 1rem;
-      font-family: var(--font-body); font-size: 0.95rem;
+    .calc-form input {
+      width: 100%; padding: 0.9rem 1.2rem;
+      font-family: var(--font-body); font-size: 1rem;
       color: var(--clr-text);
       background: var(--clr-surface-2);
       border: 1px solid var(--clr-border);
-      border-radius: 8px;
-      outline: none;
-      transition: border-color 0.2s;
+      border-radius: 50px;
+      outline: none; transition: border-color 0.2s;
     }
-    .calc-form input[type="date"]:focus {
-      border-color: var(--clr-gold);
-    }
+    .calc-form input::placeholder { color: var(--clr-muted); }
+    .calc-form input:focus { border-color: var(--clr-gold); }
+    .calc-form input[type="date"] { color-scheme: dark; }
     .calc-form input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(0.7) sepia(1) hue-rotate(10deg);
+      filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg);
+      cursor: pointer;
     }
-    .calc-form button {
-      padding: 0.85rem 2rem;
-      font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
-      color: var(--clr-bg);
-      background: linear-gradient(135deg, var(--clr-gold), #b8943f);
-      border: none; border-radius: 8px; cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .calc-form button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(201,168,76,0.3);
-    }
+    .calc-form .btn-gold { width: 100%; border-radius: 50px; }
     .calc-result {
       display: none;
       margin-top: 2rem;
       padding: 2rem;
       background: var(--clr-surface-2);
       border: 1px solid var(--clr-border);
-      border-radius: 12px;
+      border-radius: 16px;
     }
     .calc-result.show { display: block; animation: fadeUp 0.5s ease; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: none; } }
@@ -439,7 +422,7 @@
       padding: 0.65rem 1.8rem;
       font-family: var(--font-body); font-size: 0.85rem; font-weight: 500;
       color: var(--clr-gold); background: transparent;
-      border: 1px solid var(--clr-gold); border-radius: 8px;
+      border: 1px solid var(--clr-gold); border-radius: 50px;
       text-decoration: none;
       transition: all 0.2s;
     }
@@ -713,17 +696,17 @@
   ═══════════════════════════════ -->
   <section class="calc-section reveal">
     <div class="calc-inner">
-      <div class="section-label">Gratis beregning</div>
-      <h2>Find din grundenergi</h2>
-      <p>Indtast din fødselsdato og se øjeblikkeligt, hvilken grundenergi der præger dig mest — og hvad den betyder for dit liv.</p>
+      <h2>Hvad siger dine tal<br>om <span>dig</span>?</h2>
+      <p class="calc-sub">Indtast dit navn og din fødselsdato — og få en personlig numerologisk analyse helt gratis.</p>
       <div class="calc-form">
+        <input type="text" id="calcName" placeholder="Dit fulde navn…" autocomplete="name">
         <input type="date" id="calcDate" aria-label="Fødselsdato">
-        <button onclick="calcGrundenergi()" class="btn-gold">Beregn</button>
+        <button onclick="calcGrundenergi()" class="btn-gold">Beregn gratis</button>
       </div>
       <div class="calc-result" id="calcResult">
         <div class="result-number" id="resultNum"></div>
         <div class="result-title" id="resultTitle"></div>
-        <div class="result-text" id="resultText"></div>
+        <div class="result-text" id="resultText2"></div>
         <a href="#" id="resultLink" class="btn-outline-gold">Læs om din grundenergi →</a>
       </div>
     </div>
@@ -868,7 +851,8 @@
 
     function calcGrundenergi() {
       const dateInput = document.getElementById('calcDate');
-      if (!dateInput.value) return;
+      const nameInput = document.getElementById('calcName');
+      if (!dateInput.value || !nameInput.value.trim()) return;
       const day = new Date(dateInput.value).getDate();
       let num = day;
       while (num > 9) {
@@ -877,7 +861,7 @@
       const data = energiData[num];
       document.getElementById('resultNum').textContent = num;
       document.getElementById('resultTitle').textContent = 'Grundenergi ' + num + ' — ' + data.title;
-      document.getElementById('resultText').textContent = data.desc;
+      document.getElementById('resultText2').textContent = nameInput.value.trim().split(' ')[0] + ', ' + data.desc.charAt(0).toLowerCase() + data.desc.slice(1);
       const link = document.getElementById('resultLink');
       link.href = 'grundenergi-' + num + '.html';
       link.textContent = 'Læs om Grundenergi ' + num + ' →';
