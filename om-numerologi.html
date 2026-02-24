@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hvad er numerologi? — Alt om tal, energi og diamanten</title>
+  <meta name="description" content="Lær alt om numerologi: historien, talværdierne i det chaldæiske system, den numerologiske diamant, årstalsrækker og grundenergier. En komplet guide.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --clr-bg:        #0b0b12;
+      --clr-surface:   #13131f;
+      --clr-surface-2: #1a1a2e;
+      --clr-gold:      #c9a84c;
+      --clr-gold-light:#e8d5a3;
+      --clr-text:      #e8e4da;
+      --clr-muted:     #7c7c8a;
+      --clr-border:    rgba(201,168,76,0.15);
+      --font-heading:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--clr-bg); color: var(--clr-text);
+      font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(11,11,18,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .site-nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; height: 64px;
+    }
+    .nav-brand {
+      font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-gold); text-decoration: none; letter-spacing: 0.5px;
+    }
+    .nav-brand:hover { color: var(--clr-gold-light); }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      display: block; padding: 0.5rem 0.75rem; font-size: 0.82rem; font-weight: 400;
+      letter-spacing: 0.3px; color: var(--clr-muted); text-decoration: none;
+      border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--clr-gold-light); background: rgba(201,168,76,0.08); }
+    .nav-links a.active { color: var(--clr-gold); font-weight: 500; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after {
+      content: ''; display: inline-block; width: 0; height: 0;
+      margin-left: 5px; vertical-align: middle;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid currentColor;
+    }
+    .nav-dropdown-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 4px);
+      background: var(--clr-surface); border: 1px solid var(--clr-border);
+      border-radius: 8px; min-width: 200px; padding: 0.5rem 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .nav-dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.82rem; border-radius: 0; }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 32px; height: 32px; position: relative;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px; background: var(--clr-gold);
+      position: absolute; left: 6px; transition: 0.3s;
+    }
+    .nav-toggle span:nth-child(1) { top: 9px; }
+    .nav-toggle span:nth-child(2) { top: 15px; }
+    .nav-toggle span:nth-child(3) { top: 21px; }
+    .nav-toggle.open span:nth-child(1) { top: 15px; transform: rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { top: 15px; transform: rotate(-45deg); }
+    @media (max-width: 991px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--clr-surface); border-bottom: 1px solid var(--clr-border);
+        padding: 1rem; gap: 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.65rem 0.75rem; font-size: 0.9rem; }
+      .nav-dropdown-menu {
+        position: static; box-shadow: none; border: none;
+        background: transparent; padding-left: 1rem; display: none;
+      }
+      .nav-dropdown.open-mobile .nav-dropdown-menu { display: block; }
+    }
+
+    /* ═══════════════════════════════
+       HERO
+    ═══════════════════════════════ */
+    .hero {
+      padding: 140px 1.5rem 60px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--clr-gold);
+      border: 1px solid rgba(201,168,76,0.35);
+      padding: 0.6rem 2rem; border-radius: 100px;
+      margin-bottom: 1.5rem;
+      background: rgba(201,168,76,0.06);
+      text-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 7vw, 4.5rem);
+      font-weight: 700; color: var(--clr-text);
+      margin: 0 0 1rem; line-height: 1.1;
+    }
+    .hero h1 span { color: var(--clr-gold); }
+    .hero-intro {
+      max-width: 620px; margin: 0 auto;
+      font-size: 1.1rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.85;
+    }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: var(--clr-border);
+      margin: 2.5rem auto 0;
+    }
+
+    /* ═══════════════════════════════
+       TABLE OF CONTENTS
+    ═══════════════════════════════ */
+    .toc {
+      max-width: 500px; margin: 0 auto;
+      padding: 2.5rem 1.5rem 0;
+      text-align: center;
+    }
+    .toc-label {
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--clr-muted); margin-bottom: 1rem;
+    }
+    .toc-list {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .toc-list a {
+      display: block; padding: 0.5rem 1rem;
+      font-size: 0.92rem; font-weight: 400;
+      color: var(--clr-gold-light);
+      text-decoration: none; border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .toc-list a:hover { background: rgba(201,168,76,0.06); }
+
+    /* ═══════════════════════════════
+       ARTICLE CONTENT
+    ═══════════════════════════════ */
+    .article {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+    .article h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 4rem 0 1.2rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--clr-gold);
+    }
+    .article h2:first-child { margin-top: 0; }
+    .article h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem; font-weight: 600;
+      color: var(--clr-gold-light);
+      margin: 2.5rem 0 0.8rem;
+    }
+    .article p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.9;
+      margin: 0 0 1rem;
+    }
+    .article p:last-child { margin-bottom: 0; }
+    .article strong { color: var(--clr-text); font-weight: 500; }
+
+    /* Pull quote */
+    .pull-quote {
+      margin: 3rem 0;
+      padding: 2rem 2.5rem;
+      border-left: 2px solid var(--clr-gold);
+      background: linear-gradient(135deg, rgba(201,168,76,0.03), transparent);
+    }
+    .pull-quote p {
+      font-family: var(--font-heading);
+      font-size: 1.3rem; font-weight: 400; font-style: italic;
+      color: var(--clr-text); line-height: 1.7; margin: 0;
+    }
+
+    /* ═══════════════════════════════
+       LETTER TABLE (Chaldean)
+    ═══════════════════════════════ */
+    .letter-table-wrap {
+      margin: 2rem 0;
+      overflow-x: auto;
+    }
+    .letter-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .letter-table thead th {
+      font-family: var(--font-heading);
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-gold);
+      padding: 0.8rem 0.5rem;
+      border-bottom: 2px solid var(--clr-border);
+      text-align: center;
+    }
+    .letter-table tbody td {
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+      color: var(--clr-text);
+      font-weight: 400;
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+    .letter-table tbody tr:hover td {
+      background: rgba(201,168,76,0.04);
+    }
+
+    /* ═══════════════════════════════
+       DIAMOND GRAPHIC (SVG)
+    ═══════════════════════════════ */
+    .diamond-visual {
+      max-width: 500px;
+      margin: 2.5rem auto;
+      text-align: center;
+    }
+    .diamond-visual svg {
+      width: 100%;
+      max-width: 420px;
+    }
+    .diamond-visual .caption {
+      font-size: 0.85rem; color: var(--clr-muted);
+      margin-top: 1rem; font-style: italic;
+    }
+
+    /* ═══════════════════════════════
+       ENERGY GRID
+    ═══════════════════════════════ */
+    .energy-overview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 600px) {
+      .energy-overview { grid-template-columns: 1fr 1fr; }
+    }
+    .energy-card {
+      padding: 1.2rem;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 10px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .energy-card:hover {
+      border-color: var(--clr-gold);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(201,168,76,0.1);
+    }
+    .energy-card .num {
+      font-family: var(--font-heading);
+      font-size: 2rem; font-weight: 700;
+      color: var(--clr-gold); line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .energy-card .label {
+      font-size: 0.82rem; font-weight: 400;
+      color: var(--clr-muted);
+    }
+
+    /* ═══════════════════════════════
+       SECTION DIVIDER
+    ═══════════════════════════════ */
+    .section-divider {
+      width: 40px; height: 1px;
+      background: var(--clr-border);
+      margin: 3rem auto;
+    }
+
+    /* ═══════════════════════════════
+       CTA
+    ═══════════════════════════════ */
+    .cta-section {
+      text-align: center;
+      padding: 4rem 1.5rem 5rem;
+      border-top: 1px solid var(--clr-border);
+    }
+    .cta-section h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 0 0 0.8rem;
+    }
+    .cta-section p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted);
+      max-width: 520px; margin: 0 auto 1.5rem;
+    }
+    .btn-gold {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem; font-weight: 600;
+      color: var(--clr-bg);
+      background: linear-gradient(135deg, var(--clr-gold), #b8943f);
+      border: none; border-radius: 8px;
+      text-decoration: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.3);
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      border-top: 1px solid var(--clr-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.8rem; color: var(--clr-muted);
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="site-nav">
+    <div class="container">
+      <a class="nav-brand" href="index.html">Numerologi</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Forside</a></li>
+        <li><a href="om-numerologi.html" class="active">Om numerologi</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Grundenergier</a>
+          <div class="nav-dropdown-menu">
+            <a href="grundenergi-1.html">1 — Lederen</a>
+            <a href="grundenergi-2.html">2 — Diplomaten</a>
+            <a href="grundenergi-3.html">3 — Den kreative</a>
+            <a href="grundenergi-4.html">4 — Bygmesteren</a>
+            <a href="grundenergi-5.html">5 — Eventyren</a>
+            <a href="grundenergi-6.html">6 — Omsorgsgiveren</a>
+            <a href="grundenergi-7.html">7 — Tænkeren</a>
+            <a href="grundenergi-8.html">8 — Den ambitiøse</a>
+            <a href="grundenergi-9.html">9 — Den vise</a>
+          </div>
+        </li>
+        <li><a href="diamant.html">Diamant</a></li>
+        <li><a href="aarstalsraekker.html">Årstalsrækker</a></li>
+        <li><a href="rapport.html">Rapport</a></li>
+        <li><a href="artikel.html">Artikler</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Admin</a>
+          <div class="nav-dropdown-menu">
+            <a href="input-diamant.html">Input Diamant</a>
+            <a href="input-aarstalsraekker.html">Input Årstalsrækker</a>
+            <a href="input-generelt.html">Input Generelt</a>
+            <a href="input-rapport.html">Input Rapport</a>
+            <a href="input-navnegenerator.html">Input Navnegenerator</a>
+            <a href="input-gratisberegning.html">Input Gratis Beregning</a>
+            <a href="input-grundenergier.html">Input Grundenergier</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════
+       HERO
+  ═══════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-label">En komplet guide</div>
+    <h1>Hvad er <span>numerologi</span>?</h1>
+    <p class="hero-intro">Numerologi er en årtusindgammel visdomstradition, der afdækker sammenhængen mellem tal og menneskelig erfaring. Her får du den fulde forklaring — fra historisk oprindelse til praktisk anvendelse.</p>
+    <div class="hero-divider"></div>
+  </section>
+
+  <!-- Table of contents -->
+  <div class="toc reveal">
+    <div class="toc-label">Indhold</div>
+    <ul class="toc-list">
+      <li><a href="#historie">Numerologiens historie</a></li>
+      <li><a href="#talvaerdier">Talværdierne — det chaldæiske alfabet</a></li>
+      <li><a href="#diamanten">Den numerologiske diamant</a></li>
+      <li><a href="#aarstalsraekker">Årstalsrækker</a></li>
+      <li><a href="#grundenergier">Grundenergier</a></li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════════
+       ARTICLE
+  ═══════════════════════════════ -->
+  <article class="article">
+
+    <!-- ─── HISTORIE ─── -->
+    <h2 id="historie">Numerologiens historie</h2>
+    <p>Numerologi har rødder, der strækker sig tusinder af år tilbage i tid. Allerede i de gamle civilisationer i <strong>Babylon, Egypten og Grækenland</strong> blev tal betragtet som mere end blot redskaber til optælling — de blev anset for bærere af kosmisk energi og dybere mening.</p>
+    <p>Den græske filosof <strong>Pythagoras</strong> (ca. 570–495 f.Kr.) regnes ofte for numerologiens fader i den vestlige verden. Han mente, at universet i sin grundstruktur kunne beskrives med tal, og at talmønstre afspejlede naturens og menneskets indre lovmæssigheder.</p>
+
+    <div class="pull-quote">
+      <p>"Alt er tal" — Pythagoras så tallene som nøglen til at forstå universets harmoni.</p>
+    </div>
+
+    <p>Den <strong>chaldæiske numerologi</strong>, som vi primært arbejder med, stammer fra det gamle Babylon og anses for at være det ældste numerologiske system. I modsætning til det pythagoræiske system, der tildeler bogstaver tal i rækkefølge, baserer det chaldæiske system sig på bogstavernes vibration og klang — en mere intuitiv tilgang, der giver dybere indsigt.</p>
+    <p>Gennem middelalderen og renæssancen levede numerologien videre i æsoteriske og mystiske traditioner. I nyere tid er den blevet genopdaget som et værktøj til selvindsigt, personlig udvikling og strategisk planlægning.</p>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── TALVÆRDIER ─── -->
+    <h2 id="talvaerdier">Talværdierne — det chaldæiske alfabet</h2>
+    <p>I det chaldæiske system har hvert bogstav en numerisk værdi baseret på dets vibration. Bemærk, at <strong>tallet 9 ikke tildeles noget bogstav</strong> — i chaldæisk tradition anses 9 for et helligt tal, der kun fremkommer som resultat af beregning.</p>
+
+    <div class="letter-table-wrap reveal">
+      <table class="letter-table">
+        <thead>
+          <tr>
+            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>U</td><td>O</td><td>F</td></tr>
+          <tr><td>I</td><td>K</td><td>G</td><td>M</td><td>H</td><td>V</td><td>Z</td><td>P</td></tr>
+          <tr><td>J</td><td>R</td><td>L</td><td>T</td><td>N</td><td>W</td><td></td><td></td></tr>
+          <tr><td>Q</td><td></td><td>S</td><td>X</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>Y</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Sådan beregnes dit navnetal</h3>
+    <p>Hvert bogstav i dit fulde navn oversættes til sin chaldæiske talværdi. Tallene lægges sammen og reduceres til et enkelt grundtal (1-9). For eksempel:</p>
+    <p><strong>ANNA</strong> → A(1) + N(5) + N(5) + A(1) = <strong>12</strong> → 1 + 2 = <strong>3</strong></p>
+    <p>Det resulterende grundtal afslører en bestemt energi, der præger din personlighed, dine styrker og dine udfordringer. I numerologien kigger vi dog på langt flere positioner end blot navnetallet — det er her <strong>diamanten</strong> kommer ind i billedet.</p>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── DIAMANTEN ─── -->
+    <h2 id="diamanten">Den numerologiske diamant</h2>
+    <p>Diamanten er numerologiens mest centrale værktøj. Den er et visuelt kort over dit livs energier, beregnet ud fra dit <strong>fulde navn</strong> og din <strong>fødselsdato</strong>. Diamanten rummer over 20 positioner, der tilsammen tegner et detaljeret billede af, hvem du er — og hvem du har potentiale til at blive.</p>
+
+    <!-- SVG Diamond diagram -->
+    <div class="diamond-visual reveal">
+      <svg viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg">
+        <!-- Diamond shape -->
+        <polygon points="200,30 370,220 200,410 30,220" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="1.5"/>
+        <!-- Horizontal line -->
+        <line x1="30" y1="220" x2="370" y2="220" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+        <!-- Vertical line -->
+        <line x1="200" y1="30" x2="200" y2="410" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+        <!-- Cross lines -->
+        <line x1="115" y1="125" x2="285" y2="125" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+        <line x1="115" y1="315" x2="285" y2="315" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+        <!-- Position dots and labels -->
+        <!-- Top -->
+        <circle cx="200" cy="30" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="200" y="35" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="200" y="12" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">LIVSVEJ</text>
+        <!-- Right -->
+        <circle cx="370" cy="220" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="370" y="225" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="358" y="250" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">SJÆL</text>
+        <!-- Bottom -->
+        <circle cx="200" cy="410" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="200" y="415" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="200" y="440" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">SKYGGE</text>
+        <!-- Left -->
+        <circle cx="30" cy="220" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="30" y="225" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="42" y="250" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">PERSONA</text>
+        <!-- Center -->
+        <circle cx="200" cy="220" r="22" fill="#c9a84c" stroke="none"/>
+        <text x="200" y="226" text-anchor="middle" fill="#0b0b12" font-family="Cormorant Garamond, serif" font-size="18" font-weight="700">?</text>
+        <text x="200" y="198" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">TOPPUNKT</text>
+        <!-- Upper-left -->
+        <circle cx="115" cy="125" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="115" y="130" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <!-- Upper-right -->
+        <circle cx="285" cy="125" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="285" y="130" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <!-- Lower-left -->
+        <circle cx="115" cy="315" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="115" y="320" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <!-- Lower-right -->
+        <circle cx="285" cy="315" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="285" y="320" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+      </svg>
+      <p class="caption">Forenklet illustration af den numerologiske diamant — din diamant vil have tal i alle positioner.</p>
+    </div>
+
+    <p>De vigtigste positioner i diamanten inkluderer:</p>
+    <p><strong>Toppunktet</strong> — dit livs overordnede energi, beregnet ud fra hele fødselsdatoen. Det er den centrale position, der samler alle dine livstemaer.</p>
+    <p><strong>Livsvej</strong> — retningen dit liv naturligt bevæger sig i. Den viser de store temaer og lektioner, du vil møde.</p>
+    <p><strong>Sjæl</strong> — din indre drivkraft, det du i dybden søger og længes efter. Denne position afslører dine dybeste motivationer.</p>
+    <p><strong>Persona</strong> — det ydre udtryk, hvordan andre opfatter dig. Ofte forskellig fra sjælspositionen, hvilket kan skabe en spændende dynamik.</p>
+    <p><strong>Skygge</strong> — de udfordringer og ubevidste mønstre, der kræver opmærksomhed. Det er her dit største vækstpotentiale ligger.</p>
+
+    <div class="pull-quote">
+      <p>Diamanten er ikke en dom — den er et kompas. Den viser dig, hvad du har at arbejde med, og hvor dit potentiale er størst.</p>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── ÅRSTALSRÆKKER ─── -->
+    <h2 id="aarstalsraekker">Årstalsrækker</h2>
+    <p>Mens diamanten viser <em>hvem du er</em>, viser årstalsrækkerne <em>hvornår</em> du står stærkest. Numerologien opererer med personlige energicyklusser, der ændrer sig fra år til år — og disse cyklusser kan beregnes præcist.</p>
+    <p>Hvert personligt år har en energi fra 1 til 9. Et <strong>1-år</strong> markerer en ny begyndelse, mens et <strong>9-år</strong> er afslutningens og eftertankens tid. Herefter starter cyklussen forfra.</p>
+
+    <h3>De ni personlige år</h3>
+    <p><strong>Personligt år 1</strong> — ny start, initiativ, selvstændighed. Så nye frø.</p>
+    <p><strong>Personligt år 2</strong> — tålmodighed, samarbejde, relationer. Nurt det, du har plantet.</p>
+    <p><strong>Personligt år 3</strong> — kreativitet, udtryk, social glæde. Giv dine ideer stemme.</p>
+    <p><strong>Personligt år 4</strong> — struktur, arbejde, fundament. Byg noget holdbart.</p>
+    <p><strong>Personligt år 5</strong> — forandring, frihed, eventyr. Tør at bryde mønstret.</p>
+    <p><strong>Personligt år 6</strong> — ansvar, kærlighed, hjem. Fokus på nære relationer.</p>
+    <p><strong>Personligt år 7</strong> — indre rejse, refleksion, visdom. Søg dybde frem for bredde.</p>
+    <p><strong>Personligt år 8</strong> — magt, manifestation, materiel succes. Høst frugterne.</p>
+    <p><strong>Personligt år 9</strong> — afslutning, loslippelse, medfølelse. Gør plads til det nye.</p>
+
+    <p>Ved at kende dit personlige år kan du planlægge vigtige beslutninger — om karriere, relationer eller livsstil — med en dybere forståelse af den energimæssige kontekst, du befinder dig i.</p>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── GRUNDENERGIER ─── -->
+    <h2 id="grundenergier">Grundenergier</h2>
+    <p>Alle mennesker har en <strong>grundenergi</strong> — den bestemmes af den dag i måneden, du er født. Din grundenergi er den mest umiddelbare og genkendelige del af din numerologiske profil. Det er den energi, du udviser naturligt og instinktivt.</p>
+    <p>Grundenergien beregnes ved at reducere din fødselsdag til et enkelt tal (1-9). Eksempel: Er du født den 28., lægges 2 + 8 = 10 → 1 + 0 = <strong>1</strong>.</p>
+    <p>Hver grundenergi er forbundet med en <strong>planet</strong>, et <strong>element</strong> og en bestemt <strong>kvalitet</strong>, der tilsammen beskriver dit temperament, din tilgang til kærlighed og dit arbejdsliv.</p>
+
+    <!-- Energy overview grid -->
+    <div class="energy-overview reveal">
+      <a href="grundenergi-1.html" class="energy-card">
+        <div class="num">1</div>
+        <div class="label">Lederen</div>
+      </a>
+      <a href="grundenergi-2.html" class="energy-card">
+        <div class="num">2</div>
+        <div class="label">Diplomaten</div>
+      </a>
+      <a href="grundenergi-3.html" class="energy-card">
+        <div class="num">3</div>
+        <div class="label">Den kreative</div>
+      </a>
+      <a href="grundenergi-4.html" class="energy-card">
+        <div class="num">4</div>
+        <div class="label">Bygmesteren</div>
+      </a>
+      <a href="grundenergi-5.html" class="energy-card">
+        <div class="num">5</div>
+        <div class="label">Eventyren</div>
+      </a>
+      <a href="grundenergi-6.html" class="energy-card">
+        <div class="num">6</div>
+        <div class="label">Omsorgsgiveren</div>
+      </a>
+      <a href="grundenergi-7.html" class="energy-card">
+        <div class="num">7</div>
+        <div class="label">Tænkeren</div>
+      </a>
+      <a href="grundenergi-8.html" class="energy-card">
+        <div class="num">8</div>
+        <div class="label">Den ambitiøse</div>
+      </a>
+      <a href="grundenergi-9.html" class="energy-card">
+        <div class="num">9</div>
+        <div class="label">Den vise</div>
+      </a>
+    </div>
+
+    <p>Grundenergien er din basisfrekvens — det faste fundament, som de øvrige numerologiske positioner bygger videre på. Den ændrer sig aldrig og er altid aktiv i dit liv.</p>
+
+  </article>
+
+  <!-- ═══════════════════════════════
+       CTA
+  ═══════════════════════════════ -->
+  <section class="cta-section reveal">
+    <h2>Klar til at opdage dine tal?</h2>
+    <p>Få en gratis numerologisk analyse baseret på dit navn og din fødselsdato — og se, hvad tallene fortæller om dig.</p>
+    <a href="index.html" class="btn-gold">Prøv gratis analyse</a>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Numerologi. Alle rettigheder forbeholdes.</p>
+  </footer>
+
+  <script>
+    // Mobile nav
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      links.classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-dropdown > a').forEach(a => {
+      a.addEventListener('click', e => {
+        if (window.innerWidth <= 991) {
+          e.preventDefault();
+          a.parentElement.classList.toggle('open-mobile');
+        }
+      });
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Smooth scroll for TOC
+    document.querySelectorAll('.toc-list a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.pushState(null, '', a.getAttribute('href'));
+        }
+      });
+    });
+  </script>
+</body>
+</html>
