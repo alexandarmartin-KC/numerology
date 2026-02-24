@@ -565,6 +565,131 @@
       box-shadow: 0 8px 24px rgba(201,168,76,0.12);
     }
 
+    /* ─── TESTIMONIAL CAROUSEL ─── */
+    .section-testimonials {
+      padding: 4rem 1.5rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-testimonials h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 600;
+      color: var(--clr-text);
+      margin: 0 0 0.5rem;
+    }
+    .section-testimonials .section-subtitle {
+      color: var(--clr-muted);
+      font-size: 0.95rem;
+      margin: 0 0 3rem;
+    }
+    .testimonial-track {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+      min-height: 200px;
+    }
+    .testimonial-slide {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+    .testimonial-slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+      position: relative;
+    }
+    .testimonial-quote {
+      font-family: var(--font-heading);
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--clr-text);
+      line-height: 1.8;
+      margin: 0 0 1.5rem;
+      position: relative;
+      padding: 0 1rem;
+    }
+    .testimonial-quote::before {
+      content: '\201C';
+      font-size: 3.5rem;
+      color: var(--clr-gold);
+      position: absolute;
+      top: -0.4em;
+      left: -0.3em;
+      font-family: var(--font-heading);
+      line-height: 1;
+      opacity: 0.5;
+    }
+    .testimonial-author {
+      font-size: 0.95rem;
+      color: var(--clr-gold-light);
+      font-weight: 500;
+      margin: 0 0 0.25rem;
+    }
+    .testimonial-role {
+      font-size: 0.82rem;
+      color: var(--clr-muted);
+      margin: 0;
+    }
+    .testimonial-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+    .testimonial-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--clr-border);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0;
+    }
+    .testimonial-dot.active {
+      background: var(--clr-gold);
+      border-color: var(--clr-gold);
+      transform: scale(1.25);
+    }
+    .testimonial-dot:hover {
+      border-color: var(--clr-gold);
+    }
+    .testimonial-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 1px solid var(--clr-border);
+      color: var(--clr-gold);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+      z-index: 2;
+    }
+    .testimonial-nav:hover {
+      border-color: var(--clr-gold);
+      background: rgba(201,168,76,0.08);
+    }
+    .testimonial-nav.prev { left: -60px; }
+    .testimonial-nav.next { right: -60px; }
+    @media (max-width: 860px) {
+      .testimonial-nav.prev { left: -10px; }
+      .testimonial-nav.next { right: -10px; }
+    }
+    @media (max-width: 600px) {
+      .testimonial-nav { display: none; }
+      .section-testimonials { padding: 3rem 1rem 4rem; }
+    }
+
     /* ─── FOOTER ─── */
     .site-footer {
       border-top: 1px solid var(--clr-border);
@@ -780,6 +905,55 @@
     <div class="number-cell">9</div>
   </div>
 
+  <!-- ─── TESTIMONIALS ─── -->
+  <section class="section-testimonials reveal">
+    <h2>Hvad andre siger</h2>
+    <p class="section-subtitle">Oplevelser fra vores klienter</p>
+
+    <div class="testimonial-track">
+      <button class="testimonial-nav prev" aria-label="Forrige">&#8249;</button>
+      <button class="testimonial-nav next" aria-label="Næste">&#8250;</button>
+
+      <div class="testimonial-slide active">
+        <p class="testimonial-quote">Min numerologiske analyse ramte fuldstændig plet. Jeg fik en helt ny forståelse for, hvorfor jeg altid har følt mig draget mod bestemte valg i livet.</p>
+        <p class="testimonial-author">Sofie M.</p>
+        <p class="testimonial-role">Personlig udvikling</p>
+      </div>
+
+      <div class="testimonial-slide">
+        <p class="testimonial-quote">Jeg var skeptisk i starten, men resultaterne talte for sig selv. Det gav mig ro at se mine styrker og udfordringer beskrevet så præcist.</p>
+        <p class="testimonial-author">Thomas K.</p>
+        <p class="testimonial-role">Iværksætter</p>
+      </div>
+
+      <div class="testimonial-slide">
+        <p class="testimonial-quote">Diamant-analysen hjalp mig med at forstå dynamikken i mit parforhold på en måde, jeg aldrig havde overvejet. Virkelig øjenåbnende.</p>
+        <p class="testimonial-author">Maria L.</p>
+        <p class="testimonial-role">Parterapi-klient</p>
+      </div>
+
+      <div class="testimonial-slide">
+        <p class="testimonial-quote">Efter min Retnings-analyse turde jeg endelig sige ja til det karriereskift, jeg havde gået og tænkt på i årevis. Det bedste valg jeg har truffet.</p>
+        <p class="testimonial-author">Jonas R.</p>
+        <p class="testimonial-role">Projektleder</p>
+      </div>
+
+      <div class="testimonial-slide">
+        <p class="testimonial-quote">Lunamila og Mauren har en unik evne til at formidle komplekse sammenhænge på en varm og forståelig måde. Jeg føler mig set og forstået.</p>
+        <p class="testimonial-author">Anne-Mette S.</p>
+        <p class="testimonial-role">Lærer</p>
+      </div>
+    </div>
+
+    <div class="testimonial-dots">
+      <button class="testimonial-dot active" data-index="0" aria-label="Vis testimonial 1"></button>
+      <button class="testimonial-dot" data-index="1" aria-label="Vis testimonial 2"></button>
+      <button class="testimonial-dot" data-index="2" aria-label="Vis testimonial 3"></button>
+      <button class="testimonial-dot" data-index="3" aria-label="Vis testimonial 4"></button>
+      <button class="testimonial-dot" data-index="4" aria-label="Vis testimonial 5"></button>
+    </div>
+  </section>
+
   <!-- ─── FOOTER ─── -->
   <footer class="site-footer">
     <p>&copy; 2026 Numerologi. Alle rettigheder forbeholdes.</p>
@@ -817,6 +991,57 @@
       });
     }, { threshold: 0.15 });
     reveals.forEach(el => observer.observe(el));
+
+    // ─── Testimonial carousel ───
+    (() => {
+      const slides = document.querySelectorAll('.testimonial-slide');
+      const dots = document.querySelectorAll('.testimonial-dot');
+      const prevBtn = document.querySelector('.testimonial-nav.prev');
+      const nextBtn = document.querySelector('.testimonial-nav.next');
+      if (!slides.length) return;
+
+      let current = 0;
+      let autoTimer;
+
+      function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (index + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      }
+
+      function startAuto() {
+        autoTimer = setInterval(() => goTo(current + 1), 6000);
+      }
+      function resetAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+
+      prevBtn?.addEventListener('click', () => { goTo(current - 1); resetAuto(); });
+      nextBtn?.addEventListener('click', () => { goTo(current + 1); resetAuto(); });
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          goTo(Number(dot.dataset.index));
+          resetAuto();
+        });
+      });
+
+      // Swipe support for mobile
+      let touchStartX = 0;
+      const track = document.querySelector('.testimonial-track');
+      track?.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+      track?.addEventListener('touchend', e => {
+        const diff = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diff) > 50) {
+          goTo(diff > 0 ? current - 1 : current + 1);
+          resetAuto();
+        }
+      }, { passive: true });
+
+      startAuto();
+    })();
 
     // ─── Build diamond summary text for the API ───
     // ─── Load gratis config from admin page ───
