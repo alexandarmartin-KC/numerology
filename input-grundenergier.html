@@ -113,13 +113,18 @@
     }
 
     /* Live preview */
+    .preview-col {
+      position: sticky;
+      top: 70px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+    }
     .preview-frame {
       border: 1px solid #dee2e6; border-radius: 8px;
       overflow: hidden; background: #0b0b12;
-      min-height: 400px;
     }
     .preview-frame iframe {
-      width: 100%; height: 800px; border: none;
+      width: 100%; height: calc(100vh - 150px); border: none;
     }
 
     /* Pull quote styling */
@@ -237,7 +242,7 @@
       </div>
 
       <!-- ═══ RIGHT: Preview ═══ -->
-      <div class="col-lg-6">
+      <div class="col-lg-6 preview-col">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin:0;">Live preview</h6>
           <button class="btn btn-sm btn-outline-secondary" onclick="refreshPreview()">↻ Opdater</button>
