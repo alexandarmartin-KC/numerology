@@ -495,6 +495,35 @@
     /* ─── ABOUT ─── */
     .section-about {
       padding: 4rem 1.5rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-about .about-diamond {
+      position: absolute;
+      width: 400px; height: 400px;
+      transform: rotate(45deg);
+      border: 1px solid rgba(201,168,76,0.05);
+      border-radius: 4px;
+      pointer-events: none;
+      animation: diamond-pulse 10s ease-in-out infinite;
+    }
+    .section-about .about-diamond:nth-child(1) {
+      top: -10%; right: -8%;
+      width: 350px; height: 350px;
+      border-color: rgba(201,168,76,0.04);
+      animation-delay: -1s;
+    }
+    .section-about .about-diamond:nth-child(2) {
+      bottom: -15%; left: -6%;
+      width: 280px; height: 280px;
+      border-color: rgba(201,168,76,0.035);
+      animation-delay: -4s; animation-duration: 12s;
+    }
+    .section-about .about-diamond:nth-child(3) {
+      top: 30%; left: -3%;
+      width: 180px; height: 180px;
+      border-color: rgba(201,168,76,0.03);
+      animation-delay: -6s; animation-duration: 14s;
     }
     .section-about .container {
       max-width: 800px; margin: 0 auto; text-align: center;
@@ -728,6 +757,9 @@
        5. ABOUT — Hvad er numerologi
        ═══════════════════════════════════════════ -->
   <section class="section-about reveal">
+    <div class="about-diamond"></div>
+    <div class="about-diamond"></div>
+    <div class="about-diamond"></div>
     <div class="container">
       <div class="section-label">Hvad er numerologi?</div>
       <h2>Tallene fortæller en historie</h2>
