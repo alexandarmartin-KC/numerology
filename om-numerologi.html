@@ -741,13 +741,20 @@
     document.querySelectorAll('.toc-list a').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
+        const href = a.getAttribute('href');
+        const target = document.querySelector(href);
         if (target) {
-          // Close TOC after clicking
+          // Close TOC first, then scroll after layout settles
           tocWrap.classList.remove('open');
           tocToggle.setAttribute('aria-expanded', 'false');
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          history.pushState(null, '', a.getAttribute('href'));
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              const navHeight = 80;
+              const y = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+              history.pushState(null, '', href);
+            }, 420); // matches TOC close transition (0.4s)
+          });
         }
       });
     });
