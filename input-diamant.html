@@ -104,6 +104,10 @@
               Upload dokument
             </button>
             <button class="btn btn-outline-primary" onclick="downloadJSON()">Download JSON</button>
+            <button class="btn btn-outline-success" onclick="exportPlanetImages()" title="Download alle planet-billeder som separate filer til assets/images/">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-1" style="vertical-align:-2px;"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-2.1a.5.5 0 0 1 1 0v2.1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5v-2.1a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+              Eksportér billeder
+            </button>
             <span id="saveIndicator" class="save-indicator bg-success text-white align-self-center">Gemt!</span>
           </div>
         </div>
@@ -429,6 +433,33 @@ function downloadJSON() {
   a.download = 'energies.v1.json';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ─── Export planet images as individual file downloads ───
+function exportPlanetImages() {
+  const imgs = loadImages();
+  const keys = Object.keys(imgs).filter(k => imgs[k]);
+  if (!keys.length) {
+    alert('Ingen planet-billeder uploadet endnu.');
+    return;
+  }
+  // Download each image as a separate file
+  let count = 0;
+  keys.forEach((key, i) => {
+    const dataUrl = imgs[key];
+    const ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
+    const filename = `planet-${key}.${ext}`;
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      a.click();
+      count++;
+      if (count === keys.length) {
+        alert(`${count} billede(r) eksporteret!\\n\\nFlyt filerne til assets/images/ i dit repo.\\nFilnavne: planet-1.png, planet-2.png osv.`);
+      }
+    }, i * 300); // stagger downloads to avoid browser blocking
+  });
 }
 
 // ─── Escape ───
