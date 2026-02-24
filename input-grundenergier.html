@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Grundenergier</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+
+    /* Energy selector tabs */
+    .energy-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .energy-tab {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700;
+      border: 2px solid #dee2e6; border-radius: 8px;
+      background: #fff; color: #333; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .energy-tab:hover { border-color: #c9a84c; color: #c9a84c; }
+    .energy-tab.active {
+      background: #c9a84c; color: #fff; border-color: #c9a84c;
+    }
+    .energy-tab.has-data { border-color: #198754; }
+    .energy-tab.has-data::after {
+      content: ''; display: block; width: 6px; height: 6px;
+      background: #198754; border-radius: 50%;
+      position: absolute; top: 2px; right: 2px;
+    }
+    .energy-tab { position: relative; }
+
+    /* Section cards */
+    .section-card {
+      border: 1px solid #dee2e6; border-radius: 8px;
+      background: #f8f9fa; padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .section-card .section-handle {
+      cursor: grab; color: #aaa; font-size: 18px;
+      user-select: none; margin-right: 8px;
+    }
+    .section-card .section-handle:active { cursor: grabbing; }
+    .section-card .section-header {
+      display: flex; align-items: center; margin-bottom: 0.75rem;
+    }
+    .section-card .section-title-input {
+      flex: 1; font-weight: 600; font-size: 15px;
+      border: 1px solid transparent; background: transparent;
+      padding: 4px 8px; border-radius: 4px;
+      transition: border-color 0.2s;
+    }
+    .section-card .section-title-input:focus {
+      border-color: #c9a84c; outline: none; background: #fff;
+    }
+    .section-card textarea {
+      width: 100%; font-size: 13px; line-height: 1.7;
+      border: 1px solid #dee2e6; border-radius: 6px;
+      padding: 10px 12px; resize: vertical;
+    }
+    .section-card textarea:focus { border-color: #c9a84c; outline: none; }
+    .section-actions {
+      display: flex; gap: 4px; margin-left: 8px;
+    }
+    .section-actions button {
+      background: none; border: 1px solid #dee2e6; border-radius: 4px;
+      padding: 2px 6px; cursor: pointer; font-size: 13px; color: #666;
+      transition: all 0.15s;
+    }
+    .section-actions button:hover { border-color: #999; color: #333; }
+    .section-actions .btn-del:hover { border-color: #dc3545; color: #dc3545; }
+
+    /* Section type badges */
+    .section-type {
+      font-size: 10px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: #999; margin-bottom: 6px;
+    }
+
+    /* Meta fields */
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    .meta-field label {
+      font-size: 11px; color: #666; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 3px; display: block;
+    }
+    .meta-field input {
+      width: 100%; font-size: 13px; padding: 6px 10px;
+      border: 1px solid #dee2e6; border-radius: 6px;
+    }
+    .meta-field input:focus { border-color: #c9a84c; outline: none; }
+
+    /* Add section button */
+    .add-section-row {
+      display: flex; gap: 8px; justify-content: center;
+      padding: 1rem; margin-top: 0.5rem;
+    }
+    .add-section-btn {
+      padding: 6px 16px; font-size: 13px; font-weight: 500;
+      border: 1px dashed #c9a84c; color: #c9a84c;
+      background: transparent; border-radius: 6px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .add-section-btn:hover {
+      background: rgba(201,168,76,0.08);
+    }
+
+    /* Live preview */
+    .preview-frame {
+      border: 1px solid #dee2e6; border-radius: 8px;
+      overflow: hidden; background: #0b0b12;
+      min-height: 400px;
+    }
+    .preview-frame iframe {
+      width: 100%; height: 800px; border: none;
+    }
+
+    /* Pull quote styling */
+    .pq-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: #c9a84c; margin-bottom: 4px;
+    }
+
+    /* Lucky numbers input */
+    .lucky-input {
+      font-size: 13px; padding: 6px 10px;
+      border: 1px solid #dee2e6; border-radius: 6px; width: 100%;
+    }
+    .lucky-input:focus { border-color: #c9a84c; outline: none; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Numerologi</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item"><a class="nav-link" href="diamant.html">Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="aarstalsraekker.html">Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="rapport.html">Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="artikel.html">Artikler</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-diamant.html">Input Diamant</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-generelt.html">Input Generelt</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-rapport.html">Input Rapport</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-gratisberegning.html">Input Gratis Beregning</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-grundenergier.html">Input Grundenergier</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid py-4" style="max-width:1400px;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Grundenergier</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+    </div>
+    <p class="text-muted mb-3" style="font-size:13px;">
+      Vælg en grundenergi (1-9) og rediger indhold. Tilføj sektioner, omarranger med drag, og se live-preview til højre. Auto-gemt.
+    </p>
+
+    <!-- Energy picker -->
+    <div class="energy-tabs" id="energyTabs"></div>
+
+    <div class="row g-4">
+      <!-- ═══ LEFT: Editor ═══ -->
+      <div class="col-lg-6">
+        <!-- Meta fields -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Side-info</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label>Titel (h1)</label>
+                <input type="text" id="metaTitle" placeholder="Den selvstændige leder">
+              </div>
+              <div class="meta-field">
+                <label>Guld-ord i titel</label>
+                <input type="text" id="metaGoldWord" placeholder="leder">
+              </div>
+              <div class="meta-field">
+                <label>Planet</label>
+                <input type="text" id="metaPlanet" placeholder="Solen">
+              </div>
+              <div class="meta-field">
+                <label>Element</label>
+                <input type="text" id="metaElement" placeholder="Ild">
+              </div>
+              <div class="meta-field">
+                <label>Lykkedage</label>
+                <input type="text" id="metaLuckyDays" placeholder="Søn & man">
+              </div>
+              <div class="meta-field">
+                <label>Kernekvalitet</label>
+                <input type="text" id="metaQuality" placeholder="Viljestyrke">
+              </div>
+              <div class="meta-field">
+                <label>Fødselsdage</label>
+                <input type="text" id="metaBirthdays" placeholder="1. • 10. • 19. • 28.">
+              </div>
+              <div class="meta-field">
+                <label>Kort beskrivelse (nav)</label>
+                <input type="text" id="metaNavLabel" placeholder="Lederen">
+              </div>
+            </div>
+            <div class="meta-field mb-3">
+              <label>Intro-tekst (under overskrift)</label>
+              <textarea id="metaIntro" rows="3" style="width:100%; font-size:13px; line-height:1.7; border:1px solid #dee2e6; border-radius:6px; padding:10px 12px;" placeholder="Grundenergi 1 står for identitet og individualitet…"></textarea>
+            </div>
+            <div class="meta-field">
+              <label>Lykketal (kommasepareret)</label>
+              <input type="text" id="metaLuckyNumbers" class="lucky-input" placeholder="1,2,4,7,10,11,13,16,19,20,22,25,28,29,31">
+            </div>
+          </div>
+        </div>
+
+        <!-- Sections -->
+        <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin-bottom:12px;">Sektioner</h6>
+        <div id="sectionsContainer"></div>
+        <div class="add-section-row">
+          <button class="add-section-btn" onclick="addSection('heading')">+ Overskrift + tekst</button>
+          <button class="add-section-btn" onclick="addSection('pullquote')">+ Pull-quote</button>
+          <button class="add-section-btn" onclick="addSection('text')">+ Kun tekst</button>
+        </div>
+      </div>
+
+      <!-- ═══ RIGHT: Preview ═══ -->
+      <div class="col-lg-6">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin:0;">Live preview</h6>
+          <button class="btn btn-sm btn-outline-secondary" onclick="refreshPreview()">↻ Opdater</button>
+        </div>
+        <div class="preview-frame">
+          <iframe id="previewFrame" srcdoc=""></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    const STORAGE_KEY = 'grundenergierData';
+
+    // Default data for energy 1 (seeded from existing page)
+    const DEFAULTS = {
+      1: {
+        meta: { title:'Den selvstændige leder', goldWord:'leder', planet:'Solen', element:'Ild', luckyDays:'Søn & man', quality:'Viljestyrke', birthdays:'1. • 10. • 19. • 28.', navLabel:'Lederen', intro:'Grundenergi 1 står for identitet og individualitet — vores inderste væsenskerne. Solen er kilden til vitalitet og selvudfoldelse, og 1-energien bærer den kraft i sig.', luckyNumbers:'1,2,4,7,10,11,13,16,19,20,22,25,28,29,31' },
+        sections: [
+          { type:'heading', title:'Temperament', text:'Du er viljestærk, aktiv og målrettet og går efter det, du har sat dig for. Din stærke vilje, optimisme, udholdenhed og vedholdenhed gør, at du ofte er heldig og succesrig.\n\nDit humør afhænger af, om tingene går, som du har sat dig for. Dette kan medføre, at du svinger fra at være en charmerende humørspreder til en kold lyseslukker.' },
+          { type:'pullquote', text:'Du er imødekommende og kan bjergtage andre på grund af dit store kendskab til og viden om mangt og meget.' },
+          { type:'text', text:'Det er vigtigt for dig følelsesmæssigt at holde facaden, da det at vise følelser kunne opfattes som et svaghedstegn, og derfor er du lidt lukket.' },
+          { type:'heading', title:'Kærlighedslivet', text:'Du har en stor frihedstrang, og du vil helst have førertrøjen på i kærlighedsforhold, hvor du derfor kan være ret dominerende. Du har en stærk tiltrækningskraft, og din vitalitet er udpræget.\n\nDu er et kærligt og varmt menneske, hvor tryghed betyder meget. Såfremt din partner forstår at acceptere dig og dine behov, uden at såre din stolthed, er du parat til at give ham eller hende alt. Din partner vil være beskyttet og tryg i dine hænder.' },
+          { type:'heading', title:'Arbejdslivet', text:'Du er den fødte chef eller leder, og du er desuden en god organisator, som forstår at uddelegere arbejdet. Ligegyldigt om det er din egen virksomhed, eller om du er ansat, er du meget entusiastisk — men du forventer det samme af dine kolleger.\n\nDu kræver nærmest beundring for din indsats. Du er viljestærk, grundig og forventer tillid fra dine kolleger og overordnede i alt, hvad du foretager dig. Desuden påtager du dig altid ansvaret og står inde for det.\n\nDu elsker udfordringer, nye ideer og planer og står altid på spring. Initiativet mangler ikke til at gå i gang, og mange gange lykkes det for dig at få succes.' },
+          { type:'heading', title:'Amulet', text:'Bærer du dit 1-tal som amulet, forstærkes din udholdenhed, og du får mange, nye muligheder.' }
+        ]
+      }
+    };
+
+    let allData = {};
+    let currentEnergy = 1;
+
+    // ─── Init ───
+    function init() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      allData = saved ? JSON.parse(saved) : {};
+      // Merge defaults for missing energies
+      for (let i = 1; i <= 9; i++) {
+        if (!allData[i]) {
+          allData[i] = DEFAULTS[i] || {
+            meta: { title:'', goldWord:'', planet:'', element:'', luckyDays:'', quality:'', birthdays:'', navLabel:'', intro:'', luckyNumbers:'' },
+            sections: []
+          };
+        }
+      }
+      renderTabs();
+      loadEnergy(1);
+    }
+
+    // ─── Tabs ───
+    function renderTabs() {
+      const c = document.getElementById('energyTabs');
+      c.innerHTML = '';
+      for (let i = 1; i <= 9; i++) {
+        const tab = document.createElement('div');
+        tab.className = 'energy-tab' + (i === currentEnergy ? ' active' : '');
+        if (allData[i] && allData[i].meta && allData[i].meta.title) tab.classList.add('has-data');
+        tab.textContent = i;
+        tab.onclick = () => { saveCurrentEnergy(); currentEnergy = i; loadEnergy(i); renderTabs(); };
+        c.appendChild(tab);
+      }
+    }
+
+    // ─── Load energy into editor ───
+    function loadEnergy(num) {
+      const d = allData[num];
+      if (!d) return;
+      document.getElementById('metaTitle').value = d.meta.title || '';
+      document.getElementById('metaGoldWord').value = d.meta.goldWord || '';
+      document.getElementById('metaPlanet').value = d.meta.planet || '';
+      document.getElementById('metaElement').value = d.meta.element || '';
+      document.getElementById('metaLuckyDays').value = d.meta.luckyDays || '';
+      document.getElementById('metaQuality').value = d.meta.quality || '';
+      document.getElementById('metaBirthdays').value = d.meta.birthdays || '';
+      document.getElementById('metaNavLabel').value = d.meta.navLabel || '';
+      document.getElementById('metaIntro').value = d.meta.intro || '';
+      document.getElementById('metaLuckyNumbers').value = d.meta.luckyNumbers || '';
+      renderSections(d.sections || []);
+      refreshPreview();
+    }
+
+    // ─── Save current energy from editor ───
+    function saveCurrentEnergy() {
+      const d = allData[currentEnergy];
+      if (!d) return;
+      d.meta.title = document.getElementById('metaTitle').value;
+      d.meta.goldWord = document.getElementById('metaGoldWord').value;
+      d.meta.planet = document.getElementById('metaPlanet').value;
+      d.meta.element = document.getElementById('metaElement').value;
+      d.meta.luckyDays = document.getElementById('metaLuckyDays').value;
+      d.meta.quality = document.getElementById('metaQuality').value;
+      d.meta.birthdays = document.getElementById('metaBirthdays').value;
+      d.meta.navLabel = document.getElementById('metaNavLabel').value;
+      d.meta.intro = document.getElementById('metaIntro').value;
+      d.meta.luckyNumbers = document.getElementById('metaLuckyNumbers').value;
+      // Read sections from DOM
+      d.sections = [];
+      document.querySelectorAll('#sectionsContainer .section-card').forEach(card => {
+        const type = card.dataset.type;
+        const obj = { type };
+        if (type === 'heading') {
+          obj.title = card.querySelector('.section-title-input').value;
+          obj.text = card.querySelector('textarea').value;
+        } else if (type === 'pullquote') {
+          obj.text = card.querySelector('textarea').value;
+        } else {
+          obj.text = card.querySelector('textarea').value;
+        }
+        d.sections.push(obj);
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+      showSaveIndicator();
+    }
+
+    // ─── Render sections ───
+    function renderSections(sections) {
+      const c = document.getElementById('sectionsContainer');
+      c.innerHTML = '';
+      sections.forEach((s, i) => {
+        c.appendChild(createSectionCard(s, i));
+      });
+    }
+
+    function createSectionCard(s, index) {
+      const card = document.createElement('div');
+      card.className = 'section-card';
+      card.dataset.type = s.type;
+      card.draggable = true;
+      card.dataset.index = index;
+
+      let typeLabel = '';
+      if (s.type === 'heading') typeLabel = 'Overskrift + tekst';
+      else if (s.type === 'pullquote') typeLabel = 'Pull-quote';
+      else typeLabel = 'Tekst';
+
+      let html = `<div class="section-type">${typeLabel}</div>`;
+      html += `<div class="section-header">`;
+      html += `<span class="section-handle" title="Træk for at flytte">⠿</span>`;
+      if (s.type === 'heading') {
+        html += `<input class="section-title-input" value="${esc(s.title || '')}" placeholder="Sektionsoverskrift…">`;
+      } else if (s.type === 'pullquote') {
+        html += `<span style="flex:1; font-style:italic; font-size:13px; color:#c9a84c;">Fremhævet citat</span>`;
+      } else {
+        html += `<span style="flex:1; font-size:13px; color:#666;">Brødtekst</span>`;
+      }
+      html += `<div class="section-actions">`;
+      html += `<button title="Flyt op" onclick="moveSection(${index},-1)">↑</button>`;
+      html += `<button title="Flyt ned" onclick="moveSection(${index},1)">↓</button>`;
+      html += `<button class="btn-del" title="Slet sektion" onclick="deleteSection(${index})">✕</button>`;
+      html += `</div></div>`;
+      html += `<textarea rows="${s.type === 'pullquote' ? 2 : 6}" placeholder="${s.type === 'pullquote' ? 'Citat-tekst…' : 'Skriv indhold her… (brug tom linje for nyt afsnit)'}">${esc(s.text || '')}</textarea>`;
+
+      card.innerHTML = html;
+
+      // Drag events
+      card.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', index);
+        card.style.opacity = '0.5';
+      });
+      card.addEventListener('dragend', () => { card.style.opacity = '1'; });
+      card.addEventListener('dragover', e => { e.preventDefault(); card.style.borderColor = '#c9a84c'; });
+      card.addEventListener('dragleave', () => { card.style.borderColor = '#dee2e6'; });
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        card.style.borderColor = '#dee2e6';
+        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+        const toIndex = parseInt(card.dataset.index);
+        if (fromIndex !== toIndex) {
+          saveCurrentEnergy();
+          const arr = allData[currentEnergy].sections;
+          const [moved] = arr.splice(fromIndex, 1);
+          arr.splice(toIndex, 0, moved);
+          renderSections(arr);
+          autoSave();
+        }
+      });
+
+      // Auto-save on typing
+      card.querySelectorAll('input, textarea').forEach(el => {
+        el.addEventListener('input', autoSave);
+      });
+
+      return card;
+    }
+
+    // ─── Section actions ───
+    function addSection(type) {
+      saveCurrentEnergy();
+      const s = { type, text: '' };
+      if (type === 'heading') s.title = '';
+      allData[currentEnergy].sections.push(s);
+      renderSections(allData[currentEnergy].sections);
+      autoSave();
+      // Scroll to new section
+      const cards = document.querySelectorAll('.section-card');
+      if (cards.length) cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function moveSection(index, dir) {
+      saveCurrentEnergy();
+      const arr = allData[currentEnergy].sections;
+      const newIndex = index + dir;
+      if (newIndex < 0 || newIndex >= arr.length) return;
+      [arr[index], arr[newIndex]] = [arr[newIndex], arr[index]];
+      renderSections(arr);
+      autoSave();
+    }
+
+    function deleteSection(index) {
+      if (!confirm('Slet denne sektion?')) return;
+      saveCurrentEnergy();
+      allData[currentEnergy].sections.splice(index, 1);
+      renderSections(allData[currentEnergy].sections);
+      autoSave();
+    }
+
+    // ─── Auto-save with debounce ───
+    let saveTimer;
+    function autoSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        saveCurrentEnergy();
+        refreshPreview();
+      }, 500);
+    }
+
+    // Listen to meta field changes
+    document.querySelectorAll('.meta-grid input, #metaIntro, #metaLuckyNumbers').forEach(el => {
+      el.addEventListener('input', autoSave);
+    });
+
+    // ─── Save indicator ───
+    function showSaveIndicator() {
+      const el = document.getElementById('saveIndicator');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 1500);
+    }
+
+    // ─── HTML escape ───
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // ─── Preview ───
+    function refreshPreview() {
+      const d = allData[currentEnergy];
+      if (!d) return;
+      const m = d.meta;
+      const num = currentEnergy;
+
+      // Build preview HTML
+      let sectionsHtml = '';
+      (d.sections || []).forEach(s => {
+        if (s.type === 'heading') {
+          sectionsHtml += `<h2>${esc(s.title)}</h2>`;
+          (s.text || '').split(/\n\n+/).forEach(p => {
+            if (p.trim()) sectionsHtml += `<p>${esc(p.trim())}</p>`;
+          });
+        } else if (s.type === 'pullquote') {
+          sectionsHtml += `<div class="pull-quote"><p>${esc(s.text)}</p></div>`;
+        } else {
+          (s.text || '').split(/\n\n+/).forEach(p => {
+            if (p.trim()) sectionsHtml += `<p>${esc(p.trim())}</p>`;
+          });
+        }
+      });
+
+      // Lucky numbers
+      const luckyNums = (m.luckyNumbers || '').split(',').map(n => n.trim()).filter(Boolean);
+      let luckyHtml = '';
+      if (luckyNums.length) {
+        luckyHtml = `<div class="lucky-section"><h2>Lykketal</h2><p>Disse tal resonerer med din ${num}-energi:</p><div class="lucky-numbers">`;
+        luckyNums.forEach(n => { luckyHtml += `<div class="lucky-num">${esc(n)}</div>`; });
+        luckyHtml += `</div></div>`;
+      }
+
+      // Title with gold word highlighted
+      let titleHtml = esc(m.title || '');
+      if (m.goldWord) {
+        titleHtml = titleHtml.replace(new RegExp(`(${esc(m.goldWord)})`, 'i'), '<span>$1</span>');
+      }
+
+      const previewHtml = `<!doctype html>
+<html lang="da"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--clr-bg:#0b0b12;--clr-surface:#13131f;--clr-surface-2:#1a1a2e;--clr-gold:#c9a84c;--clr-gold-light:#e8d5a3;--clr-text:#e8e4da;--clr-muted:#7c7c8a;--clr-border:rgba(201,168,76,0.15);--font-heading:'Cormorant Garamond',Georgia,serif;--font-body:'Inter',system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--clr-bg);color:var(--clr-text);font-family:var(--font-body);font-size:15px;line-height:1.6;padding:0}
+.hero{padding:60px 1.5rem 40px;text-align:center}
+.hero-label{display:inline-block;font-size:0.8rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--clr-gold);border:1px solid rgba(201,168,76,0.35);padding:0.5rem 1.5rem;border-radius:100px;margin-bottom:1.2rem;background:rgba(201,168,76,0.06)}
+.hero h1{font-family:var(--font-heading);font-size:2.4rem;font-weight:700;color:var(--clr-text);margin:0 0 0.8rem;line-height:1.1}
+.hero h1 span{color:var(--clr-gold)}
+.hero-intro{max-width:500px;margin:0 auto 1.5rem;font-size:0.95rem;font-weight:300;color:var(--clr-muted);line-height:1.8}
+.hero-born{font-family:var(--font-body);font-size:0.9rem;font-weight:400;color:var(--clr-text);opacity:0.85}
+.hero-divider{width:50px;height:1px;background:var(--clr-border);margin:1.5rem auto 0}
+.facts-strip{display:flex;justify-content:center;max-width:600px;margin:0 auto;padding:0 1rem}
+.fact-item{flex:1;text-align:center;padding:1.5rem 0.75rem;border-right:1px solid var(--clr-border)}
+.fact-item:last-child{border-right:none}
+.fact-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--clr-muted);margin:0 0 0.3rem}
+.fact-value{font-family:var(--font-heading);font-size:0.95rem;font-weight:600;color:var(--clr-gold-light);margin:0}
+.article{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem}
+.article h2{font-family:var(--font-heading);font-size:1.6rem;font-weight:600;color:var(--clr-text);margin:2.5rem 0 0.8rem;padding-left:0.8rem;border-left:2px solid var(--clr-gold)}
+.article h2:first-child{margin-top:0}
+.article p{font-size:0.95rem;font-weight:300;color:var(--clr-muted);line-height:1.85;margin:0 0 0.8rem}
+.pull-quote{margin:2rem 0;padding:1.5rem 2rem;border-left:2px solid var(--clr-gold);background:linear-gradient(135deg,rgba(201,168,76,0.03),transparent)}
+.pull-quote p{font-family:var(--font-heading);font-size:1.15rem;font-weight:400;font-style:italic;color:var(--clr-text);line-height:1.7;margin:0}
+.lucky-section{margin:2.5rem 0 0}
+.lucky-numbers{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem}
+.lucky-num{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--clr-gold);border:1px solid var(--clr-border);border-radius:6px}
+</style></head><body>
+<section class="hero">
+  <div class="hero-label">Grundenergi ${num}</div>
+  <h1>${titleHtml}</h1>
+  <p class="hero-intro">${esc(m.intro || '')}</p>
+  <p class="hero-born">${num}'ere er født den ${esc(m.birthdays || '')} i enhver given måned</p>
+  <div class="hero-divider"></div>
+</section>
+<div class="facts-strip">
+  <div class="fact-item"><p class="fact-label">Planet</p><p class="fact-value">${esc(m.planet || '')}</p></div>
+  <div class="fact-item"><p class="fact-label">Element</p><p class="fact-value">${esc(m.element || '')}</p></div>
+  <div class="fact-item"><p class="fact-label">Lykkedage</p><p class="fact-value">${esc(m.luckyDays || '')}</p></div>
+  <div class="fact-item"><p class="fact-label">Kvalitet</p><p class="fact-value">${esc(m.quality || '')}</p></div>
+</div>
+<article class="article">${sectionsHtml}${luckyHtml}</article>
+</body></html>`;
+
+      document.getElementById('previewFrame').srcdoc = previewHtml;
+    }
+
+    // ─── Init ───
+    init();
+  </script>
+</body>
+</html>
