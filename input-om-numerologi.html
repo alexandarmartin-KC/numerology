@@ -96,6 +96,25 @@
       font-size: 13px;
       line-height: 1.65;
     }
+
+    .preview-col {
+      position: sticky;
+      top: 70px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+    }
+    .preview-frame {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0b0b12;
+    }
+    .preview-frame iframe {
+      width: 100%;
+      height: calc(100vh - 150px);
+      border: none;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -125,7 +144,7 @@
     </div>
   </nav>
 
-  <main class="container py-4">
+  <main class="container-fluid py-4" style="max-width:1400px;">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h1 class="h3 mb-0">Input Om Numerologi</h1>
       <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
@@ -133,52 +152,66 @@
 
     <p class="text-muted mb-4" style="font-size:13px;">Redigér side-info og sektioner. Du kan tilføje/slette/flytte sektioner, og export genererer både indholdsfortegnelse og artikel i <code>om-numerologi.html</code>.</p>
 
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Side-info</h6>
-        <div class="meta-grid">
-          <div class="meta-field">
-            <label for="fieldTitle">HTML title</label>
-            <input id="fieldTitle" class="form-control" type="text" placeholder="Sidens title-tag">
-          </div>
-          <div class="meta-field">
-            <label for="fieldHeroLabel">Hero label</label>
-            <input id="fieldHeroLabel" class="form-control" type="text" placeholder="Label over overskriften">
-          </div>
-          <div class="meta-field">
-            <label for="fieldHeroTitle">Hero overskrift (HTML)</label>
-            <input id="fieldHeroTitle" class="form-control" type="text" placeholder="Fx Hvad er <span>numerologi?</span>">
-          </div>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Side-info</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldTitle">HTML title</label>
+                <input id="fieldTitle" class="form-control" type="text" placeholder="Sidens title-tag">
+              </div>
+              <div class="meta-field">
+                <label for="fieldHeroLabel">Hero label</label>
+                <input id="fieldHeroLabel" class="form-control" type="text" placeholder="Label over overskriften">
+              </div>
+              <div class="meta-field">
+                <label for="fieldHeroTitle">Hero overskrift (HTML)</label>
+                <input id="fieldHeroTitle" class="form-control" type="text" placeholder="Fx Hvad er <span>numerologi?</span>">
+              </div>
 
-          <div class="meta-field" style="grid-column:1 / -1;">
-            <label for="fieldMetaDescription">Meta description</label>
-            <textarea id="fieldMetaDescription" class="form-control" rows="2" placeholder="Meta-beskrivelse"></textarea>
-          </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMetaDescription">Meta description</label>
+                <textarea id="fieldMetaDescription" class="form-control" rows="2" placeholder="Meta-beskrivelse"></textarea>
+              </div>
 
-          <div class="meta-field" style="grid-column:1 / -1;">
-            <label for="fieldHeroIntro">Hero intro</label>
-            <textarea id="fieldHeroIntro" class="form-control" rows="3" placeholder="Kort introtekst"></textarea>
-          </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldHeroIntro">Hero intro</label>
+                <textarea id="fieldHeroIntro" class="form-control" rows="3" placeholder="Kort introtekst"></textarea>
+              </div>
 
-          <div class="meta-field" style="grid-column:1 / -1;">
-            <label for="fieldArticleIntro">HTML før første sektion (.article)</label>
-            <textarea id="fieldArticleIntro" class="form-control" rows="6" placeholder="Fx intro-afsnit eller pull-quote før første h2"></textarea>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldArticleIntro">HTML før første sektion (.article)</label>
+                <textarea id="fieldArticleIntro" class="form-control" rows="6" placeholder="Fx intro-afsnit eller pull-quote før første h2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin-bottom:12px;">Sektioner</h6>
+        <div id="sectionsContainer"></div>
+        <div class="add-section-row mb-4">
+          <button class="add-section-btn" id="addSectionBtn" type="button">+ Tilføj sektion</button>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <div class="d-flex gap-2">
+            <button id="resetBtn" class="btn btn-outline-secondary" type="button">Nulstil til original</button>
+            <button id="copyBtn" class="btn btn-outline-primary" type="button">Kopiér HTML</button>
+            <button id="downloadBtn" class="btn btn-success" type="button">Download om-numerologi.html</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin-bottom:12px;">Sektioner</h6>
-    <div id="sectionsContainer"></div>
-    <div class="add-section-row mb-4">
-      <button class="add-section-btn" id="addSectionBtn" type="button">+ Tilføj sektion</button>
-    </div>
-
-    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-      <div class="d-flex gap-2">
-        <button id="resetBtn" class="btn btn-outline-secondary" type="button">Nulstil til original</button>
-        <button id="copyBtn" class="btn btn-outline-primary" type="button">Kopiér HTML</button>
-        <button id="downloadBtn" class="btn btn-success" type="button">Download om-numerologi.html</button>
+      <div class="col-lg-6 preview-col">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin:0;">Live preview</h6>
+          <button class="btn btn-sm btn-outline-secondary" type="button" id="refreshPreviewBtn">↻ Opdater</button>
+        </div>
+        <div class="preview-frame">
+          <iframe id="previewFrame" srcdoc=""></iframe>
+        </div>
       </div>
     </div>
   </main>
@@ -188,6 +221,7 @@
     const STORAGE_KEY = 'inputOmNumerologiData';
     let originalHtml = '';
     let state = null;
+    let previewTimer = null;
 
     const fields = {
       title: document.getElementById('fieldTitle'),
@@ -286,6 +320,18 @@
     function saveToLocalStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormValues()));
       showSaved();
+      schedulePreviewRefresh();
+    }
+
+    function refreshPreview() {
+      const frame = document.getElementById('previewFrame');
+      if (!frame || !originalHtml) return;
+      frame.srcdoc = buildUpdatedHtml();
+    }
+
+    function schedulePreviewRefresh() {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(refreshPreview, 120);
     }
 
     function makeSectionIdFallback(index) {
@@ -448,6 +494,7 @@
       });
 
       document.getElementById('addSectionBtn').addEventListener('click', addSection);
+      document.getElementById('refreshPreviewBtn').addEventListener('click', refreshPreview);
 
       document.getElementById('sectionsContainer').addEventListener('input', (e) => {
         if (!(e.target instanceof HTMLElement)) return;
@@ -469,6 +516,8 @@
         if (action === 'up') moveSection(index, index - 1);
         if (action === 'down') moveSection(index, index + 1);
       });
+
+      refreshPreview();
     }
 
     document.getElementById('resetBtn').addEventListener('click', () => {
@@ -477,6 +526,7 @@
       const baseData = parseCurrentDocument(originalHtml);
       setFormValues(baseData);
       showSaved();
+      refreshPreview();
     });
 
     document.getElementById('copyBtn').addEventListener('click', async () => {
