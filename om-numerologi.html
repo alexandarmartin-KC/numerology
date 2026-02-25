@@ -318,9 +318,16 @@
       border-bottom: 1px solid rgba(201,168,76,0.06);
       font-size: 1rem;
       letter-spacing: 1px;
+      transition: background 0.2s;
     }
-    .letter-table tbody tr:hover td {
+    .letter-table thead th {
+      transition: background 0.2s, color 0.2s;
+    }
+    .letter-table .is-col-hover {
       background: rgba(201,168,76,0.04);
+    }
+    .letter-table thead .is-col-hover {
+      color: var(--clr-gold-light);
     }
 
     /* ═══════════════════════════════
@@ -778,6 +785,49 @@
         }
       });
     });
+
+    // Letter table: highlight vertical column on hover
+    (function initLetterTableColumnHover() {
+      const table = document.querySelector('.letter-table');
+      if (!table) return;
+
+      const headCells = Array.from(table.querySelectorAll('thead th'));
+      const bodyRows = Array.from(table.querySelectorAll('tbody tr'));
+      let activeIndex = -1;
+
+      function clearCol() {
+        headCells.forEach(cell => cell.classList.remove('is-col-hover'));
+        bodyRows.forEach(row => {
+          const cell = row.children[activeIndex];
+          if (cell) cell.classList.remove('is-col-hover');
+        });
+      }
+
+      function setCol(index) {
+        if (index === activeIndex) return;
+        clearCol();
+        activeIndex = index;
+        if (activeIndex < 0) return;
+
+        const head = headCells[activeIndex];
+        if (head) head.classList.add('is-col-hover');
+        bodyRows.forEach(row => {
+          const cell = row.children[activeIndex];
+          if (cell) cell.classList.add('is-col-hover');
+        });
+      }
+
+      table.addEventListener('mouseover', (e) => {
+        const cell = e.target.closest('td, th');
+        if (!cell || !table.contains(cell)) return;
+        setCol(cell.cellIndex);
+      });
+
+      table.addEventListener('mouseleave', () => {
+        clearCol();
+        activeIndex = -1;
+      });
+    })();
   </script>
 </body>
 </html>
