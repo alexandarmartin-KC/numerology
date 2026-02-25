@@ -563,49 +563,49 @@
 
     <!-- SVG Diamond diagram -->
     <div class="diamond-visual reveal">
-      <svg viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
         <!-- Diamond shape -->
-        <polygon points="200,30 370,220 200,410 30,220" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="1.5"/>
+        <polygon points="200,50 370,230 200,420 30,230" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="1.5"/>
         <!-- Horizontal line -->
-        <line x1="30" y1="220" x2="370" y2="220" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+        <line x1="30" y1="230" x2="370" y2="230" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
         <!-- Vertical line -->
-        <line x1="200" y1="30" x2="200" y2="410" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+        <line x1="200" y1="50" x2="200" y2="420" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
         <!-- Cross lines -->
-        <line x1="115" y1="125" x2="285" y2="125" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
-        <line x1="115" y1="315" x2="285" y2="315" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+        <line x1="115" y1="140" x2="285" y2="140" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+        <line x1="115" y1="325" x2="285" y2="325" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
         <!-- Position dots and labels -->
-        <!-- Top -->
-        <circle cx="200" cy="30" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
-        <text x="200" y="35" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
-        <text x="200" y="12" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">GRUNDENERGI</text>
-        <!-- Right -->
-        <circle cx="370" cy="220" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
-        <text x="370" y="225" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
-        <text x="358" y="250" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">EFTERNAVN</text>
-        <!-- Bottom -->
-        <circle cx="200" cy="410" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
-        <text x="200" y="415" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
-        <text x="200" y="440" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">BUNDTAL</text>
-        <!-- Left -->
-        <circle cx="30" cy="220" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
-        <text x="30" y="225" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
-        <text x="42" y="250" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">FORNAVN</text>
-        <!-- Center -->
-        <circle cx="200" cy="220" r="22" fill="#c9a84c" stroke="none"/>
-        <text x="200" y="226" text-anchor="middle" fill="#0b0b12" font-family="Cormorant Garamond, serif" font-size="18" font-weight="700">?</text>
-        <text x="200" y="198" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">EVT. MELLEMNAVN(E)</text>
+        <!-- Top: GRUNDENERGI — label above circle -->
+        <text x="200" y="22" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">GRUNDENERGI</text>
+        <circle cx="200" cy="50" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="200" y="55" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <!-- Right: EFTERNAVN — label centered below circle -->
+        <circle cx="370" cy="230" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="370" y="235" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="370" y="262" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">EFTERNAVN</text>
+        <!-- Bottom: BUNDTAL — label below circle -->
+        <circle cx="200" cy="420" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="200" y="425" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="200" y="452" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">BUNDTAL</text>
+        <!-- Left: FORNAVN — label centered below circle -->
+        <circle cx="30" cy="230" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="30" y="235" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
+        <text x="30" y="262" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">FORNAVN</text>
+        <!-- Center: EVT. MELLEMNAVN(E) — same size as outer circles, label above -->
+        <text x="200" y="200" text-anchor="middle" fill="#7c7c8a" font-family="Inter, sans-serif" font-size="9" letter-spacing="1">EVT. MELLEMNAVN(E)</text>
+        <circle cx="200" cy="230" r="18" fill="#1a1a2e" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="200" y="235" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond, serif" font-size="16" font-weight="700">?</text>
         <!-- Upper-left -->
-        <circle cx="115" cy="125" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
-        <text x="115" y="130" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <circle cx="115" cy="140" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="115" y="145" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
         <!-- Upper-right -->
-        <circle cx="285" cy="125" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
-        <text x="285" y="130" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <circle cx="285" cy="140" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="285" y="145" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
         <!-- Lower-left -->
-        <circle cx="115" cy="315" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
-        <text x="115" y="320" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <circle cx="115" cy="325" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="115" y="330" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
         <!-- Lower-right -->
-        <circle cx="285" cy="315" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
-        <text x="285" y="320" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
+        <circle cx="285" cy="325" r="14" fill="#1a1a2e" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="285" y="330" text-anchor="middle" fill="#e8d5a3" font-family="Cormorant Garamond, serif" font-size="13" font-weight="600">?</text>
       </svg>
       <p class="caption">Forenklet illustration af den numerologiske diamant — din diamant vil have tal i alle positioner.</p>
     </div>
