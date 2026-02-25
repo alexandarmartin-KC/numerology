@@ -7,15 +7,95 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
     .save-indicator {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      opacity: 0;
-      transition: opacity 0.25s;
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.25s;
     }
     .save-indicator.show { opacity: 1; }
-    textarea { font-size: 14px; line-height: 1.6; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+    .meta-field label {
+      font-size: 11px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .section-card {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      background: #f8f9fa;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #666;
+      margin: 0;
+    }
+    .section-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .section-actions button {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 2px 7px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #666;
+      transition: all 0.15s;
+    }
+    .section-actions button:hover {
+      border-color: #999;
+      color: #333;
+    }
+    .section-actions .btn-del:hover {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+
+    .add-section-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+    .add-section-btn {
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px dashed #c9a84c;
+      color: #c9a84c;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .add-section-btn:hover {
+      background: rgba(201,168,76,0.08);
+    }
+
+    textarea.form-control {
+      font-size: 13px;
+      line-height: 1.65;
+    }
   </style>
 </head>
 <body>
@@ -38,6 +118,7 @@
           <li class="nav-item"><a class="nav-link" href="input-rapport.html">Input Rapport</a></li>
           <li class="nav-item"><a class="nav-link" href="input-navnegenerator.html">Input Navnegenerator</a></li>
           <li class="nav-item"><a class="nav-link" href="input-gratisberegning.html">Input Gratis Beregning</a></li>
+          <li class="nav-item"><a class="nav-link" href="input-grundenergier.html">Input Grundenergier</a></li>
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="input-om-numerologi.html">Input Om Numerologi</a></li>
         </ul>
       </div>
@@ -47,45 +128,53 @@
   <main class="container py-4">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h1 class="h3 mb-0">Input Om Numerologi</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
     </div>
 
-    <p class="text-muted mb-4">Redigér indholdet til <code>om-numerologi.html</code>. Ændringer gemmes lokalt i browseren. Brug “Download” for at få en opdateret fil, som kan erstatte den eksisterende.</p>
+    <p class="text-muted mb-4" style="font-size:13px;">Redigér side-info og sektioner. Du kan tilføje/slette/flytte sektioner, og export genererer både indholdsfortegnelse og artikel i <code>om-numerologi.html</code>.</p>
 
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-3">
       <div class="card-body">
-        <div class="row g-3">
-          <div class="col-12">
-            <label class="form-label" for="fieldTitle">HTML title</label>
+        <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Side-info</h6>
+        <div class="meta-grid">
+          <div class="meta-field">
+            <label for="fieldTitle">HTML title</label>
             <input id="fieldTitle" class="form-control" type="text" placeholder="Sidens title-tag">
           </div>
-          <div class="col-12">
-            <label class="form-label" for="fieldMetaDescription">Meta description</label>
-            <textarea id="fieldMetaDescription" class="form-control" rows="2" placeholder="Meta-beskrivelse"></textarea>
-          </div>
-          <div class="col-md-4">
-            <label class="form-label" for="fieldHeroLabel">Hero label</label>
+          <div class="meta-field">
+            <label for="fieldHeroLabel">Hero label</label>
             <input id="fieldHeroLabel" class="form-control" type="text" placeholder="Label over overskriften">
           </div>
-          <div class="col-md-8">
-            <label class="form-label" for="fieldHeroTitle">Hero overskrift (HTML tilladt)</label>
+          <div class="meta-field">
+            <label for="fieldHeroTitle">Hero overskrift (HTML)</label>
             <input id="fieldHeroTitle" class="form-control" type="text" placeholder="Fx Hvad er <span>numerologi?</span>">
           </div>
-          <div class="col-12">
-            <label class="form-label" for="fieldHeroIntro">Hero intro</label>
+
+          <div class="meta-field" style="grid-column:1 / -1;">
+            <label for="fieldMetaDescription">Meta description</label>
+            <textarea id="fieldMetaDescription" class="form-control" rows="2" placeholder="Meta-beskrivelse"></textarea>
+          </div>
+
+          <div class="meta-field" style="grid-column:1 / -1;">
+            <label for="fieldHeroIntro">Hero intro</label>
             <textarea id="fieldHeroIntro" class="form-control" rows="3" placeholder="Kort introtekst"></textarea>
           </div>
-          <div class="col-12">
-            <label class="form-label" for="fieldArticleHtml">Artikel indhold (HTML i .article)</label>
-            <textarea id="fieldArticleHtml" class="form-control" rows="24" placeholder="Indsæt/ret hele artikel-HTML her (h2, h3, p, tabeller, citater osv.)"></textarea>
+
+          <div class="meta-field" style="grid-column:1 / -1;">
+            <label for="fieldArticleIntro">HTML før første sektion (.article)</label>
+            <textarea id="fieldArticleIntro" class="form-control" rows="6" placeholder="Fx intro-afsnit eller pull-quote før første h2"></textarea>
           </div>
         </div>
       </div>
     </div>
 
+    <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin-bottom:12px;">Sektioner</h6>
+    <div id="sectionsContainer"></div>
+    <div class="add-section-row mb-4">
+      <button class="add-section-btn" id="addSectionBtn" type="button">+ Tilføj sektion</button>
+    </div>
+
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-      <div>
-        <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
-      </div>
       <div class="d-flex gap-2">
         <button id="resetBtn" class="btn btn-outline-secondary" type="button">Nulstil til original</button>
         <button id="copyBtn" class="btn btn-outline-primary" type="button">Kopiér HTML</button>
@@ -98,6 +187,7 @@
   <script>
     const STORAGE_KEY = 'inputOmNumerologiData';
     let originalHtml = '';
+    let state = null;
 
     const fields = {
       title: document.getElementById('fieldTitle'),
@@ -105,7 +195,7 @@
       heroLabel: document.getElementById('fieldHeroLabel'),
       heroTitle: document.getElementById('fieldHeroTitle'),
       heroIntro: document.getElementById('fieldHeroIntro'),
-      articleHtml: document.getElementById('fieldArticleHtml')
+      articleIntroHtml: document.getElementById('fieldArticleIntro')
     };
 
     function showSaved() {
@@ -115,16 +205,50 @@
       el._timer = setTimeout(() => el.classList.remove('show'), 1200);
     }
 
+    function escAttr(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
     function parseCurrentDocument(htmlText) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlText, 'text/html');
+      const article = doc.querySelector('.article');
+      const sections = [];
+      const introParts = [];
+
+      if (article) {
+        let active = null;
+        Array.from(article.children).forEach(node => {
+          if (node.tagName === 'H2') {
+            active = {
+              id: node.id || '',
+              title: (node.innerHTML || '').trim(),
+              html: ''
+            };
+            sections.push(active);
+            return;
+          }
+
+          if (active) {
+            active.html += node.outerHTML + '\n';
+          } else {
+            introParts.push(node.outerHTML);
+          }
+        });
+      }
+
       return {
         title: doc.querySelector('title')?.textContent || '',
         metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
         heroLabel: doc.querySelector('.hero-label')?.textContent?.trim() || '',
         heroTitle: doc.querySelector('.hero h1')?.innerHTML?.trim() || '',
         heroIntro: doc.querySelector('.hero-intro')?.textContent?.trim() || '',
-        articleHtml: doc.querySelector('.article')?.innerHTML?.trim() || ''
+        articleIntroHtml: introParts.join('\n').trim(),
+        sections
       };
     }
 
@@ -134,7 +258,17 @@
       fields.heroLabel.value = data.heroLabel || '';
       fields.heroTitle.value = data.heroTitle || '';
       fields.heroIntro.value = data.heroIntro || '';
-      fields.articleHtml.value = data.articleHtml || '';
+      fields.articleIntroHtml.value = data.articleIntroHtml || '';
+
+      state = {
+        sections: Array.isArray(data.sections) ? data.sections.map(s => ({
+          id: s.id || '',
+          title: s.title || '',
+          html: s.html || ''
+        })) : []
+      };
+
+      renderSections();
     }
 
     function getFormValues() {
@@ -144,7 +278,8 @@
         heroLabel: fields.heroLabel.value,
         heroTitle: fields.heroTitle.value,
         heroIntro: fields.heroIntro.value,
-        articleHtml: fields.articleHtml.value
+        articleIntroHtml: fields.articleIntroHtml.value,
+        sections: state.sections
       };
     }
 
@@ -153,7 +288,92 @@
       showSaved();
     }
 
+    function makeSectionIdFallback(index) {
+      return `sektion-${index + 1}`;
+    }
+
+    function renderSections() {
+      const container = document.getElementById('sectionsContainer');
+      let html = '';
+
+      state.sections.forEach((section, index) => {
+        html += `<div class="section-card" data-index="${index}">`;
+        html += `<div class="section-header">`;
+        html += `<p class="section-title">Sektion ${index + 1}</p>`;
+        html += `<div class="section-actions">`;
+        html += `<button type="button" class="btn-up" data-action="up" data-index="${index}" title="Flyt op">↑</button>`;
+        html += `<button type="button" class="btn-down" data-action="down" data-index="${index}" title="Flyt ned">↓</button>`;
+        html += `<button type="button" class="btn-del" data-action="delete" data-index="${index}" title="Slet">✕</button>`;
+        html += `</div></div>`;
+
+        html += `<div class="row g-2">`;
+        html += `<div class="col-md-4">`;
+        html += `<label class="form-label mb-1" style="font-size:12px;">Anker id</label>`;
+        html += `<input class="form-control section-id" data-index="${index}" type="text" value="${escAttr(section.id || '')}" placeholder="${makeSectionIdFallback(index)}">`;
+        html += `</div>`;
+        html += `<div class="col-md-8">`;
+        html += `<label class="form-label mb-1" style="font-size:12px;">Overskrift (h2, HTML tilladt)</label>`;
+        html += `<input class="form-control section-title-input" data-index="${index}" type="text" value="${escAttr(section.title || '')}" placeholder="Sektionstitel">`;
+        html += `</div>`;
+        html += `<div class="col-12">`;
+        html += `<label class="form-label mb-1" style="font-size:12px;">Indhold (HTML)</label>`;
+        html += `<textarea class="form-control section-html" data-index="${index}" rows="8" placeholder="<p>...</p>\n<div class=\"pull-quote\">...</div>">${section.html || ''}</textarea>`;
+        html += `</div></div></div>`;
+      });
+
+      if (!state.sections.length) {
+        html = '<div class="text-muted text-center py-3" style="font-size:13px; border:1px dashed #dee2e6; border-radius:8px;">Ingen sektioner endnu.</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function addSection() {
+      state.sections.push({ id: '', title: '', html: '' });
+      renderSections();
+      saveToLocalStorage();
+    }
+
+    function removeSection(index) {
+      state.sections.splice(index, 1);
+      renderSections();
+      saveToLocalStorage();
+    }
+
+    function moveSection(from, to) {
+      if (to < 0 || to >= state.sections.length) return;
+      const [item] = state.sections.splice(from, 1);
+      state.sections.splice(to, 0, item);
+      renderSections();
+      saveToLocalStorage();
+    }
+
+    function syncSectionFieldsFromDom() {
+      document.querySelectorAll('.section-id').forEach(el => {
+        const index = Number(el.dataset.index);
+        if (!Number.isNaN(index) && state.sections[index]) state.sections[index].id = el.value;
+      });
+      document.querySelectorAll('.section-title-input').forEach(el => {
+        const index = Number(el.dataset.index);
+        if (!Number.isNaN(index) && state.sections[index]) state.sections[index].title = el.value;
+      });
+      document.querySelectorAll('.section-html').forEach(el => {
+        const index = Number(el.dataset.index);
+        if (!Number.isNaN(index) && state.sections[index]) state.sections[index].html = el.value;
+      });
+    }
+
+    function createTocItem(label, id) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.setAttribute('href', `#${id}`);
+      a.textContent = label;
+      li.appendChild(a);
+      return li;
+    }
+
     function buildUpdatedHtml() {
+      syncSectionFieldsFromDom();
       const values = getFormValues();
       const parser = new DOMParser();
       const doc = parser.parseFromString(originalHtml, 'text/html');
@@ -173,8 +393,31 @@
       const heroIntroEl = doc.querySelector('.hero-intro');
       if (heroIntroEl) heroIntroEl.textContent = values.heroIntro;
 
+      const tocList = doc.querySelector('.toc-list');
+      if (tocList) {
+        tocList.innerHTML = '';
+        values.sections.forEach((section, index) => {
+          const id = (section.id || '').trim() || makeSectionIdFallback(index);
+          const text = (section.title || '').replace(/<[^>]*>/g, '').trim() || `Sektion ${index + 1}`;
+          tocList.appendChild(createTocItem(text, id));
+        });
+      }
+
       const articleEl = doc.querySelector('.article');
-      if (articleEl) articleEl.innerHTML = values.articleHtml;
+      if (articleEl) {
+        let articleHtml = values.articleIntroHtml ? `${values.articleIntroHtml.trim()}\n\n` : '';
+
+        values.sections.forEach((section, index) => {
+          const id = (section.id || '').trim() || makeSectionIdFallback(index);
+          const title = (section.title || '').trim() || `Sektion ${index + 1}`;
+          articleHtml += `<h2 id="${id}">${title}</h2>\n`;
+          if (section.html && section.html.trim()) {
+            articleHtml += `${section.html.trim()}\n\n`;
+          }
+        });
+
+        articleEl.innerHTML = articleHtml.trim();
+      }
 
       return '<!doctype html>\n' + doc.documentElement.outerHTML;
     }
@@ -202,6 +445,29 @@
 
       Object.values(fields).forEach(el => {
         el.addEventListener('input', saveToLocalStorage);
+      });
+
+      document.getElementById('addSectionBtn').addEventListener('click', addSection);
+
+      document.getElementById('sectionsContainer').addEventListener('input', (e) => {
+        if (!(e.target instanceof HTMLElement)) return;
+        if (!e.target.matches('.section-id, .section-title-input, .section-html')) return;
+        syncSectionFieldsFromDom();
+        saveToLocalStorage();
+      });
+
+      document.getElementById('sectionsContainer').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const index = Number(btn.dataset.index);
+        if (Number.isNaN(index)) return;
+
+        syncSectionFieldsFromDom();
+
+        if (action === 'delete') removeSection(index);
+        if (action === 'up') moveSection(index, index - 1);
+        if (action === 'down') moveSection(index, index + 1);
       });
     }
 
