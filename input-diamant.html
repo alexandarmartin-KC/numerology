@@ -423,6 +423,7 @@ function setupListeners() {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
     showSaveIndicator();
+    dbSave('energies', () => Object.entries(editedData).map(([display, d]) => ({ display, ...d })));
   });
 
   document.getElementById('searchInput').addEventListener('input', renderList);
@@ -557,6 +558,7 @@ function savePositions(data) {
   el.classList.add('show');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+  dbSave('positions', () => Object.entries(data).map(([name, description]) => ({ name, description })));
 }
 
 function renderPositions() {
@@ -608,6 +610,7 @@ function saveRules(rules) {
   el.classList.add('show');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+  dbSave('rules', () => rules);
 }
 
 function renderRules() {
@@ -699,28 +702,6 @@ function dbSave(type, getData) {
       });
     } catch (e) { console.warn('DB save fejlede (' + type + '):', e); }
   }, 800);
-}
-
-// Hooks: gem energies til DB når localStorage opdateres
-const _origSetItem = localStorage.setItem.bind(localStorage);
-const _energySaveOrig = showSaveIndicator;
-function showSaveIndicator() {
-  _energySaveOrig();
-  dbSave('energies', () => Object.entries(editedData).map(([display, d]) => ({ display, ...d })));
-}
-
-// Hooks: gem positions til DB
-const _origSavePositions = savePositions;
-function savePositions(data) {
-  _origSavePositions(data);
-  dbSave('positions', () => Object.entries(data).map(([name, description]) => ({ name, description })));
-}
-
-// Hooks: gem rules til DB
-const _origSaveRules = saveRules;
-function saveRules(rules) {
-  _origSaveRules(rules);
-  dbSave('rules', () => rules);
 }
 
 // Load fra DB ved opstart

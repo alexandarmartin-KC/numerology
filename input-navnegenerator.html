@@ -141,6 +141,7 @@ function load() {
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   flashSave();
+  dbSaveNavne();
 }
 
 function flashSave() {
@@ -423,12 +424,6 @@ function dbSaveNavne() {
       });
     } catch (e) { console.warn('DB save fejlede:', e); }
   }, 800);
-}
-
-const _origSaveData = saveData;
-function saveData(data) {
-  _origSaveData(data);
-  dbSaveNavne();
 }
 
 document.getElementById('navnegeneratorPrincipper').addEventListener('input', dbSaveNavne);

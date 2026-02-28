@@ -247,6 +247,11 @@ function saveAarEnergies(data) {
   el.classList.add('show');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+  dbSave('energies', () => Object.entries(data).map(([key, v]) => ({
+    tal: key,
+    keywords: v.keywords || '',
+    beskrivelse: v.beskrivelse || ''
+  })));
 }
 
 function renderAarEnergies() {
@@ -303,6 +308,7 @@ function saveAarRules(rules) {
   el.classList.add('show');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('show'), 1500);
+  dbSave('rules', () => rules);
 }
 
 function renderAarRules() {
@@ -390,24 +396,6 @@ function dbSave(type, getData) {
       });
     } catch (e) { console.warn('DB save fejlede (' + type + '):', e); }
   }, 800);
-}
-
-// Hooks: gem aar energies til DB
-const _origSaveAarEnergies = saveAarEnergies;
-function saveAarEnergies(data) {
-  _origSaveAarEnergies(data);
-  dbSave('energies', () => Object.entries(data).map(([key, v]) => ({
-    tal: key,
-    keywords: v.keywords || '',
-    beskrivelse: v.beskrivelse || ''
-  })));
-}
-
-// Hooks: gem rules til DB
-const _origSaveAarRules = saveAarRules;
-function saveAarRules(rules) {
-  _origSaveAarRules(rules);
-  dbSave('rules', () => rules);
 }
 
 // Hooks: gem cycles og general til DB når de gemmes

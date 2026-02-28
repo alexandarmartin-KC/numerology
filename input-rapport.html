@@ -125,6 +125,7 @@ function loadSections() {
 function saveSections(sections) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
   flash();
+  dbSaveRapport();
 }
 
 function flash() {
@@ -290,13 +291,6 @@ function dbSaveRapport() {
       });
     } catch (e) { console.warn('DB save fejlede:', e); }
   }, 800);
-}
-
-// Patch saveSections og global save
-const _origSaveSections = saveSections;
-function saveSections(sections) {
-  _origSaveSections(sections);
-  dbSaveRapport();
 }
 
 // Patch global instruction save
