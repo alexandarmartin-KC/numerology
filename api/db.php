@@ -29,7 +29,11 @@ function jsonOut(mixed $data, int $code = 200): void {
 }
 
 function getBody(): mixed {
-    return json_decode(file_get_contents('php://input'), true) ?? [];
+    $raw = json_decode(file_get_contents('php://input'), true) ?? [];
+    if (isset($raw['_b64'])) {
+        return json_decode(base64_decode($raw['_b64']), true) ?? [];
+    }
+    return $raw;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

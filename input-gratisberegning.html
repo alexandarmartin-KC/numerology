@@ -250,7 +250,7 @@ function dbSaveGratis(config) {
       const res = await fetch('/api/save-gratisberegning.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config)
+        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify(config)))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
     } catch (e) { _dbToast('DB gem fejl: ' + e.message); }

@@ -431,10 +431,7 @@ function dbSaveNavne() {
       const res = await fetch('/api/save-navnegenerator.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipes: load(),
-          principper: localStorage.getItem(PRINCIPPER_KEY) || ''
-        })
+        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ recipes: load(), principper: localStorage.getItem(PRINCIPPER_KEY) || '' })))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
     } catch (e) { _dbToast('DB gem fejl: ' + e.message); }

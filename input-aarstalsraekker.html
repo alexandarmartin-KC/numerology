@@ -406,7 +406,7 @@ function dbSave(type, getData) {
       const res = await fetch('/api/save-aarstalsraekker.php?type=' + type, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(getData())
+        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify(getData())))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl (' + type + '): ' + res.status + ' ' + t); }
     } catch (e) { _dbToast('DB gem fejl (' + type + '): ' + e.message); }

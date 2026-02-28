@@ -536,7 +536,7 @@
           await fetch('/api/save-meta.php?page=' + encodeURIComponent(currentPage), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ page: currentPage, ...vals })
+            body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ page: currentPage, ...vals })))) })
           });
         } catch (e) { console.warn('DB save fejlede:', e); }
       }, 800);
