@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/alexanda/public_html
+    - /bin/cp -R $TRAVIS_BUILD_DIR/* $DEPLOYPATH/
