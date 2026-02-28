@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/alexanda/public_html
-    - /bin/rsync -av --delete --exclude='.git' . $DEPLOYPATH/
+    - /bin/cp -rf . $DEPLOYPATH
