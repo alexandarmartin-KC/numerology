@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Om os — Mauren & LunaMila</title>
+  <meta name="description" content="Mød Mauren og LunaMila. Læs om deres baggrund i numerologi og se deres individuelle diamant-profiler.">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Om os — Mauren & LunaMila">
+  <meta property="og:description" content="Mød Mauren og LunaMila. Læs om deres baggrund i numerologi og se deres individuelle diamant-profiler.">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="https://numerology-olive-kappa.vercel.app/om-os.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Om os — Mauren & LunaMila">
+  <meta name="twitter:description" content="Mød Mauren og LunaMila. Læs om deres baggrund i numerologi og se deres individuelle diamant-profiler.">
+  <meta name="twitter:image" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --clr-bg:        #0b0b12;
+      --clr-surface:   #13131f;
+      --clr-surface-2: #1a1a2e;
+      --clr-gold:      #c9a84c;
+      --clr-gold-light:#e8d5a3;
+      --clr-text:      #e8e4da;
+      --clr-muted:     #7c7c8a;
+      --clr-border:    rgba(201,168,76,0.15);
+      --font-heading:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(11,11,18,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .site-nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1140px; margin: 0 auto; padding: 0 1.5rem;
+      height: 64px;
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-gold);
+      text-decoration: none; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; line-height: 1.15;
+    }
+    .nav-brand:hover { color: var(--clr-gold-light); }
+    .nav-brand .brandline {
+      font-family: var(--font-body);
+      font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--clr-muted); opacity: 0.7;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      display: block; padding: 0.5rem 0.75rem;
+      font-size: 0.82rem; font-weight: 400; letter-spacing: 0.3px;
+      color: var(--clr-muted); text-decoration: none;
+      border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--clr-gold-light);
+      background: rgba(201,168,76,0.08);
+    }
+    .nav-links a.active { color: var(--clr-gold); font-weight: 500; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after {
+      content: ''; display: inline-block; width: 0; height: 0;
+      margin-left: 5px; vertical-align: middle;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid currentColor;
+    }
+    .nav-dropdown-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 4px);
+      background: var(--clr-surface); border: 1px solid var(--clr-border);
+      border-radius: 8px; min-width: 200px; padding: 0.5rem 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      max-height: calc(100vh - 80px); overflow-y: auto;
+    }
+    .nav-dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.82rem; border-radius: 0; }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 32px; height: 32px; position: relative;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px; background: var(--clr-gold);
+      position: absolute; left: 6px; transition: 0.3s;
+    }
+    .nav-toggle span:nth-child(1) { top: 9px; }
+    .nav-toggle span:nth-child(2) { top: 15px; }
+    .nav-toggle span:nth-child(3) { top: 21px; }
+    .nav-toggle.open span:nth-child(1) { top: 15px; transform: rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { top: 15px; transform: rotate(-45deg); }
+
+    @media (max-width: 991px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--clr-surface); border-bottom: 1px solid var(--clr-border);
+        padding: 1rem; gap: 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.65rem 0.75rem; font-size: 0.9rem; }
+      .nav-dropdown-menu {
+        position: static; box-shadow: none; border: none;
+        background: transparent; padding-left: 1rem; display: none;
+      }
+      .nav-dropdown.open-mobile .nav-dropdown-menu { display: block; }
+    }
+
+    .hero {
+      padding: 140px 1.5rem 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 62%);
+      pointer-events: none;
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 3.2px;
+      text-transform: uppercase;
+      color: var(--clr-gold);
+      border: 1px solid rgba(201,168,76,0.35);
+      padding: 0.55rem 1.5rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+      background: rgba(201,168,76,0.06);
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 4.1rem);
+      line-height: 1.1;
+      margin: 0 0 0.9rem;
+    }
+    .hero h1 span { color: var(--clr-gold); }
+    .hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      color: var(--clr-muted);
+      font-weight: 300;
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+
+    .section {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1.5rem;
+      align-items: stretch;
+      grid-auto-rows: 1fr;
+      margin-bottom: 2.2rem;
+    }
+    .panel {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .panel h2 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      margin: 0 0 0.6rem;
+      color: var(--clr-gold-light);
+    }
+    .panel p { margin: 0.45rem 0; color: #d5d0c3; }
+    .portrait {
+      margin: 0;
+      display: flex;
+      height: 100%;
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      object-fit: cover;
+      object-position: center 22%;
+      border-radius: 14px;
+      border: 1px solid var(--clr-border);
+      display: block;
+      min-height: 100%;
+    }
+
+    .people {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .person-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .person-card h3 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      margin: 0;
+      color: var(--clr-gold);
+    }
+    .person-role {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--clr-gold-light);
+      opacity: 0.9;
+    }
+    .person-card p {
+      margin: 0;
+      color: #ddd8ca;
+    }
+    .person-photo {
+      margin: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--clr-border);
+      background: var(--clr-surface-2);
+    }
+    .person-photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .diamond-wrap {
+      margin-top: 0.2rem;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 14px;
+      padding: 0.8rem;
+    }
+    .diamond-title {
+      font-size: 0.75rem;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      color: var(--clr-gold-light);
+      margin: 0 0 0.6rem;
+    }
+    .diamond-canvas {
+      background: #f8f8f8;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      aspect-ratio: 10 / 11;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .diamond-summary {
+      margin: 0.8rem 0 0;
+      color: var(--clr-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1.5em;
+    }
+    .diamond-note {
+      margin: 0.6rem 0 0;
+      color: var(--clr-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .cta {
+      margin: 0 auto 4rem;
+      max-width: 850px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(201,168,76,0.08), rgba(201,168,76,0.03));
+      border: 1px solid var(--clr-border);
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
+    }
+    .cta h2 {
+      margin: 0 0 0.5rem;
+      font-family: var(--font-heading);
+      font-size: 2.1rem;
+      color: var(--clr-gold-light);
+    }
+    .cta p { margin: 0 0 1.2rem; color: #d8d2c5; }
+    .cta .btn {
+      display: inline-block;
+      padding: 0.88rem 2rem;
+      border-radius: 999px;
+      border: 1px solid var(--clr-gold);
+      color: var(--clr-bg);
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--clr-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--clr-muted);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 980px) {
+      .intro-grid { grid-template-columns: 1fr; }
+      .people { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 112px 1rem 40px; }
+      .hero p { font-size: 0.95rem; }
+      .panel, .person-card { padding: 1.15rem; }
+      .section { padding: 0 1rem; }
+      .portrait img { object-position: center 18%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="container">
+      <a class="nav-brand" href="index.html">StrategicNumerology<span class="brandline">Understand yourself. Plan your timing.</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Forside</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Grundenergier</a>
+          <div class="nav-dropdown-menu">
+            <a href="grundenergi-1.html">1 — Lederen</a>
+            <a href="grundenergi-2.html">2 — Diplomaten</a>
+            <a href="grundenergi-3.html">3 — Den kreative</a>
+            <a href="grundenergi-4.html">4 — Bygmesteren</a>
+            <a href="grundenergi-5.html">5 — Eventyren</a>
+            <a href="grundenergi-6.html">6 — Omsorgsgiveren</a>
+            <a href="grundenergi-7.html">7 — Tænkeren</a>
+            <a href="grundenergi-8.html">8 — Den ambitiøse</a>
+            <a href="grundenergi-9.html">9 — Den vise</a>
+          </div>
+        </li>
+        <li><a href="produkter.html">Produkter</a></li>
+        <li><a href="om-numerologi.html">Om numerologi</a></li>
+        <li><a href="om-os.html" class="active">Om os</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Admin</a>
+          <div class="nav-dropdown-menu">
+            <a href="diamant.html">Diamant</a>
+            <a href="aarstalsraekker.html">Årstalsrækker</a>
+            <a href="rapport.html">Rapport</a>
+            <a href="artikel.html">Artikler</a>
+            <a href="input-diamant.html">Input Diamant</a>
+            <a href="input-aarstalsraekker.html">Input Årstalsrækker</a>
+            <a href="input-generelt.html">Input Generelt</a>
+            <a href="input-rapport.html">Input Rapport</a>
+            <a href="input-navnegenerator.html">Input Navnegenerator</a>
+            <a href="input-gratisberegning.html">Input Gratis Beregning</a>
+            <a href="input-om-numerologi.html">Input Om Numerologi</a>
+            <a href="input-om-os.html">Input Om Os</a>
+            <a href="input-grundenergier.html">Input Grundenergier</a>
+            <a href="input-tak.html">Input Tak-side</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-label">Om os</div>
+    <h1>Mød <span>Mauren</span> & <span>LunaMila</span></h1>
+    <p>Vi arbejder for at gøre numerologi konkret, nærværende og anvendelig i hverdagen. Her møder du både dyb erfaring og en moderne, spirituel tilgang — samt hver vores individuelle diamant.</p>
+  </section>
+
+  <main class="section">
+    <section class="intro-grid reveal">
+      <article class="panel">
+        <h2>Vores tilgang</h2>
+        <p>Hos os er numerologi både indsigt og retning. Vi arbejder med tal som et levende sprog, der kan skabe klarhed i relationer, arbejde og personlige valg.</p>
+        <p>Maurens mangeårige erfaring og LunaMilas intuitive, spirituelle perspektiv supplerer hinanden i en fælles praksis: respektfuld, ærlig og menneskelig.</p>
+        <p>Vi møder hvert menneske dér, hvor de er — og hjælper med at omsætte tal til konkrete skridt.</p>
+      </article>
+      <figure class="panel portrait">
+        <img src="assets/images/lunamila-og-mauren.png" alt="LunaMila og Mauren">
+      </figure>
+    </section>
+
+    <section class="people">
+      <article class="person-card reveal" id="person-mauren">
+        <div class="person-role">Profil</div>
+        <h3>Mauren</h3>
+        <figure class="person-photo">
+          <img src="assets/images/Mauren profil.JPG" alt="Mauren profil">
+        </figure>
+        <p>Mauren har arbejdet med numerologi på fuld tid i over 40 år og er bredt anerkendt som Danmarks førende numerolog.</p>
+        <p>Hun har holdt foredrag om numerologi, haft tusindvis af klienter og været tidligere formand for Dansk Numerologiforening.</p>
+        <p>Gennem sin egen numerologiuddannelse har hun uddannet numerologer og været med til at løfte fagets kvalitet i Danmark.</p>
+
+        <div class="diamond-wrap">
+          <p class="diamond-title">Maurens individuelle diamant</p>
+          <div class="diamond-canvas" id="maurenDiamond"></div>
+          <p class="diamond-summary" id="maurenSummary"></p>
+          <p class="diamond-note">Visning er bundet til den navne- og fødselsdata, der er sat i sidens konfiguration.</p>
+        </div>
+      </article>
+
+      <article class="person-card reveal" id="person-lunamila">
+        <div class="person-role">Profil</div>
+        <h3>LunaMila</h3>
+        <figure class="person-photo">
+          <img src="assets/images/Lunamila profil.JPG" alt="LunaMila profil">
+        </figure>
+        <p>Numerologi har været en del af LunaMilas liv i mere end 15 år, og spiritualitet har altid været en central passion i hendes liv.</p>
+        <p>Hun er uddannet hos Mauren og arbejder med en nærværende, intuitiv tilgang, der hjælper mennesker med at forstå deres energi og retning.</p>
+        <p>Hendes fokus er at skabe et trygt rum, hvor numerologi bliver omsat til personlig udvikling og meningsfulde valg.</p>
+
+        <div class="diamond-wrap">
+          <p class="diamond-title">LunaMilas individuelle diamant</p>
+          <div class="diamond-canvas" id="lunamilaDiamond"></div>
+          <p class="diamond-summary" id="lunamilaSummary"></p>
+          <p class="diamond-note">Visning er bundet til den navne- og fødselsdata, der er sat i sidens konfiguration.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="cta reveal">
+      <h2>Klar til din egen læsning?</h2>
+      <p>Få en personlig numerologisk analyse med diamant, årstalsrækker og konkrete anbefalinger til næste skridt.</p>
+      <a class="btn" href="index.html">Start gratis beregning</a>
+    </section>
+  </main>
+
+  <script src="assets/js/diamondEngine.js"></script>
+  <script src="assets/js/diamondRenderer.js"></script>
+  <script>
+    const PEOPLE_CONFIG = {
+      mauren: {
+        fullName: 'Mauren Andersen',
+        birthDate: '1962-04-18'
+      },
+      lunamila: {
+        fullName: 'LunaMila Sørensen',
+        birthDate: '1989-11-06'
+      }
+    };
+
+    function drawPlaceholder(container, text) {
+      if (!container) return;
+      container.innerHTML = '';
+      const p = document.createElement('p');
+      p.style.margin = '0';
+      p.style.padding = '1rem';
+      p.style.color = '#575757';
+      p.style.fontSize = '0.9rem';
+      p.style.textAlign = 'center';
+      p.style.display = 'flex';
+      p.style.alignItems = 'center';
+      p.style.justifyContent = 'center';
+      p.style.height = '100%';
+      p.textContent = text;
+      container.appendChild(p);
+    }
+
+    function setSummary(summaryEl, result) {
+      const d = result.diamond;
+      summaryEl.textContent = `Grundenergi ${d.grundenergi.value} · Bundtal ${d.bundtal.display} · Rygraden ${d.rygraden.display}`;
+    }
+
+    function renderProfileDiamond(key, canvasId, summaryId) {
+      const cfg = PEOPLE_CONFIG[key];
+      const canvas = document.getElementById(canvasId);
+      const summary = document.getElementById(summaryId);
+      if (!cfg || !canvas || !summary) return;
+
+      if (!cfg.birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(cfg.birthDate)) {
+        drawPlaceholder(canvas, 'Tilføj fødselsdato i PEOPLE_CONFIG for at vise denne diamant.');
+        summary.textContent = 'Diamant afventer komplet data.';
+        return;
+      }
+
+      try {
+        const result = computeDiamond(cfg.fullName, cfg.birthDate);
+        renderDiamond(canvas, result.diamond);
+        setSummary(summary, result);
+      } catch (err) {
+        drawPlaceholder(canvas, 'Kunne ikke beregne diamant med den nuværende konfiguration.');
+        summary.textContent = err.message || 'Fejl i beregning.';
+      }
+    }
+
+    renderProfileDiamond('mauren', 'maurenDiamond', 'maurenSummary');
+    renderProfileDiamond('lunamila', 'lunamilaDiamond', 'lunamilaSummary');
+
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      links.classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-dropdown > a').forEach(a => {
+      a.addEventListener('click', e => {
+        if (window.innerWidth <= 991) {
+          e.preventDefault();
+          a.parentElement.classList.toggle('open-mobile');
+        }
+      });
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+  <style>
+    .site-footer {
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      padding: 3.5rem 1.5rem 2rem;
+      font-size: 0.88rem;
+      color: var(--clr-muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 2.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--clr-gold-light);
+      margin: 0 0 1rem;
+      letter-spacing: 0.3px;
+    }
+    .footer-col p {
+      margin: 0 0 0.3rem;
+      line-height: 1.6;
+    }
+    .footer-col a {
+      color: var(--clr-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-col .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--clr-gold);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-links li {
+      margin-bottom: 0.4rem;
+    }
+    .footer-social {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--clr-muted);
+    }
+    .footer-social a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-social img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .footer-social a:hover img {
+      opacity: 1;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--clr-border);
+      font-size: 0.78rem;
+      color: rgba(124,124,138,0.6);
+    }
+  </style>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Social</h4>
+        <div class="footer-social">
+          <a href="https://facebook.com" target="_blank" rel="noopener">
+            <img src="assets/images/facebook-logo.png" alt="Facebook">
+            Facebook
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener">
+            <img src="assets/images/instagram-white.svg" alt="Instagram">
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Sider</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Forside</a></li>
+          <li><a href="grundenergi-1.html">Grundenergier</a></li>
+          <li><a href="produkter.html">Produkter</a></li>
+          <li><a href="om-numerologi.html">Om numerologi</a></li>
+          <li><a href="om-os.html">Om os</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <span class="footer-brand">StrategicNumerology</span>
+        <p>Copenhagen, Denmark</p>
+        <p><a href="mailto:info@strategicnumerology.com">info@strategicnumerology.com</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Meta Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.25s;
+    }
+    .save-indicator.show { opacity: 1; }
+
+    .section-header {
+      font-size: 13px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: #666; margin-bottom: 0.75rem;
+    }
+    .field-label {
+      font-size: 11px; color: #666; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 3px; display: block;
+    }
+    textarea.form-control, input.form-control { font-size: 13px; line-height: 1.55; }
+
+    /* Character counter */
+    .char-counter {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 1px 7px; border-radius: 10px; margin-left: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .char-counter.ok    { background: #d4edda; color: #155724; }
+    .char-counter.warn  { background: #fff3cd; color: #856404; }
+    .char-counter.bad   { background: #f8d7da; color: #721c24; }
+
+    /* Google preview */
+    .google-preview {
+      background: #fff; border: 1px solid #dfe1e5; border-radius: 8px;
+      padding: 16px 20px; font-family: arial, sans-serif; max-width: 600px;
+    }
+    .google-preview .gp-title {
+      font-size: 20px; line-height: 1.3; color: #1a0dab;
+      cursor: pointer; text-decoration: none; display: block;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .google-preview .gp-url {
+      font-size: 14px; color: #006621; margin: 2px 0 4px; line-height: 1.5;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .google-preview .gp-desc {
+      font-size: 14px; line-height: 1.58; color: #545454;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Facebook preview */
+    .fb-preview {
+      max-width: 500px; border: 1px solid #dadde1; border-radius: 3px;
+      overflow: hidden; font-family: Helvetica, Arial, sans-serif;
+      background: #fff;
+    }
+    .fb-preview .fb-img-wrap {
+      width: 100%; aspect-ratio: 1.91 / 1; background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .fb-preview .fb-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .fb-preview .fb-img-wrap .fb-placeholder {
+      color: #999; font-size: 13px; text-align: center; padding: 20px;
+    }
+    .fb-preview .fb-body {
+      padding: 10px 12px; border-top: 1px solid #dadde1;
+      background: #f2f3f5;
+    }
+    .fb-preview .fb-domain {
+      font-size: 12px; text-transform: uppercase; color: #606770;
+      letter-spacing: 0.3px;
+    }
+    .fb-preview .fb-title {
+      font-size: 16px; font-weight: 600; color: #1d2129;
+      line-height: 1.38; margin: 3px 0 2px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .fb-preview .fb-desc {
+      font-size: 14px; color: #606770; line-height: 1.38;
+      display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Image preview */
+    .img-preview-wrap {
+      width: 100%; aspect-ratio: 1.91 / 1; background: #f8f9fa;
+      border: 2px dashed #dee2e6; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; margin-top: 8px; position: relative;
+    }
+    .img-preview-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .img-preview-wrap .placeholder-text {
+      color: #adb5bd; font-size: 13px; text-align: center; padding: 20px;
+    }
+    .img-dims {
+      font-size: 11px; color: #999; margin-top: 4px;
+    }
+
+    /* Page selector */
+    .page-selector-bar {
+      background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px;
+      padding: 12px 16px; margin-bottom: 1.5rem;
+    }
+    .page-selector-bar select {
+      max-width: 400px; font-size: 14px;
+    }
+
+    /* Status badges */
+    .page-status {
+      display: inline-block; font-size: 11px; padding: 2px 8px;
+      border-radius: 10px; margin-left: 6px;
+    }
+    .page-status.edited   { background: #fff3cd; color: #856404; }
+    .page-status.original { background: #d4edda; color: #155724; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">StrategicNumerology</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Live</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="om-numerologi.html">Om numerologi</a></li>
+              <li><a class="dropdown-item" href="om-os.html">Om os</a></li>
+              <li><a class="dropdown-item" href="produkter.html">Produkter</a></li>
+              <li><a class="dropdown-item" href="landing-analyse-35usd.html">Landing (Fundament)</a></li>
+              <li><a class="dropdown-item" href="tak.html">Tak-side</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="diamant.html">Diamant</a></li>
+              <li><a class="dropdown-item" href="aarstalsraekker.html">Årstalsrækker</a></li>
+              <li><a class="dropdown-item" href="rapport.html">Rapport</a></li>
+              <li><a class="dropdown-item" href="artikel.html">Artikler</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="input-diamant.html">Input Diamant</a></li>
+              <li><a class="dropdown-item" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+              <li><a class="dropdown-item" href="input-generelt.html">Input Generelt</a></li>
+              <li><a class="dropdown-item" href="input-rapport.html">Input Rapport</a></li>
+              <li><a class="dropdown-item" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+              <li><a class="dropdown-item" href="input-gratisberegning.html">Input Gratis Beregning</a></li>
+              <li><a class="dropdown-item" href="input-om-numerologi.html">Input Om Numerologi</a></li>
+              <li><a class="dropdown-item" href="input-om-os.html">Input Om Os</a></li>
+              <li><a class="dropdown-item" href="input-grundenergier.html">Input Grundenergier</a></li>
+              <li><a class="dropdown-item" href="input-tak.html">Input Tak-side</a></li>
+              <li><a class="dropdown-item" href="input-meta.html">Input Meta Data</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4" style="max-width:960px;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Meta Data</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+    </div>
+
+    <p class="text-muted mb-4" style="font-size:13px;">
+      Administrér meta-titler, -beskrivelser og billeder til SEO &amp; sociale medier for alle live-sider.
+      Vælg en side nedenfor, redigér felterne og download den opdaterede HTML-fil.
+    </p>
+
+    <!-- Page selector -->
+    <div class="page-selector-bar d-flex align-items-center gap-3 flex-wrap">
+      <label for="pageSelect" class="fw-semibold mb-0" style="font-size:14px; white-space:nowrap;">Vælg side:</label>
+      <select id="pageSelect" class="form-select">
+        <option value="index.html">Forside (index.html)</option>
+        <option value="om-numerologi.html">Om numerologi</option>
+        <option value="om-os.html">Om os</option>
+        <option value="grundenergi-1.html">Grundenergi 1</option>
+        <option value="produkter.html">Produkter</option>
+        <option value="landing-analyse-35usd.html">Landing (Fundament)</option>
+      </select>
+      <span id="pageStatus" class="page-status original">Original</span>
+    </div>
+
+    <!-- Meta Title -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">
+          Meta Title <span id="titleCounter" class="char-counter ok">0 / 60</span>
+        </h6>
+        <label class="field-label" for="fieldTitle">HTML &lt;title&gt; tag</label>
+        <input id="fieldTitle" class="form-control" type="text" placeholder="Sidetitel — 50-60 tegn anbefalet">
+        <div class="form-text" style="font-size:11px;">Optimalt: 50–60 tegn. Google afkorter efter ca. 60 tegn.</div>
+      </div>
+    </div>
+
+    <!-- Meta Description -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">
+          Meta Description <span id="descCounter" class="char-counter ok">0 / 160</span>
+        </h6>
+        <label class="field-label" for="fieldDescription">Meta description</label>
+        <textarea id="fieldDescription" class="form-control" rows="3" placeholder="Sidebeskrivelse — 120-160 tegn anbefalet"></textarea>
+        <div class="form-text" style="font-size:11px;">Optimalt: 120–160 tegn. Google viser maks ~160 tegn i søgeresultater.</div>
+      </div>
+    </div>
+
+    <!-- Google Preview -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">Google-preview</h6>
+        <div class="google-preview">
+          <span class="gp-title" id="gpTitle">Sidetitel</span>
+          <div class="gp-url" id="gpUrl">https://numerology-olive-kappa.vercel.app/index.html</div>
+          <div class="gp-desc" id="gpDesc">Sidebeskrivelse vises her…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OG / Social billede -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">OG-billede (Social deling)</h6>
+        <p class="text-muted" style="font-size:12px; margin-bottom:10px;">
+          Bruges når siden deles på Facebook, Messenger, LinkedIn m.fl. Anbefalet: <strong>1200 × 630 px</strong> (1.91 : 1).
+        </p>
+        <label class="field-label" for="fieldOgImage">Billede-sti / URL</label>
+        <input id="fieldOgImage" class="form-control mb-2" type="text" placeholder="f.eks. assets/images/og-share.jpg">
+        <label class="field-label" for="ogFileInput">Forhåndsvisning (vælg lokal fil)</label>
+        <input id="ogFileInput" class="form-control form-control-sm" type="file" accept="image/*">
+        <div id="ogPreviewWrap" class="img-preview-wrap">
+          <span class="placeholder-text">Intet billede valgt — 1200 × 630 px anbefalet</span>
+        </div>
+        <div id="ogDims" class="img-dims"></div>
+      </div>
+    </div>
+
+    <!-- Facebook Preview -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">Facebook-preview</h6>
+        <div class="fb-preview">
+          <div class="fb-img-wrap" id="fbImgWrap">
+            <span class="fb-placeholder">Intet OG-billede</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-domain" id="fbDomain">numerology-olive-kappa.vercel.app</div>
+            <div class="fb-title" id="fbTitle">Sidetitel</div>
+            <div class="fb-desc" id="fbDesc">Sidebeskrivelse…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO billede (struktureret data) -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="section-header">SEO-billede (Google søgeresultat)</h6>
+        <p class="text-muted" style="font-size:12px; margin-bottom:10px;">
+          Bruges i Google Knowledge Panel og struktureret data. Anbefalet: <strong>1200 × 630 px</strong> eller <strong>1200 × 900 px</strong>.
+        </p>
+        <label class="field-label" for="fieldSeoImage">Billede-sti / URL</label>
+        <input id="fieldSeoImage" class="form-control mb-2" type="text" placeholder="f.eks. assets/images/seo-image.jpg">
+        <label class="field-label" for="seoFileInput">Forhåndsvisning (vælg lokal fil)</label>
+        <input id="seoFileInput" class="form-control form-control-sm" type="file" accept="image/*">
+        <div id="seoPreviewWrap" class="img-preview-wrap">
+          <span class="placeholder-text">Intet billede valgt — 1200 × 630 px anbefalet</span>
+        </div>
+        <div id="seoDims" class="img-dims"></div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <div class="d-flex gap-2">
+          <button id="resetBtn" class="btn btn-outline-secondary" type="button">Nulstil til original</button>
+          <button id="copyBtn" class="btn btn-outline-primary" type="button">Kopiér HTML</button>
+          <button id="downloadBtn" class="btn btn-success" type="button">Download HTML</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+  (function () {
+    /* ── Constants ─────────────────────────────── */
+    const STORAGE_PREFIX = 'inputMetaData_';
+    const BASE_URL = 'https://numerology-olive-kappa.vercel.app/';
+
+    const PAGES = [
+      'index.html',
+      'om-numerologi.html',
+      'om-os.html',
+      'grundenergi-1.html',
+      'produkter.html',
+      'landing-analyse-35usd.html'
+    ];
+
+    /* ── DOM refs ──────────────────────────────── */
+    const pageSelect       = document.getElementById('pageSelect');
+    const pageStatus       = document.getElementById('pageStatus');
+    const fieldTitle        = document.getElementById('fieldTitle');
+    const fieldDescription  = document.getElementById('fieldDescription');
+    const fieldOgImage      = document.getElementById('fieldOgImage');
+    const fieldSeoImage     = document.getElementById('fieldSeoImage');
+    const titleCounter      = document.getElementById('titleCounter');
+    const descCounter       = document.getElementById('descCounter');
+    const gpTitle           = document.getElementById('gpTitle');
+    const gpUrl             = document.getElementById('gpUrl');
+    const gpDesc            = document.getElementById('gpDesc');
+    const fbImgWrap         = document.getElementById('fbImgWrap');
+    const fbDomain          = document.getElementById('fbDomain');
+    const fbTitle           = document.getElementById('fbTitle');
+    const fbDesc            = document.getElementById('fbDesc');
+    const ogPreviewWrap     = document.getElementById('ogPreviewWrap');
+    const ogDims            = document.getElementById('ogDims');
+    const seoPreviewWrap    = document.getElementById('seoPreviewWrap');
+    const seoDims           = document.getElementById('seoDims');
+    const ogFileInput       = document.getElementById('ogFileInput');
+    const seoFileInput      = document.getElementById('seoFileInput');
+    const saveIndicator     = document.getElementById('saveIndicator');
+
+    /* ── State ─────────────────────────────────── */
+    let currentPage   = PAGES[0];
+    let originalHtmls = {};   // { 'index.html': '<!doctype…', … }
+    let ogPreviewSrc  = '';   // data-URL for OG image preview
+    let seoPreviewSrc = '';   // data-URL for SEO image preview
+
+    /* ── Helpers ───────────────────────────────── */
+    function storageKey(page) { return STORAGE_PREFIX + page; }
+
+    function showSaved() {
+      saveIndicator.classList.add('show');
+      clearTimeout(saveIndicator._t);
+      saveIndicator._t = setTimeout(() => saveIndicator.classList.remove('show'), 1200);
+    }
+
+    /* ── Character counter ─────────────────────── */
+    function updateCounter(el, len, lo, hi) {
+      el.textContent = len + ' / ' + hi;
+      if (len >= lo && len <= hi) {
+        el.className = 'char-counter ok';
+      } else if (len > 0 && (len >= lo - 15 || len <= hi + 15)) {
+        el.className = 'char-counter warn';
+      } else {
+        el.className = 'char-counter bad';
+      }
+    }
+
+    /* ── Preview updates ───────────────────────── */
+    function refreshPreviews() {
+      const title = fieldTitle.value || '';
+      const desc  = fieldDescription.value || '';
+      const url   = BASE_URL + currentPage;
+
+      // Counters
+      updateCounter(titleCounter, title.length, 50, 60);
+      updateCounter(descCounter, desc.length, 120, 160);
+
+      // Google
+      gpTitle.textContent = title || 'Ingen titel';
+      gpUrl.textContent   = url;
+      gpDesc.textContent  = desc || 'Ingen beskrivelse';
+
+      // Facebook
+      fbDomain.textContent = 'numerology-olive-kappa.vercel.app';
+      fbTitle.textContent  = title || 'Ingen titel';
+      fbDesc.textContent   = desc || '';
+
+      // FB image
+      if (ogPreviewSrc) {
+        fbImgWrap.innerHTML = '<img src="' + ogPreviewSrc + '" alt="OG preview">';
+      } else if (fieldOgImage.value) {
+        fbImgWrap.innerHTML = '<img src="' + fieldOgImage.value + '" alt="OG preview" onerror="this.parentNode.innerHTML=\'<span class=fb-placeholder>Billede kunne ikke indlæses</span>\'">';
+      } else {
+        fbImgWrap.innerHTML = '<span class="fb-placeholder">Intet OG-billede</span>';
+      }
+    }
+
+    /* ── Image preview helpers ─────────────────── */
+    function handleFilePreview(input, wrapEl, dimsEl, setPreviewSrc) {
+      input.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const src = e.target.result;
+          setPreviewSrc(src);
+          const img = new Image();
+          img.onload = function () {
+            wrapEl.innerHTML = '<img src="' + src + '" alt="preview">';
+            dimsEl.textContent = img.naturalWidth + ' × ' + img.naturalHeight + ' px';
+            if (img.naturalWidth < 1200 || img.naturalHeight < 630) {
+              dimsEl.textContent += ' ⚠ Anbefalet min. 1200 × 630 px';
+              dimsEl.style.color = '#856404';
+            } else {
+              dimsEl.style.color = '#155724';
+            }
+            refreshPreviews();
+          };
+          img.src = src;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    handleFilePreview(ogFileInput, ogPreviewWrap, ogDims, function (s) { ogPreviewSrc = s; });
+    handleFilePreview(seoFileInput, seoPreviewWrap, seoDims, function (s) { seoPreviewSrc = s; });
+
+    /* ── Parse meta from HTML ──────────────────── */
+    function parseMetaFromHtml(htmlText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, 'text/html');
+      return {
+        title:       doc.querySelector('title')?.textContent || '',
+        description: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+        ogImage:     doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
+        seoImage:    '' // no structured-data image yet
+      };
+    }
+
+    /* ── Populate form from data ───────────────── */
+    function setFormValues(data) {
+      fieldTitle.value       = data.title || '';
+      fieldDescription.value = data.description || '';
+      fieldOgImage.value     = data.ogImage || '';
+      fieldSeoImage.value    = data.seoImage || '';
+      ogPreviewSrc  = '';
+      seoPreviewSrc = '';
+      ogFileInput.value  = '';
+      seoFileInput.value = '';
+      ogPreviewWrap.innerHTML  = '<span class="placeholder-text">Intet billede valgt — 1200 × 630 px anbefalet</span>';
+      seoPreviewWrap.innerHTML = '<span class="placeholder-text">Intet billede valgt — 1200 × 630 px anbefalet</span>';
+      ogDims.textContent  = '';
+      seoDims.textContent = '';
+
+      // If paths exist, try showing them as image previews
+      if (data.ogImage) {
+        ogPreviewWrap.innerHTML = '<img src="' + data.ogImage + '" alt="OG" onerror="this.parentNode.innerHTML=\'<span class=placeholder-text>Billede ikke fundet</span>\'">';
+      }
+      if (data.seoImage) {
+        seoPreviewWrap.innerHTML = '<img src="' + data.seoImage + '" alt="SEO" onerror="this.parentNode.innerHTML=\'<span class=placeholder-text>Billede ikke fundet</span>\'">';
+      }
+
+      refreshPreviews();
+    }
+
+    function getFormValues() {
+      return {
+        title:       fieldTitle.value,
+        description: fieldDescription.value,
+        ogImage:     fieldOgImage.value,
+        seoImage:    fieldSeoImage.value
+      };
+    }
+
+    /* ── Save / Load ───────────────────────────── */
+    function saveCurrentPage() {
+      localStorage.setItem(storageKey(currentPage), JSON.stringify(getFormValues()));
+      showSaved();
+      updatePageStatus();
+    }
+
+    function updatePageStatus() {
+      const saved = localStorage.getItem(storageKey(currentPage));
+      if (saved) {
+        pageStatus.textContent = 'Redigeret';
+        pageStatus.className = 'page-status edited';
+      } else {
+        pageStatus.textContent = 'Original';
+        pageStatus.className = 'page-status original';
+      }
+    }
+
+    /* ── Build updated HTML ────────────────────── */
+    function buildUpdatedHtml() {
+      const v = getFormValues();
+      const html = originalHtmls[currentPage];
+      if (!html) return '';
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Title
+      const titleEl = doc.querySelector('title');
+      if (titleEl) titleEl.textContent = v.title;
+
+      // Meta description
+      let descEl = doc.querySelector('meta[name="description"]');
+      if (!descEl) {
+        descEl = doc.createElement('meta');
+        descEl.setAttribute('name', 'description');
+        doc.head.appendChild(descEl);
+      }
+      descEl.setAttribute('content', v.description);
+
+      // OG tags
+      function setMeta(selector, attr, value) {
+        let el = doc.querySelector(selector);
+        if (el) el.setAttribute(attr, value);
+      }
+
+      const url = BASE_URL + currentPage;
+
+      setMeta('meta[property="og:title"]',       'content', v.title);
+      setMeta('meta[property="og:description"]',  'content', v.description);
+      setMeta('meta[property="og:image"]',        'content', v.ogImage);
+      setMeta('meta[property="og:url"]',          'content', url);
+
+      // Twitter tags
+      setMeta('meta[name="twitter:title"]',       'content', v.title);
+      setMeta('meta[name="twitter:description"]',  'content', v.description);
+      setMeta('meta[name="twitter:image"]',        'content', v.ogImage);
+
+      return '<!doctype html>\n' + doc.documentElement.outerHTML;
+    }
+
+    /* ── Switch page ───────────────────────────── */
+    async function loadPage(pageName) {
+      currentPage = pageName;
+
+      if (!originalHtmls[pageName]) {
+        try {
+          const res = await fetch(pageName, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          originalHtmls[pageName] = await res.text();
+        } catch (err) {
+          alert('Kunne ikke hente ' + pageName + ': ' + err.message);
+          return;
+        }
+      }
+
+      const baseData = parseMetaFromHtml(originalHtmls[pageName]);
+      const saved = localStorage.getItem(storageKey(pageName));
+
+      if (saved) {
+        try {
+          setFormValues({ ...baseData, ...JSON.parse(saved) });
+        } catch {
+          setFormValues(baseData);
+        }
+      } else {
+        setFormValues(baseData);
+      }
+
+      updatePageStatus();
+    }
+
+    /* ── Event listeners ───────────────────────── */
+    pageSelect.addEventListener('change', function () {
+      loadPage(this.value);
+    });
+
+    [fieldTitle, fieldDescription, fieldOgImage, fieldSeoImage].forEach(function (el) {
+      el.addEventListener('input', function () {
+        refreshPreviews();
+        saveCurrentPage();
+      });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+      if (!confirm('Nulstil meta-data for "' + currentPage + '" til original?')) return;
+      localStorage.removeItem(storageKey(currentPage));
+      const baseData = parseMetaFromHtml(originalHtmls[currentPage]);
+      setFormValues(baseData);
+      updatePageStatus();
+      showSaved();
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async function () {
+      const html = buildUpdatedHtml();
+      if (!html) { alert('Ingen HTML at kopiere.'); return; }
+      try {
+        await navigator.clipboard.writeText(html);
+        alert('HTML kopieret til udklipsholder.');
+      } catch {
+        alert('Kunne ikke kopiere automatisk. Brug Download i stedet.');
+      }
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+      const html = buildUpdatedHtml();
+      if (!html) { alert('Ingen HTML at downloade.'); return; }
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentPage;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    /* ── Init ──────────────────────────────────── */
+    loadPage(PAGES[0]);
+  })();
+  </script>
+</body>
+</html>

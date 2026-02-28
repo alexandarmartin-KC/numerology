@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Om Os</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .save-indicator {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.25s;
+    }
+    .save-indicator.show { opacity: 1; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+    .meta-field label {
+      font-size: 11px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    textarea.form-control, input.form-control {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .preview-col {
+      position: sticky;
+      top: 70px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+    }
+    .preview-frame {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0b0b12;
+    }
+    .preview-frame iframe {
+      width: 100%;
+      height: calc(100vh - 150px);
+      border: none;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">StrategicNumerology</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Forside</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Live</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="om-numerologi.html">Om numerologi</a></li>
+              <li><a class="dropdown-item" href="om-os.html">Om os</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="diamant.html">Diamant</a></li>
+              <li><a class="dropdown-item" href="aarstalsraekker.html">Årstalsrækker</a></li>
+              <li><a class="dropdown-item" href="rapport.html">Rapport</a></li>
+              <li><a class="dropdown-item" href="artikel.html">Artikler</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="input-diamant.html">Input Diamant</a></li>
+              <li><a class="dropdown-item" href="input-aarstalsraekker.html">Input Årstalsrækker</a></li>
+              <li><a class="dropdown-item" href="input-generelt.html">Input Generelt</a></li>
+              <li><a class="dropdown-item" href="input-rapport.html">Input Rapport</a></li>
+              <li><a class="dropdown-item" href="input-navnegenerator.html">Input Navnegenerator</a></li>
+              <li><a class="dropdown-item" href="input-gratisberegning.html">Input Gratis Beregning</a></li>
+              <li><a class="dropdown-item" href="input-om-numerologi.html">Input Om Numerologi</a></li>
+              <li><a class="dropdown-item" href="input-om-os.html">Input Om Os</a></li>
+              <li><a class="dropdown-item" href="input-grundenergier.html">Input Grundenergier</a></li>
+              <li><a class="dropdown-item" href="input-tak.html">Input Tak-side</a></li>
+              <li><a class="dropdown-item" href="input-meta.html">Input Meta Data</a></li>
+              <li><a class="dropdown-item" href="input-meta.html">Input Meta Data</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid py-4" style="max-width:1400px;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 mb-0">Input Om Os</h1>
+      <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+    </div>
+
+    <p class="text-muted mb-4" style="font-size:13px;">Redigér <code>om-os.html</code> med live preview. Download-knappen genererer en fuld opdateret HTML-fil.</p>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Side & Hero</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldTitle">HTML title</label>
+                <input id="fieldTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMetaDescription">Meta description</label>
+                <textarea id="fieldMetaDescription" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field">
+                <label for="fieldHeroLabel">Hero label</label>
+                <input id="fieldHeroLabel" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldHeroTitle">Hero overskrift (HTML tilladt)</label>
+                <input id="fieldHeroTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldHeroIntro">Hero intro</label>
+                <textarea id="fieldHeroIntro" class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Intro-sektion</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldIntroTitle">Overskrift</label>
+                <input id="fieldIntroTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldIntroP1">Afsnit 1</label>
+                <textarea id="fieldIntroP1" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldIntroP2">Afsnit 2</label>
+                <textarea id="fieldIntroP2" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldIntroP3">Afsnit 3</label>
+                <textarea id="fieldIntroP3" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field">
+                <label for="fieldSharedImg">Fælles billede (src)</label>
+                <input id="fieldSharedImg" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldSharedAlt">Fælles billede (alt)</label>
+                <input id="fieldSharedAlt" class="form-control" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Mauren</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldMaurenRole">Role label</label>
+                <input id="fieldMaurenRole" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldMaurenName">Navn</label>
+                <input id="fieldMaurenName" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldMaurenImg">Profilbillede (src)</label>
+                <input id="fieldMaurenImg" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldMaurenAlt">Profilbillede (alt)</label>
+                <input id="fieldMaurenAlt" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMaurenP1">Afsnit 1</label>
+                <textarea id="fieldMaurenP1" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMaurenP2">Afsnit 2</label>
+                <textarea id="fieldMaurenP2" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMaurenP3">Afsnit 3</label>
+                <textarea id="fieldMaurenP3" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field">
+                <label for="fieldMaurenDiamondTitle">Diamant titel</label>
+                <input id="fieldMaurenDiamondTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldMaurenDiamondNote">Diamant note</label>
+                <textarea id="fieldMaurenDiamondNote" class="form-control" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">LunaMila</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldLunaRole">Role label</label>
+                <input id="fieldLunaRole" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaName">Navn</label>
+                <input id="fieldLunaName" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaImg">Profilbillede (src)</label>
+                <input id="fieldLunaImg" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaAlt">Profilbillede (alt)</label>
+                <input id="fieldLunaAlt" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldLunaP1">Afsnit 1</label>
+                <textarea id="fieldLunaP1" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldLunaP2">Afsnit 2</label>
+                <textarea id="fieldLunaP2" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldLunaP3">Afsnit 3</label>
+                <textarea id="fieldLunaP3" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaDiamondTitle">Diamant titel</label>
+                <input id="fieldLunaDiamondTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldLunaDiamondNote">Diamant note</label>
+                <textarea id="fieldLunaDiamondNote" class="form-control" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Diamant data (PEOPLE_CONFIG)</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldMaurenFullName">Mauren fullName</label>
+                <input id="fieldMaurenFullName" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldMaurenBirthDate">Mauren birthDate (YYYY-MM-DD)</label>
+                <input id="fieldMaurenBirthDate" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaFullName">LunaMila fullName</label>
+                <input id="fieldLunaFullName" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldLunaBirthDate">LunaMila birthDate (YYYY-MM-DD)</label>
+                <input id="fieldLunaBirthDate" class="form-control" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h6 class="mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666;">Call to action</h6>
+            <div class="meta-grid">
+              <div class="meta-field">
+                <label for="fieldCtaTitle">CTA overskrift</label>
+                <input id="fieldCtaTitle" class="form-control" type="text">
+              </div>
+              <div class="meta-field" style="grid-column:1 / -1;">
+                <label for="fieldCtaText">CTA tekst</label>
+                <textarea id="fieldCtaText" class="form-control" rows="2"></textarea>
+              </div>
+              <div class="meta-field">
+                <label for="fieldCtaBtnText">Knap tekst</label>
+                <input id="fieldCtaBtnText" class="form-control" type="text">
+              </div>
+              <div class="meta-field">
+                <label for="fieldCtaBtnHref">Knap link (href)</label>
+                <input id="fieldCtaBtnHref" class="form-control" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <div class="d-flex gap-2">
+            <button id="resetBtn" class="btn btn-outline-secondary" type="button">Nulstil til original</button>
+            <button id="copyBtn" class="btn btn-outline-primary" type="button">Kopiér HTML</button>
+            <button id="downloadBtn" class="btn btn-success" type="button">Download om-os.html</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 preview-col">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin:0;">Live preview</h6>
+          <button class="btn btn-sm btn-outline-secondary" type="button" id="refreshPreviewBtn">↻ Opdater</button>
+        </div>
+        <div class="preview-frame">
+          <iframe id="previewFrame" srcdoc=""></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    const STORAGE_KEY = 'inputOmOsData';
+    let originalHtml = '';
+    let previewTimer = null;
+
+    const fields = {
+      title: document.getElementById('fieldTitle'),
+      metaDescription: document.getElementById('fieldMetaDescription'),
+      heroLabel: document.getElementById('fieldHeroLabel'),
+      heroTitle: document.getElementById('fieldHeroTitle'),
+      heroIntro: document.getElementById('fieldHeroIntro'),
+
+      introTitle: document.getElementById('fieldIntroTitle'),
+      introP1: document.getElementById('fieldIntroP1'),
+      introP2: document.getElementById('fieldIntroP2'),
+      introP3: document.getElementById('fieldIntroP3'),
+      sharedImg: document.getElementById('fieldSharedImg'),
+      sharedAlt: document.getElementById('fieldSharedAlt'),
+
+      maurenRole: document.getElementById('fieldMaurenRole'),
+      maurenName: document.getElementById('fieldMaurenName'),
+      maurenImg: document.getElementById('fieldMaurenImg'),
+      maurenAlt: document.getElementById('fieldMaurenAlt'),
+      maurenP1: document.getElementById('fieldMaurenP1'),
+      maurenP2: document.getElementById('fieldMaurenP2'),
+      maurenP3: document.getElementById('fieldMaurenP3'),
+      maurenDiamondTitle: document.getElementById('fieldMaurenDiamondTitle'),
+      maurenDiamondNote: document.getElementById('fieldMaurenDiamondNote'),
+
+      lunaRole: document.getElementById('fieldLunaRole'),
+      lunaName: document.getElementById('fieldLunaName'),
+      lunaImg: document.getElementById('fieldLunaImg'),
+      lunaAlt: document.getElementById('fieldLunaAlt'),
+      lunaP1: document.getElementById('fieldLunaP1'),
+      lunaP2: document.getElementById('fieldLunaP2'),
+      lunaP3: document.getElementById('fieldLunaP3'),
+      lunaDiamondTitle: document.getElementById('fieldLunaDiamondTitle'),
+      lunaDiamondNote: document.getElementById('fieldLunaDiamondNote'),
+
+      maurenFullName: document.getElementById('fieldMaurenFullName'),
+      maurenBirthDate: document.getElementById('fieldMaurenBirthDate'),
+      lunaFullName: document.getElementById('fieldLunaFullName'),
+      lunaBirthDate: document.getElementById('fieldLunaBirthDate'),
+
+      ctaTitle: document.getElementById('fieldCtaTitle'),
+      ctaText: document.getElementById('fieldCtaText'),
+      ctaBtnText: document.getElementById('fieldCtaBtnText'),
+      ctaBtnHref: document.getElementById('fieldCtaBtnHref')
+    };
+
+    function showSaved() {
+      const el = document.getElementById('saveIndicator');
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 1200);
+    }
+
+    function getDirectParagraphTexts(cardEl) {
+      return Array.from(cardEl.children)
+        .filter(el => el.tagName === 'P')
+        .map(el => el.textContent.trim());
+    }
+
+    function parsePeopleConfigFromScript(scriptText) {
+      const get = (pattern) => {
+        const m = scriptText.match(pattern);
+        return m ? m[1] : '';
+      };
+
+      return {
+        maurenFullName: get(/mauren\s*:\s*\{[\s\S]*?fullName:\s*'([^']*)'/),
+        maurenBirthDate: get(/mauren\s*:\s*\{[\s\S]*?birthDate:\s*'([^']*)'/),
+        lunaFullName: get(/lunamila\s*:\s*\{[\s\S]*?fullName:\s*'([^']*)'/),
+        lunaBirthDate: get(/lunamila\s*:\s*\{[\s\S]*?birthDate:\s*'([^']*)'/)
+      };
+    }
+
+    function parseCurrentDocument(htmlText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, 'text/html');
+
+      const introPanel = doc.querySelector('.intro-grid .panel');
+      const introParas = introPanel ? Array.from(introPanel.querySelectorAll('p')).map(p => p.textContent.trim()) : [];
+      const sharedImg = doc.querySelector('.intro-grid .portrait img');
+
+      const maurenCard = doc.getElementById('person-mauren');
+      const maurenParas = maurenCard ? getDirectParagraphTexts(maurenCard) : [];
+      const maurenImg = maurenCard?.querySelector('.person-photo img');
+
+      const lunaCard = doc.getElementById('person-lunamila');
+      const lunaParas = lunaCard ? getDirectParagraphTexts(lunaCard) : [];
+      const lunaImg = lunaCard?.querySelector('.person-photo img');
+
+      const cta = doc.querySelector('.cta');
+      const ctaBtn = cta?.querySelector('a.btn');
+
+      const scripts = Array.from(doc.querySelectorAll('script')).map(s => s.textContent || '').join('\n');
+      const cfg = parsePeopleConfigFromScript(scripts);
+
+      return {
+        title: doc.querySelector('title')?.textContent || '',
+        metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+        heroLabel: doc.querySelector('.hero-label')?.textContent?.trim() || '',
+        heroTitle: doc.querySelector('.hero h1')?.innerHTML?.trim() || '',
+        heroIntro: doc.querySelector('.hero p')?.textContent?.trim() || '',
+
+        introTitle: introPanel?.querySelector('h2')?.textContent?.trim() || '',
+        introP1: introParas[0] || '',
+        introP2: introParas[1] || '',
+        introP3: introParas[2] || '',
+        sharedImg: sharedImg?.getAttribute('src') || '',
+        sharedAlt: sharedImg?.getAttribute('alt') || '',
+
+        maurenRole: maurenCard?.querySelector('.person-role')?.textContent?.trim() || '',
+        maurenName: maurenCard?.querySelector('h3')?.textContent?.trim() || '',
+        maurenImg: maurenImg?.getAttribute('src') || '',
+        maurenAlt: maurenImg?.getAttribute('alt') || '',
+        maurenP1: maurenParas[0] || '',
+        maurenP2: maurenParas[1] || '',
+        maurenP3: maurenParas[2] || '',
+        maurenDiamondTitle: maurenCard?.querySelector('.diamond-title')?.textContent?.trim() || '',
+        maurenDiamondNote: maurenCard?.querySelector('.diamond-note')?.textContent?.trim() || '',
+
+        lunaRole: lunaCard?.querySelector('.person-role')?.textContent?.trim() || '',
+        lunaName: lunaCard?.querySelector('h3')?.textContent?.trim() || '',
+        lunaImg: lunaImg?.getAttribute('src') || '',
+        lunaAlt: lunaImg?.getAttribute('alt') || '',
+        lunaP1: lunaParas[0] || '',
+        lunaP2: lunaParas[1] || '',
+        lunaP3: lunaParas[2] || '',
+        lunaDiamondTitle: lunaCard?.querySelector('.diamond-title')?.textContent?.trim() || '',
+        lunaDiamondNote: lunaCard?.querySelector('.diamond-note')?.textContent?.trim() || '',
+
+        maurenFullName: cfg.maurenFullName || '',
+        maurenBirthDate: cfg.maurenBirthDate || '',
+        lunaFullName: cfg.lunaFullName || '',
+        lunaBirthDate: cfg.lunaBirthDate || '',
+
+        ctaTitle: cta?.querySelector('h2')?.textContent?.trim() || '',
+        ctaText: cta?.querySelector('p')?.textContent?.trim() || '',
+        ctaBtnText: ctaBtn?.textContent?.trim() || '',
+        ctaBtnHref: ctaBtn?.getAttribute('href') || ''
+      };
+    }
+
+    function setFormValues(data) {
+      Object.entries(fields).forEach(([key, el]) => {
+        if (!el) return;
+        el.value = data[key] || '';
+      });
+    }
+
+    function getFormValues() {
+      const out = {};
+      Object.entries(fields).forEach(([key, el]) => {
+        if (!el) return;
+        out[key] = el.value;
+      });
+      return out;
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormValues()));
+      showSaved();
+      schedulePreviewRefresh();
+    }
+
+    function schedulePreviewRefresh() {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(refreshPreview, 120);
+    }
+
+    function setDirectParagraphs(cardEl, values) {
+      const targets = Array.from(cardEl.children).filter(el => el.tagName === 'P');
+      targets.forEach((el, index) => {
+        el.textContent = values[index] || '';
+      });
+    }
+
+    function escJsString(value) {
+      return String(value || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, '\\n');
+    }
+
+    function buildUpdatedHtml() {
+      const values = getFormValues();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(originalHtml, 'text/html');
+
+      const titleEl = doc.querySelector('title');
+      if (titleEl) titleEl.textContent = values.title;
+
+      const metaEl = doc.querySelector('meta[name="description"]');
+      if (metaEl) metaEl.setAttribute('content', values.metaDescription);
+
+      const heroLabelEl = doc.querySelector('.hero-label');
+      if (heroLabelEl) heroLabelEl.textContent = values.heroLabel;
+
+      const heroTitleEl = doc.querySelector('.hero h1');
+      if (heroTitleEl) heroTitleEl.innerHTML = values.heroTitle;
+
+      const heroIntroEl = doc.querySelector('.hero p');
+      if (heroIntroEl) heroIntroEl.textContent = values.heroIntro;
+
+      const introPanel = doc.querySelector('.intro-grid .panel');
+      if (introPanel) {
+        const introTitle = introPanel.querySelector('h2');
+        if (introTitle) introTitle.textContent = values.introTitle;
+
+        const introPs = Array.from(introPanel.querySelectorAll('p'));
+        if (introPs[0]) introPs[0].textContent = values.introP1;
+        if (introPs[1]) introPs[1].textContent = values.introP2;
+        if (introPs[2]) introPs[2].textContent = values.introP3;
+      }
+
+      const sharedImg = doc.querySelector('.intro-grid .portrait img');
+      if (sharedImg) {
+        sharedImg.setAttribute('src', values.sharedImg);
+        sharedImg.setAttribute('alt', values.sharedAlt);
+      }
+
+      const maurenCard = doc.getElementById('person-mauren');
+      if (maurenCard) {
+        const role = maurenCard.querySelector('.person-role');
+        const name = maurenCard.querySelector('h3');
+        const img = maurenCard.querySelector('.person-photo img');
+        const diamondTitle = maurenCard.querySelector('.diamond-title');
+        const diamondNote = maurenCard.querySelector('.diamond-note');
+
+        if (role) role.textContent = values.maurenRole;
+        if (name) name.textContent = values.maurenName;
+        if (img) {
+          img.setAttribute('src', values.maurenImg);
+          img.setAttribute('alt', values.maurenAlt);
+        }
+        setDirectParagraphs(maurenCard, [values.maurenP1, values.maurenP2, values.maurenP3]);
+        if (diamondTitle) diamondTitle.textContent = values.maurenDiamondTitle;
+        if (diamondNote) diamondNote.textContent = values.maurenDiamondNote;
+      }
+
+      const lunaCard = doc.getElementById('person-lunamila');
+      if (lunaCard) {
+        const role = lunaCard.querySelector('.person-role');
+        const name = lunaCard.querySelector('h3');
+        const img = lunaCard.querySelector('.person-photo img');
+        const diamondTitle = lunaCard.querySelector('.diamond-title');
+        const diamondNote = lunaCard.querySelector('.diamond-note');
+
+        if (role) role.textContent = values.lunaRole;
+        if (name) name.textContent = values.lunaName;
+        if (img) {
+          img.setAttribute('src', values.lunaImg);
+          img.setAttribute('alt', values.lunaAlt);
+        }
+        setDirectParagraphs(lunaCard, [values.lunaP1, values.lunaP2, values.lunaP3]);
+        if (diamondTitle) diamondTitle.textContent = values.lunaDiamondTitle;
+        if (diamondNote) diamondNote.textContent = values.lunaDiamondNote;
+      }
+
+      const cta = doc.querySelector('.cta');
+      if (cta) {
+        const ctaH2 = cta.querySelector('h2');
+        const ctaP = cta.querySelector('p');
+        const ctaBtn = cta.querySelector('a.btn');
+        if (ctaH2) ctaH2.textContent = values.ctaTitle;
+        if (ctaP) ctaP.textContent = values.ctaText;
+        if (ctaBtn) {
+          ctaBtn.textContent = values.ctaBtnText;
+          ctaBtn.setAttribute('href', values.ctaBtnHref);
+        }
+      }
+
+      let html = '<!doctype html>\n' + doc.documentElement.outerHTML;
+      const cfgBlock = `const PEOPLE_CONFIG = {\n      mauren: {\n        fullName: '${escJsString(values.maurenFullName)}',\n        birthDate: '${escJsString(values.maurenBirthDate)}'\n      },\n      lunamila: {\n        fullName: '${escJsString(values.lunaFullName)}',\n        birthDate: '${escJsString(values.lunaBirthDate)}'\n      }\n    };`;
+
+      html = html.replace(/const PEOPLE_CONFIG = \{[\s\S]*?\n\s*\};/, cfgBlock);
+      return html;
+    }
+
+    function refreshPreview() {
+      const frame = document.getElementById('previewFrame');
+      if (!frame || !originalHtml) return;
+      frame.srcdoc = buildUpdatedHtml();
+    }
+
+    async function init() {
+      const res = await fetch('om-os.html', { cache: 'no-store' });
+      if (!res.ok) {
+        alert('Kunne ikke hente om-os.html');
+        return;
+      }
+
+      originalHtml = await res.text();
+      const baseData = parseCurrentDocument(originalHtml);
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          setFormValues({ ...baseData, ...JSON.parse(saved) });
+        } catch {
+          setFormValues(baseData);
+        }
+      } else {
+        setFormValues(baseData);
+      }
+
+      Object.values(fields).forEach(el => el.addEventListener('input', saveToLocalStorage));
+      document.getElementById('refreshPreviewBtn').addEventListener('click', refreshPreview);
+      refreshPreview();
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Nulstil alle felter til originalt indhold fra om-os.html?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      const baseData = parseCurrentDocument(originalHtml);
+      setFormValues(baseData);
+      showSaved();
+      refreshPreview();
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const html = buildUpdatedHtml();
+      try {
+        await navigator.clipboard.writeText(html);
+        alert('HTML kopieret til udklipsholder.');
+      } catch {
+        alert('Kunne ikke kopiere automatisk. Brug Download i stedet.');
+      }
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const html = buildUpdatedHtml();
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'om-os.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    init();
+  </script>
+</body>
+</html>

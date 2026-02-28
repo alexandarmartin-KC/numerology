@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Produkter — StrategicNumerology</title>
+  <meta name="description" content="Vælg den numerologiske analyse der passer til dit behov. Tre niveauer af indsigt — fra fundament til fuld aktivering af dit potentiale.">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Produkter — StrategicNumerology">
+  <meta property="og:description" content="Vælg den numerologiske analyse der passer til dit behov. Tre niveauer af indsigt — fra fundament til fuld aktivering af dit potentiale.">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="https://numerology-olive-kappa.vercel.app/produkter.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Produkter — StrategicNumerology">
+  <meta name="twitter:description" content="Vælg den numerologiske analyse der passer til dit behov. Tre niveauer af indsigt — fra fundament til fuld aktivering af dit potentiale.">
+  <meta name="twitter:image" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --clr-bg:        #0b0b12;
+      --clr-surface:   #13131f;
+      --clr-surface-2: #1a1a2e;
+      --clr-gold:      #c9a84c;
+      --clr-gold-light:#e8d5a3;
+      --clr-text:      #e8e4da;
+      --clr-muted:     #7c7c8a;
+      --clr-border:    rgba(201,168,76,0.15);
+      --font-heading:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(11,11,18,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .site-nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1140px; margin: 0 auto; padding: 0 1.5rem;
+      height: 64px;
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-gold);
+      text-decoration: none; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; line-height: 1.15;
+    }
+    .nav-brand:hover { color: var(--clr-gold-light); }
+    .nav-brand .brandline {
+      font-family: var(--font-body);
+      font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--clr-muted); opacity: 0.7;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      display: block; padding: 0.5rem 0.75rem;
+      font-size: 0.82rem; font-weight: 400; letter-spacing: 0.3px;
+      color: var(--clr-muted); text-decoration: none;
+      border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--clr-gold-light);
+      background: rgba(201,168,76,0.08);
+    }
+    .nav-links a.active { color: var(--clr-gold); font-weight: 500; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after {
+      content: ''; display: inline-block; width: 0; height: 0;
+      margin-left: 5px; vertical-align: middle;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid currentColor;
+    }
+    .nav-dropdown-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 4px);
+      background: var(--clr-surface); border: 1px solid var(--clr-border);
+      border-radius: 8px; min-width: 200px; padding: 0.5rem 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      max-height: calc(100vh - 80px); overflow-y: auto;
+    }
+    .nav-dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.82rem; border-radius: 0; }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 32px; height: 32px; position: relative;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px; background: var(--clr-gold);
+      position: absolute; left: 6px; transition: 0.3s;
+    }
+    .nav-toggle span:nth-child(1) { top: 9px; }
+    .nav-toggle span:nth-child(2) { top: 15px; }
+    .nav-toggle span:nth-child(3) { top: 21px; }
+    .nav-toggle.open span:nth-child(1) { top: 15px; transform: rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { top: 15px; transform: rotate(-45deg); }
+    @media (max-width: 991px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--clr-surface); border-bottom: 1px solid var(--clr-border);
+        padding: 1rem; gap: 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.65rem 0.75rem; font-size: 0.9rem; }
+      .nav-dropdown-menu {
+        position: static; box-shadow: none; border: none;
+        background: transparent; padding-left: 1rem; display: none;
+      }
+      .nav-dropdown.open-mobile .nav-dropdown-menu { display: block; }
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn-gold {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--clr-bg);
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border: none; border-radius: 50px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+      color: var(--clr-bg);
+    }
+    .btn-outline-gold {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--clr-gold);
+      background: transparent;
+      border: 1px solid var(--clr-gold);
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-outline-gold:hover {
+      background: rgba(201,168,76,0.1);
+      color: var(--clr-gold-light);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 8rem 1.5rem 4.5rem;
+      text-align: center;
+    }
+    .hero .container {
+      max-width: 800px; margin: 0 auto;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--clr-gold); margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 600; color: var(--clr-text);
+      margin: 0 0 1.2rem; line-height: 1.15;
+    }
+    .hero p {
+      font-size: 1.1rem; font-weight: 300;
+      color: var(--clr-muted); max-width: 620px; margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ─── PRICING CARDS ─── */
+    .section-pricing {
+      padding: 5rem 1.5rem;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .section-pricing .container {
+      max-width: 1080px; margin: 0 auto;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+    }
+    .pricing-card {
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .pricing-card.featured {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 0 1px var(--clr-gold), 0 8px 32px rgba(201,168,76,0.15);
+    }
+    .pricing-card-head {
+      padding: 1.5rem 1.5rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .pricing-card.featured .pricing-card-head {
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border-bottom-color: transparent;
+    }
+    .pricing-card-head h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem; font-weight: 600;
+      color: var(--clr-text); margin: 0;
+    }
+    .pricing-card.featured .pricing-card-head h3 { color: var(--clr-bg); }
+    .pricing-subtitle {
+      font-size: 0.92rem; font-weight: 400;
+      color: var(--clr-gold-light); margin-top: 0.3rem;
+      min-height: 3.4em;
+    }
+    .pricing-card-body {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .pricing-price {
+      font-family: var(--font-heading);
+      font-size: 3rem; font-weight: 700;
+      color: var(--clr-text); line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .pricing-features {
+      list-style: none; padding: 0; margin: 0 0 2rem;
+    }
+    .pricing-features li {
+      padding: 0.5rem 0;
+      font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-text);
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li.highlight { font-weight: 400; }
+    .pricing-card-body .btn-gold,
+    .pricing-card-body .btn-outline-gold {
+      width: 100%; text-align: center;
+      padding: 0.75rem 1.5rem;
+    }
+    .pricing-description {
+      font-size: 0.88rem; font-weight: 300; font-style: italic;
+      color: var(--clr-muted); line-height: 1.6;
+      margin-top: auto;
+      margin-bottom: 1.2rem; padding: 0 0.25rem;
+      min-height: 7.5em;
+    }
+    .pricing-tagline {
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--clr-gold-light);
+      margin-bottom: 1.5rem;
+      min-height: 2.8em;
+    }
+
+    /* ─── PRODUCT DEEP-DIVES ─── */
+    .section-product {
+      padding: 5rem 1.5rem;
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-product .container {
+      max-width: 880px; margin: 0 auto;
+    }
+    .product-header {
+      margin-bottom: 2.5rem;
+    }
+    .product-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 600; color: var(--clr-gold-light);
+      margin: 0 0 0.4rem;
+    }
+    .product-header .product-price {
+      font-family: var(--font-heading);
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--clr-text);
+    }
+    .product-header .product-sub {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); margin-top: 0.8rem;
+      line-height: 1.7;
+    }
+    .product-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 700px) {
+      .product-body { grid-template-columns: 1fr; }
+    }
+    .product-body h4 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem; font-weight: 600;
+      color: var(--clr-gold-light);
+      margin: 0 0 0.8rem;
+    }
+    .product-body ul {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .product-body li {
+      position: relative;
+      padding: 0.4rem 0 0.4rem 1.4rem;
+      font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-text); line-height: 1.55;
+    }
+    .product-body li::before {
+      content: '✦';
+      position: absolute; left: 0; top: 0.45rem;
+      color: var(--clr-gold); font-size: 0.7rem;
+    }
+    .product-body p {
+      font-size: 0.95rem; font-weight: 300;
+      color: #d8d2c5; line-height: 1.7;
+      margin: 0;
+    }
+    .product-cta {
+      text-align: center;
+      padding-top: 0.5rem;
+    }
+
+    /* ─── COMPARISON TABLE ─── */
+    .section-compare {
+      padding: 5rem 1.5rem;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-compare .container {
+      max-width: 880px; margin: 0 auto;
+    }
+    .section-compare h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 600; color: var(--clr-text);
+      text-align: center; margin: 0 0 3rem;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 0.75rem 1rem;
+      text-align: center;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .compare-table th {
+      font-family: var(--font-heading);
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--clr-gold-light);
+      padding-bottom: 1rem;
+    }
+    .compare-table th:first-child,
+    .compare-table td:first-child {
+      text-align: left;
+      font-weight: 400;
+      color: var(--clr-text);
+    }
+    .compare-table td {
+      color: var(--clr-muted);
+    }
+    .check {
+      color: var(--clr-gold);
+      font-size: 1.1rem;
+    }
+    .dash {
+      color: rgba(124,124,138,0.35);
+    }
+    @media (max-width: 600px) {
+      .compare-table th,
+      .compare-table td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+      }
+      .compare-table th { font-size: 0.95rem; }
+    }
+
+    /* ─── FAQ ─── */
+    .section-faq {
+      padding: 5rem 1.5rem;
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-faq .container {
+      max-width: 720px; margin: 0 auto;
+    }
+    .section-faq h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 600; color: var(--clr-text);
+      text-align: center; margin: 0 0 3rem;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--clr-border);
+      padding: 1.3rem 0;
+    }
+    .faq-item:first-child { border-top: 1px solid var(--clr-border); }
+    .faq-item strong {
+      display: block;
+      font-size: 1rem; font-weight: 500;
+      color: var(--clr-gold-light);
+      margin-bottom: 0.5rem;
+    }
+    .faq-item p {
+      margin: 0;
+      font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.65;
+    }
+
+    /* ─── FOOTER CTA ─── */
+    .section-cta {
+      padding: 5rem 1.5rem;
+      text-align: center;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-cta .container {
+      max-width: 680px; margin: 0 auto;
+    }
+    .section-cta h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 600; color: var(--clr-gold-light);
+      margin: 0 0 1rem;
+    }
+    .section-cta p {
+      font-size: 1rem; font-weight: 300;
+      color: var(--clr-muted);
+      margin: 0 0 2rem;
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="site-nav">
+    <div class="container">
+      <a class="nav-brand" href="index.html">StrategicNumerology<span class="brandline">Understand yourself. Plan your timing.</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Forside</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Grundenergier</a>
+          <div class="nav-dropdown-menu">
+            <a href="grundenergi-1.html">1 — Lederen</a>
+            <a href="grundenergi-2.html">2 — Diplomaten</a>
+            <a href="grundenergi-3.html">3 — Den kreative</a>
+            <a href="grundenergi-4.html">4 — Bygmesteren</a>
+            <a href="grundenergi-5.html">5 — Eventyren</a>
+            <a href="grundenergi-6.html">6 — Omsorgsgiveren</a>
+            <a href="grundenergi-7.html">7 — Tænkeren</a>
+            <a href="grundenergi-8.html">8 — Den ambitiøse</a>
+            <a href="grundenergi-9.html">9 — Den vise</a>
+          </div>
+        </li>
+        <li><a href="produkter.html" class="active">Produkter</a></li>
+        <li><a href="om-numerologi.html">Om numerologi</a></li>
+        <li><a href="om-os.html">Om os</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Admin</a>
+          <div class="nav-dropdown-menu">
+            <a href="diamant.html">Diamant</a>
+            <a href="aarstalsraekker.html">Årstalsrækker</a>
+            <a href="rapport.html">Rapport</a>
+            <a href="artikel.html">Artikler</a>
+            <a href="input-diamant.html">Input Diamant</a>
+            <a href="input-aarstalsraekker.html">Input Årstalsrækker</a>
+            <a href="input-generelt.html">Input Generelt</a>
+            <a href="input-rapport.html">Input Rapport</a>
+            <a href="input-navnegenerator.html">Input Navnegenerator</a>
+            <a href="input-gratisberegning.html">Input Gratis Beregning</a>
+            <a href="input-om-numerologi.html">Input Om Numerologi</a>
+            <a href="input-om-os.html">Input Om Os</a>
+            <a href="input-grundenergier.html">Input Grundenergier</a>
+            <a href="input-tak.html">Input Tak-side</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════
+       HERO
+  ═══════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="section-label">Numerologiske analyser</div>
+      <h1>Vælg din dybde</h1>
+      <p>Tre niveauer af indsigt — fra fundament til fuld aktivering af dit potentiale. Hver analyse bygger videre på den forrige.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       PRICING CARDS
+  ═══════════════════════════════ -->
+  <section class="section-pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-grid">
+        <!-- FUNDAMENT -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Fundament</h3>
+            <div class="pricing-subtitle">Forstå din grundstruktur</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$35 <span>/ €30</span></div>
+            <ul class="pricing-features">
+              <li class="highlight">Analyse af din Grundenergi</li>
+              <li class="highlight">Fuld udregning af Diamanten</li>
+              <li>Dine styrker og naturlige kompetencer</li>
+              <li>Dine udfordringer og udviklingsmønstre</li>
+              <li>Hvordan dit navn præger din personlighed</li>
+            </ul>
+            <p class="pricing-description">Denne rapport giver dig et klart billede af din indre struktur og de mønstre, der påvirker dine valg og relationer.</p>
+            <p class="pricing-tagline">Et stærkt fundament for personlig forståelse.</p>
+            <a href="landing-analyse-35usd.html" class="btn-outline-gold">Start med indsigt</a>
+          </div>
+        </div>
+        <!-- RETNING -->
+        <div class="pricing-card featured">
+          <div class="pricing-card-head">
+            <h3>Retning</h3>
+            <div class="pricing-subtitle">Se hvornår du står stærkest</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$75 <span>/ €65</span></div>
+            <ul class="pricing-features">
+              <li class="highlight">Alt fra Fundament, plus:</li>
+              <li class="highlight">Personlige Årstalsrækker</li>
+              <li class="highlight">Analyse af de næste 9+ år</li>
+              <li>Perioder med fremdrift og momentum</li>
+              <li>Perioder hvor du bør konsolidere og justere</li>
+              <li>Strategiske beslutningsvinduer</li>
+            </ul>
+            <p class="pricing-description">Denne analyse giver dig overblik over dine kommende energicyklusser, så du kan træffe større beslutninger med større klarhed.</p>
+            <p class="pricing-tagline">Fra indsigt til strategisk retning.</p>
+            <a href="landing-analyse-35usd.html" class="btn-gold">Planlæg med bevidsthed</a>
+          </div>
+        </div>
+        <!-- AKTIVERING -->
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Aktivering</h3>
+            <div class="pricing-subtitle">Optimer dit potentiale</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$149 <span>/ €135</span></div>
+            <ul class="pricing-features">
+              <li class="highlight">Alt fra Retning, plus:</li>
+              <li class="highlight">Analyse af navnevariationer</li>
+              <li class="highlight">Beregning af optimalt navn</li>
+              <li>Sammenligning af nuværende og alternativt navn</li>
+              <li>Konsekvenser for karriere, synlighed og gennemslagskraft</li>
+              <li>Konkrete anbefalinger</li>
+            </ul>
+            <p class="pricing-description">Denne pakke er for dig, der ikke kun vil forstå din struktur og timing – men aktivt arbejde med at styrke din position.</p>
+            <p class="pricing-tagline">Her går vi fra analyse til justering.</p>
+            <a href="landing-analyse-35usd.html" class="btn-gold">Tag aktivt kontrol</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       PRODUCT 1: FUNDAMENT
+  ═══════════════════════════════ -->
+  <section class="section-product reveal" id="fundament">
+    <div class="container">
+      <div class="product-header">
+        <div class="section-label">Niveau 1</div>
+        <h2>Fundament</h2>
+        <div class="product-price">$35 / €30</div>
+        <p class="product-sub">Din Grundenergi og Diamant — afdæk de mønstre der styrer dine reaktioner, relationer og beslutninger.</p>
+      </div>
+      <div class="product-body">
+        <div>
+          <h4>Hvad du modtager</h4>
+          <ul>
+            <li>Din personlige Grundenergi med dybdegående fortolkning</li>
+            <li>Fuld udregning af din numerologiske Diamant</li>
+            <li>Analyse af dine styrker og naturlige kompetencer</li>
+            <li>Dine udviklingsområder og typiske faldgruber</li>
+            <li>Hvordan dit navn former din personlighed og udstråling</li>
+            <li>PDF-rapport på ca. 12–15 sider</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Hvem er det for?</h4>
+          <p>Hvis du aldrig har fået en numerologisk analyse — eller blot ønsker en struktureret forståelse af dine kernekvaliteter — er dette det rigtige startsted. Rapporten giver dig et solidt fundament at bygge videre på.</p>
+          <br>
+          <h4>Hvad får du ud af det?</h4>
+          <p>Du får et klart billede af, hvem du er ud fra en numerologisk synsvinkel. Hvilke styrker du naturligt trækker på, og hvilke mønstre der potentielt kan bremse dig.</p>
+        </div>
+      </div>
+      <div class="product-cta">
+        <a href="landing-analyse-35usd.html" class="btn-outline-gold">Bestil Fundament</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       PRODUCT 2: RETNING
+  ═══════════════════════════════ -->
+  <section class="section-product reveal" id="retning" style="background: var(--clr-surface);">
+    <div class="container">
+      <div class="product-header">
+        <div class="section-label">Niveau 2</div>
+        <h2>Retning</h2>
+        <div class="product-price">$75 / €65</div>
+        <p class="product-sub">Alt fra Fundament — plus Årstalsrækker der viser dine energicyklusser de næste 9+ år frem.</p>
+      </div>
+      <div class="product-body">
+        <div>
+          <h4>Hvad du modtager ekstra</h4>
+          <ul>
+            <li>Personlige Årstalsrækker beregnet fra din fødselsdato</li>
+            <li>Overblik over de næste 9+ års energicyklusser</li>
+            <li>Perioder med naturligt momentum og fremdrift</li>
+            <li>Perioder hvor konsolidering og refleksion er optimal</li>
+            <li>Strategiske beslutningsvinduer for store livsvalg</li>
+            <li>PDF-rapport på ca. 20–25 sider</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Hvem er det for?</h4>
+          <p>For dig der vil have mere end selvindsigt — du vil vide <em>hvornår</em> du bedst handler. Denne analyse er ideel, hvis du står over for karrierevalg, flytning, iværksætteri eller andre store beslutninger.</p>
+          <br>
+          <h4>Hvad er Årstalsrækker?</h4>
+          <p>Numerologien opererer med personlige årstal der skifter i 9-års cyklusser. Hver periode har sin egen energi og tematik. At kende din cyklus kan hjælpe dig med at time dine beslutninger mere bevidst.</p>
+        </div>
+      </div>
+      <div class="product-cta">
+        <a href="landing-analyse-35usd.html" class="btn-gold">Bestil Retning</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       PRODUCT 3: AKTIVERING
+  ═══════════════════════════════ -->
+  <section class="section-product reveal" id="aktivering">
+    <div class="container">
+      <div class="product-header">
+        <div class="section-label">Niveau 3</div>
+        <h2>Aktivering</h2>
+        <div class="product-price">$149 / €135</div>
+        <p class="product-sub">Den fulde pakke — inkl. navnevariation-analyse og anbefaling af optimalt navn for karriere og synlighed.</p>
+      </div>
+      <div class="product-body">
+        <div>
+          <h4>Hvad du modtager ekstra</h4>
+          <ul>
+            <li>Analyse af én eller flere navnevariationer</li>
+            <li>Beregning af optimalt navn ud fra dine mål</li>
+            <li>Sammenligning af nuværende vs. alternativt navns energiprofil</li>
+            <li>Konsekvenser for karriere, synlighed og gennemslagskraft</li>
+            <li>Konkrete anbefalinger du kan handle på</li>
+            <li>PDF-rapport på ca. 30–35 sider</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Hvem er det for?</h4>
+          <p>For dig der vil gå fra passiv indsigt til aktiv optimering. Hvis du overvejer at bruge et andet navn professionelt, oprette en virksomhed, eller ønsker at forstå hvordan navnevalg direkte påvirker din numerologiske profil.</p>
+          <br>
+          <h4>Hvorfor navnevariationer?</h4>
+          <p>Hvert bogstav i dit navn bærer en vibration. Selv små ændringer — et mellemnavn, en forkortelse, et kunstnernavn — kan forskyde din Diamant og dermed din energi. Denne analyse kvantificerer præcis hvad ændringen betyder.</p>
+        </div>
+      </div>
+      <div class="product-cta">
+        <a href="landing-analyse-35usd.html" class="btn-gold">Bestil Aktivering</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       COMPARISON TABLE
+  ═══════════════════════════════ -->
+  <section class="section-compare reveal">
+    <div class="container">
+      <h2>Sammenlign pakkerne</h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Fundament</th>
+            <th>Retning</th>
+            <th>Aktivering</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Grundenergi-analyse</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Fuld Diamant-udregning</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Styrker &amp; udviklingsområder</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Personlige Årstalsrækker</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>9+ års analyse</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Strategiske beslutningsvinduer</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Navnevariation-analyse</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Beregning af optimalt navn</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Konkrete anbefalinger</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Rapport omfang</td>
+            <td>12–15 sider</td>
+            <td>20–25 sider</td>
+            <td>30–35 sider</td>
+          </tr>
+          <tr>
+            <td><strong>Pris</strong></td>
+            <td><strong>$35 / €30</strong></td>
+            <td><strong>$75 / €65</strong></td>
+            <td><strong>$149 / €135</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       FAQ
+  ═══════════════════════════════ -->
+  <section class="section-faq reveal">
+    <div class="container">
+      <h2>Ofte stillede spørgsmål</h2>
+
+      <div class="faq-item">
+        <strong>Kan jeg opgradere senere?</strong>
+        <p>Ja. Hvis du starter med Fundament og senere ønsker Årstalsrækker eller navneanalyse, kan du opgradere mod merpris. Kontakt os efter køb.</p>
+      </div>
+      <div class="faq-item">
+        <strong>Hvad er forskellen på Fundament og Retning?</strong>
+        <p>Fundament beskriver hvem du er — din indre struktur og mønstre. Retning tilføjer et tidsperspektiv, så du kan se hvornår du energimæssigt står stærkest til store beslutninger.</p>
+      </div>
+      <div class="faq-item">
+        <strong>Hvad betyder "navnevariation-analyse"?</strong>
+        <p>I Aktivering-pakken beregner vi Diamanten for alternative navne — f.eks. mellemnavn, kunstnernavn eller firmanavn — og sammenligner med dit nuværende navns energiprofil.</p>
+      </div>
+      <div class="faq-item">
+        <strong>Er analyserne AI-genererede?</strong>
+        <p>Selve beregningen (Diamant, Årstalsrækker, navneenergier) er 100% deterministisk — baseret på faste numerologiske formler. Rapporten er genereret via en specialudviklet model der sikrer konsistens og dybde.</p>
+      </div>
+      <div class="faq-item">
+        <strong>Hvornår modtager jeg rapporten?</strong>
+        <p>Øjeblikkeligt efter betaling. Rapporten genereres og leveres digitalt.</p>
+      </div>
+      <div class="faq-item">
+        <strong>Er der abonnement?</strong>
+        <p>Nej. Alle analyser er engangskøb. Ingen skjulte omkostninger.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       FOOTER CTA
+  ═══════════════════════════════ -->
+  <section class="section-cta reveal">
+    <div class="container">
+      <h2>Klar til at opdage dine tal?</h2>
+      <p>Start med Fundament for klarhed — eller gå direkte til det niveau der matcher dit behov.</p>
+      <a href="#pricing" class="btn-gold">Se pakkerne</a>
+    </div>
+  </section>
+
+  <script>
+    // ─── Mobile nav ───
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      links.classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-dropdown > a').forEach(a => {
+      a.addEventListener('click', e => {
+        if (window.innerWidth <= 991) {
+          e.preventDefault();
+          a.parentElement.classList.toggle('open-mobile');
+        }
+      });
+    });
+
+    // ─── Scroll reveal ───
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+  <style>
+    .site-footer {
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      padding: 3.5rem 1.5rem 2rem;
+      font-size: 0.88rem;
+      color: var(--clr-muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 2.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--clr-gold-light);
+      margin: 0 0 1rem;
+      letter-spacing: 0.3px;
+    }
+    .footer-col p {
+      margin: 0 0 0.3rem;
+      line-height: 1.6;
+    }
+    .footer-col a {
+      color: var(--clr-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-col .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--clr-gold);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-links li {
+      margin-bottom: 0.4rem;
+    }
+    .footer-social {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--clr-muted);
+    }
+    .footer-social a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-social img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .footer-social a:hover img {
+      opacity: 1;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--clr-border);
+      font-size: 0.78rem;
+      color: rgba(124,124,138,0.6);
+    }
+  </style>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Social</h4>
+        <div class="footer-social">
+          <a href="https://facebook.com" target="_blank" rel="noopener">
+            <img src="assets/images/facebook-logo.png" alt="Facebook">
+            Facebook
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener">
+            <img src="assets/images/instagram-white.svg" alt="Instagram">
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Sider</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Forside</a></li>
+          <li><a href="grundenergi-1.html">Grundenergier</a></li>
+          <li><a href="produkter.html">Produkter</a></li>
+          <li><a href="om-numerologi.html">Om numerologi</a></li>
+          <li><a href="om-os.html">Om os</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <span class="footer-brand">StrategicNumerology</span>
+        <p>Copenhagen, Denmark</p>
+        <p><a href="mailto:info@strategicnumerology.com">info@strategicnumerology.com</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
+    </div>
+  </footer>
+</body>
+</html>

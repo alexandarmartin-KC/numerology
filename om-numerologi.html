@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hvad er numerologi? — Alt om tal, energi og diamanten</title>
   <meta name="description" content="Lær alt om numerologi: historien, talværdierne i det chaldæiske system, den numerologiske diamant, årstalsrækker og grundenergier. En komplet guide.">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hvad er numerologi? — Alt om tal, energi og diamanten">
+  <meta property="og:description" content="Lær alt om numerologi: historien, talværdierne i det chaldæiske system, den numerologiske diamant, årstalsrækker og grundenergier. En komplet guide.">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="https://numerology-olive-kappa.vercel.app/om-numerologi.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hvad er numerologi? — Alt om tal, energi og diamanten">
+  <meta name="twitter:description" content="Lær alt om numerologi: historien, talværdierne i det chaldæiske system, den numerologiske diamant, årstalsrækker og grundenergier. En komplet guide.">
+  <meta name="twitter:image" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -71,6 +82,7 @@
       background: var(--clr-surface); border: 1px solid var(--clr-border);
       border-radius: 8px; min-width: 200px; padding: 0.5rem 0;
       box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      max-height: calc(100vh - 80px); overflow-y: auto;
     }
     .nav-dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.82rem; border-radius: 0; }
     .nav-dropdown:hover .nav-dropdown-menu,
@@ -719,7 +731,6 @@
       </button>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html">Forside</a></li>
-        <li><a href="om-numerologi.html" class="active">Om numerologi</a></li>
         <li class="nav-dropdown">
           <a href="#" tabindex="0">Grundenergier</a>
           <div class="nav-dropdown-menu">
@@ -734,13 +745,16 @@
             <a href="grundenergi-9.html">9 — Den vise</a>
           </div>
         </li>
-        <li><a href="diamant.html">Diamant</a></li>
-        <li><a href="aarstalsraekker.html">Årstalsrækker</a></li>
-        <li><a href="rapport.html">Rapport</a></li>
-        <li><a href="artikel.html">Artikler</a></li>
+        <li><a href="produkter.html">Produkter</a></li>
+        <li><a href="om-numerologi.html" class="active">Om numerologi</a></li>
+        <li><a href="om-os.html">Om os</a></li>
         <li class="nav-dropdown">
           <a href="#" tabindex="0">Admin</a>
           <div class="nav-dropdown-menu">
+            <a href="diamant.html">Diamant</a>
+            <a href="aarstalsraekker.html">Årstalsrækker</a>
+            <a href="rapport.html">Rapport</a>
+            <a href="artikel.html">Artikler</a>
             <a href="input-diamant.html">Input Diamant</a>
             <a href="input-aarstalsraekker.html">Input Årstalsrækker</a>
             <a href="input-generelt.html">Input Generelt</a>
@@ -748,7 +762,12 @@
             <a href="input-navnegenerator.html">Input Navnegenerator</a>
             <a href="input-gratisberegning.html">Input Gratis Beregning</a>
             <a href="input-om-numerologi.html">Input Om Numerologi</a>
+            <a href="input-om-os.html">Input Om Os</a>
             <a href="input-grundenergier.html">Input Grundenergier</a>
+            <a href="input-tak.html">Input Tak-side</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
+              <a href="input-meta.html">Input Meta Data</a>
           </div>
         </li>
       </ul>
@@ -1040,7 +1059,7 @@
             </ul>
             <p class="pricing-description">Denne rapport giver dig et klart billede af din indre struktur og de mønstre, der påvirker dine valg og relationer.</p>
             <p class="pricing-tagline">Et stærkt fundament for personlig forståelse.</p>
-            <a href="#" class="btn-outline-gold">Start med indsigt</a>
+            <a href="landing-analyse-35usd.html" class="btn-outline-gold">Start med indsigt</a>
           </div>
         </div>
 
@@ -1061,7 +1080,7 @@
             </ul>
             <p class="pricing-description">Denne analyse giver dig overblik over dine kommende energicyklusser, så du kan træffe større beslutninger med større klarhed.</p>
             <p class="pricing-tagline">Fra indsigt til strategisk retning.</p>
-            <a href="#" class="btn-gold">Planlæg med bevidsthed</a>
+            <a href="landing-analyse-35usd.html" class="btn-gold">Planlæg med bevidsthed</a>
           </div>
         </div>
 
@@ -1082,17 +1101,12 @@
             </ul>
             <p class="pricing-description">Denne pakke er for dig, der ikke kun vil forstå din struktur og timing – men aktivt arbejde med at styrke din position.</p>
             <p class="pricing-tagline">Her går vi fra analyse til justering.</p>
-            <a href="#" class="btn-gold">Tag aktivt kontrol</a>
+            <a href="landing-analyse-35usd.html" class="btn-gold">Tag aktivt kontrol</a>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- ─── FOOTER ─── -->
-  <footer class="site-footer">
-    <p>&copy; 2026 StrategicNumerology. Alle rettigheder forbeholdes.</p>
-  </footer>
 
   <script src="assets/js/diamondEngine.js"></script>
   <script>
@@ -1458,5 +1472,130 @@
     nameInput?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); birthInput.focus(); } });
     birthInput?.addEventListener('keydown', e => { if (e.key === 'Enter') runAnalysis(); });
   </script>
+  <style>
+    .site-footer {
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      padding: 3.5rem 1.5rem 2rem;
+      font-size: 0.88rem;
+      color: var(--clr-muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 2.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--clr-gold-light);
+      margin: 0 0 1rem;
+      letter-spacing: 0.3px;
+    }
+    .footer-col p {
+      margin: 0 0 0.3rem;
+      line-height: 1.6;
+    }
+    .footer-col a {
+      color: var(--clr-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-col .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--clr-gold);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-links li {
+      margin-bottom: 0.4rem;
+    }
+    .footer-social {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--clr-muted);
+    }
+    .footer-social a:hover {
+      color: var(--clr-gold-light);
+    }
+    .footer-social img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .footer-social a:hover img {
+      opacity: 1;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--clr-border);
+      font-size: 0.78rem;
+      color: rgba(124,124,138,0.6);
+    }
+  </style>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Social</h4>
+        <div class="footer-social">
+          <a href="https://facebook.com" target="_blank" rel="noopener">
+            <img src="assets/images/facebook-logo.png" alt="Facebook">
+            Facebook
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener">
+            <img src="assets/images/instagram-white.svg" alt="Instagram">
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Sider</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Forside</a></li>
+          <li><a href="grundenergi-1.html">Grundenergier</a></li>
+          <li><a href="produkter.html">Produkter</a></li>
+          <li><a href="om-numerologi.html">Om numerologi</a></li>
+          <li><a href="om-os.html">Om os</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <span class="footer-brand">StrategicNumerology</span>
+        <p>Copenhagen, Denmark</p>
+        <p><a href="mailto:info@strategicnumerology.com">info@strategicnumerology.com</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
+    </div>
+  </footer>
 </body>
 </html>

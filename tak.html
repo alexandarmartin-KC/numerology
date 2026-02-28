@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tak for din bestilling — StrategicNumerology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --clr-bg: #0b0b12;
+      --clr-surface: #13131f;
+      --clr-gold: #c9a84c;
+      --clr-gold-light: #e8d5a3;
+      --clr-text: #e8e4da;
+      --clr-muted: #8c8c9b;
+      --clr-border: rgba(201,168,76,0.15);
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem;
+      text-align: center;
+    }
+    h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      color: var(--clr-gold-light);
+      line-height: 1.2;
+      margin: 0 0 1.2rem;
+    }
+    p {
+      color: #ddd8ca;
+      margin: 0 0 1rem;
+      font-size: 1.05rem;
+    }
+    .muted {
+      color: var(--clr-muted);
+      font-size: 0.92rem;
+    }
+    .checkmark {
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: 14px;
+      padding: 2.2rem 1.8rem;
+      margin-top: 2rem;
+    }
+    .card p { margin-bottom: 0.6rem; }
+    .card p:last-child { margin-bottom: 0; }
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--clr-gold);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="checkmark">✓</span>
+    <h1>Tak for din bestilling</h1>
+    <p>Din betaling er gennemført, og din personlige numerologiske analyse er nu på vej.</p>
+
+    <div class="card">
+      <p><strong>Hvad sker der nu?</strong></p>
+      <p>Din analyse bliver genereret og sendt til dig hurtigst muligt. Du modtager den som en PDF-rapport via e-mail.</p>
+      <p class="muted">Har du spørgsmål? Kontakt os via vores hjemmeside.</p>
+    </div>
+
+    <a class="back-link" href="index.html">← Tilbage til forsiden</a>
+  </div>
+</body>
+</html>
