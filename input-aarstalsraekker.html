@@ -377,6 +377,94 @@ document.getElementById('tab-rules').addEventListener('shown.bs.tab', () => {
   }
 });
 
+// ─── Database sync ───
+const _dbTimers = {};
+function dbSave(type, getData) {
+  clearTimeout(_dbTimers[type]);
+  _dbTimers[type] = setTimeout(async () => {
+    try {
+      await fetch('/api/save-aarstalsraekker.php?type=' + type, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(getData())
+      });
+    } catch (e) { console.warn('DB save fejlede (' + type + '):', e); }
+  }, 800);
+}
+
+// Hooks: gem aar energies til DB
+const _origSaveAarEnergies = saveAarEnergies;
+function saveAarEnergies(data) {
+  _origSaveAarEnergies(data);
+  dbSave('energies', () => Object.entries(data).map(([key, v]) => ({
+    tal: key,
+    keywords: v.keywords || '',
+    beskrivelse: v.beskrivelse || ''
+  })));
+}
+
+// Hooks: gem rules til DB
+const _origSaveAarRules = saveAarRules;
+function saveAarRules(rules) {
+  _origSaveAarRules(rules);
+  dbSave('rules', () => rules);
+}
+
+// Hooks: gem cycles og general til DB når de gemmes
+function dbSaveCycles() {
+  dbSave('cycles', () => [
+    { name: '1-2-4-8-7-5', description: localStorage.getItem('cycles_124875') || '', style: '' },
+    { name: '3-6', description: localStorage.getItem('cycles_36') || '', style: '' },
+    { name: '9', description: localStorage.getItem('cycles_9') || '', style: '' }
+  ]);
+}
+function dbSaveGeneral() {
+  dbSave('general', () => ({
+    aboutCycles: localStorage.getItem('cycles_about') || '',
+    cycleStyle: localStorage.getItem('cycles_style') || ''
+  }));
+}
+
+// Patch cycle + general textarea saves når de er initialiseret
+document.addEventListener('input', e => {
+  if (e.target.classList.contains('cycle-field')) dbSaveCycles();
+  if (e.target.classList.contains('general-field')) dbSaveGeneral();
+});
+
+// Load fra DB ved opstart
+(async () => {
+  try {
+    const [eRes, cRes, rRes, gRes] = await Promise.all([
+      fetch('/api/save-aarstalsraekker.php?type=energies'),
+      fetch('/api/save-aarstalsraekker.php?type=cycles'),
+      fetch('/api/save-aarstalsraekker.php?type=rules'),
+      fetch('/api/save-aarstalsraekker.php?type=general')
+    ]);
+    if (eRes.ok) {
+      const dbE = await eRes.json();
+      const obj = {};
+      dbE.forEach(e => { obj[e.tal] = { keywords: e.keywords, beskrivelse: e.beskrivelse }; });
+      if (Object.keys(obj).length) localStorage.setItem(AAR_ENERGY_KEY, JSON.stringify(obj));
+    }
+    if (cRes.ok) {
+      const dbC = await cRes.json();
+      dbC.forEach(c => {
+        const key = c.name === '1-2-4-8-7-5' ? 'cycles_124875' : c.name === '3-6' ? 'cycles_36' : 'cycles_9';
+        if (c.description) localStorage.setItem(key, c.description);
+      });
+    }
+    if (rRes.ok) {
+      const dbR = await rRes.json();
+      if (dbR.length) localStorage.setItem(AAR_RULES_KEY, JSON.stringify(dbR));
+    }
+    if (gRes.ok) {
+      const dbG = await gRes.json();
+      if (dbG.aboutCycles) localStorage.setItem('cycles_about', dbG.aboutCycles);
+      if (dbG.cycleStyle) localStorage.setItem('cycles_style', dbG.cycleStyle);
+    }
+  } catch (e) { console.warn('DB load fejlede:', e); }
+})();
+
 // Init
 renderAarEnergies();
 initGeneral();

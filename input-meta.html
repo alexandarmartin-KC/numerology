@@ -240,7 +240,10 @@
           Bruges når siden deles på Facebook, Messenger, LinkedIn m.fl. Anbefalet: <strong>1200 × 630 px</strong> (1.91 : 1).
         </p>
         <label class="field-label" for="fieldOgImage">Billede-sti / URL</label>
-        <input id="fieldOgImage" class="form-control mb-2" type="text" placeholder="f.eks. assets/images/og-share.jpg">
+        <div class="input-group mb-2">
+          <input id="fieldOgImage" class="form-control" type="text" placeholder="f.eks. assets/images/og-share.jpg">
+          <button id="ogUploadBtn" class="btn btn-outline-primary" type="button">Upload</button>
+        </div>
         <label class="field-label" for="ogFileInput">Forhåndsvisning (vælg lokal fil)</label>
         <input id="ogFileInput" class="form-control form-control-sm" type="file" accept="image/*">
         <div id="ogPreviewWrap" class="img-preview-wrap">
@@ -275,7 +278,10 @@
           Bruges i Google Knowledge Panel og struktureret data. Anbefalet: <strong>1200 × 630 px</strong> eller <strong>1200 × 900 px</strong>.
         </p>
         <label class="field-label" for="fieldSeoImage">Billede-sti / URL</label>
-        <input id="fieldSeoImage" class="form-control mb-2" type="text" placeholder="f.eks. assets/images/seo-image.jpg">
+        <div class="input-group mb-2">
+          <input id="fieldSeoImage" class="form-control" type="text" placeholder="f.eks. assets/images/seo-image.jpg">
+          <button id="seoUploadBtn" class="btn btn-outline-primary" type="button">Upload</button>
+        </div>
         <label class="field-label" for="seoFileInput">Forhåndsvisning (vælg lokal fil)</label>
         <input id="seoFileInput" class="form-control form-control-sm" type="file" accept="image/*">
         <div id="seoPreviewWrap" class="img-preview-wrap">
@@ -424,6 +430,52 @@
     handleFilePreview(ogFileInput, ogPreviewWrap, ogDims, function (s) { ogPreviewSrc = s; });
     handleFilePreview(seoFileInput, seoPreviewWrap, seoDims, function (s) { seoPreviewSrc = s; });
 
+    // --- Upload helpers ---
+    async function uploadImage(file, cb) {
+      const formData = new FormData();
+      formData.append('image', file);
+      try {
+        const res = await fetch('api/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          cb(data.url);
+        } else {
+          alert('Upload-fejl: ' + (data.error || 'Ukendt fejl'));
+        }
+      } catch (err) {
+        alert('Upload mislykkedes: ' + err.message);
+      }
+    }
+
+    document.getElementById('ogUploadBtn').addEventListener('click', function () {
+      if (!ogFileInput.files[0]) {
+        alert('Vælg et billede først.');
+        return;
+      }
+      uploadImage(ogFileInput.files[0], function (url) {
+        fieldOgImage.value = url;
+        refreshPreviews();
+        saveCurrentPage();
+        alert('Billede uploadet og URL indsat.');
+      });
+    });
+
+    document.getElementById('seoUploadBtn').addEventListener('click', function () {
+      if (!seoFileInput.files[0]) {
+        alert('Vælg et billede først.');
+        return;
+      }
+      uploadImage(seoFileInput.files[0], function (url) {
+        fieldSeoImage.value = url;
+        refreshPreviews();
+        saveCurrentPage();
+        alert('Billede uploadet og URL indsat.');
+      });
+    });
+
     /* ── Parse meta from HTML ──────────────────── */
     function parseMetaFromHtml(htmlText) {
       const parser = new DOMParser();
@@ -472,10 +524,22 @@
     }
 
     /* ── Save / Load ───────────────────────────── */
+    let _dbTimer;
     function saveCurrentPage() {
-      localStorage.setItem(storageKey(currentPage), JSON.stringify(getFormValues()));
+      const vals = getFormValues();
+      localStorage.setItem(storageKey(currentPage), JSON.stringify(vals));
       showSaved();
       updatePageStatus();
+      clearTimeout(_dbTimer);
+      _dbTimer = setTimeout(async () => {
+        try {
+          await fetch('/api/save-meta.php?page=' + encodeURIComponent(currentPage), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page: currentPage, ...vals })
+          });
+        } catch (e) { console.warn('DB save fejlede:', e); }
+      }, 800);
     }
 
     function updatePageStatus() {

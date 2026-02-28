@@ -226,6 +226,21 @@ function saveConfig(config) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   flash();
   updatePreview(config);
+  dbSaveGratis(config);
+}
+
+let _dbTimer;
+function dbSaveGratis(config) {
+  clearTimeout(_dbTimer);
+  _dbTimer = setTimeout(async () => {
+    try {
+      await fetch('/api/save-gratisberegning.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config)
+      });
+    } catch (e) { console.warn('DB save fejlede:', e); }
+  }, 800);
 }
 
 function flash() {
@@ -440,6 +455,16 @@ function init() {
 }
 
 init();
+
+// Load fra DB ved opstart
+(async () => {
+  try {
+    const res = await fetch('/api/save-gratisberegning.php');
+    if (!res.ok) return;
+    const d = await res.json();
+    if (d && Object.keys(d).length) localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...defaultConfig(), ...d }));
+  } catch (e) { console.warn('DB load fejlede:', e); }
+})();
 
   </script>
 </body>

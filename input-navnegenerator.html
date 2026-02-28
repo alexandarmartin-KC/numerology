@@ -407,6 +407,46 @@ function updateDiamondPreview() {
 document.getElementById('previewIdx').addEventListener('change', updateDiamondPreview);
 updateDiamondPreview();
 
+// ─── Database sync ───
+let _dbTimer;
+function dbSaveNavne() {
+  clearTimeout(_dbTimer);
+  _dbTimer = setTimeout(async () => {
+    try {
+      await fetch('/api/save-navnegenerator.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipes: load(),
+          principper: localStorage.getItem(PRINCIPPER_KEY) || ''
+        })
+      });
+    } catch (e) { console.warn('DB save fejlede:', e); }
+  }, 800);
+}
+
+const _origSaveData = saveData;
+function saveData(data) {
+  _origSaveData(data);
+  dbSaveNavne();
+}
+
+document.getElementById('navnegeneratorPrincipper').addEventListener('input', dbSaveNavne);
+
+// Load fra DB ved opstart
+(async () => {
+  try {
+    const res = await fetch('/api/save-navnegenerator.php');
+    if (!res.ok) return;
+    const d = await res.json();
+    if (d.principper) localStorage.setItem(PRINCIPPER_KEY, d.principper);
+    if (d.recipes && d.recipes.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(d.recipes));
+  } catch (e) { console.warn('DB load fejlede:', e); }
+  render();
+  const principperEl = document.getElementById('navnegeneratorPrincipper');
+  if (principperEl) principperEl.value = localStorage.getItem(PRINCIPPER_KEY) || '';
+})();
+
   </script>
 </body>
 </html>

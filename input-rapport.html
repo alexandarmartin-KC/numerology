@@ -274,6 +274,53 @@ function setup() {
   });
 }
 
+// ─── Database sync ───
+let _dbTimer;
+function dbSaveRapport() {
+  clearTimeout(_dbTimer);
+  _dbTimer = setTimeout(async () => {
+    try {
+      await fetch('/api/save-rapport.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          globalInstruction: localStorage.getItem(GLOBAL_KEY) || '',
+          sections: loadSections()
+        })
+      });
+    } catch (e) { console.warn('DB save fejlede:', e); }
+  }, 800);
+}
+
+// Patch saveSections og global save
+const _origSaveSections = saveSections;
+function saveSections(sections) {
+  _origSaveSections(sections);
+  dbSaveRapport();
+}
+
+// Patch global instruction save
+document.getElementById('globalInstruction').addEventListener('input', dbSaveRapport);
+
+// Load fra DB ved opstart
+(async () => {
+  try {
+    const res = await fetch('/api/save-rapport.php');
+    if (!res.ok) return;
+    const d = await res.json();
+    if (d.globalInstruction) localStorage.setItem(GLOBAL_KEY, d.globalInstruction);
+    if (d.sections && d.sections.length) {
+      const parsed = d.sections.map(s => ({
+        ...s,
+        sources: typeof s.sources === 'string' ? JSON.parse(s.sources || '[]') : (s.sources || [])
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+    }
+  } catch (e) { console.warn('DB load fejlede:', e); }
+  // Re-render med loadet data
+  render();
+})();
+
 // ─── Init ───
 render();
 setup();

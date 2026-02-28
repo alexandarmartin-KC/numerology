@@ -270,6 +270,62 @@ document.getElementById('tab-astro').addEventListener('shown.bs.tab', () => {
   }
 });
 
+// ─── Database sync ───
+const _dbTimers = {};
+function dbSave(getData) {
+  clearTimeout(_dbTimers._main);
+  _dbTimers._main = setTimeout(async () => {
+    try {
+      await fetch('/api/save-generelt.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(getData())
+      });
+    } catch (e) { console.warn('DB save fejlede:', e); }
+  }, 800);
+}
+
+function gatherGenereltData() {
+  const astro = loadAstro();
+  return {
+    aboutNumerology: localStorage.getItem('numerologyAbout') || '',
+    defRent: localStorage.getItem('numerologyDefRent') || '',
+    defUrent: localStorage.getItem('numerologyDefUrent') || '',
+    blokkeAfTal: localStorage.getItem('numerologyBlokke') || '',
+    diamantAarstalsraekker: localStorage.getItem('numerologyDiamantAar') || '',
+    udrensning: localStorage.getItem('numerologyUdrensning') || '',
+    numerologiAlder: localStorage.getItem('numerologyAlder') || '',
+    rapportStil: localStorage.getItem('numerologyRapportStil') || '',
+    eksempelRapport: localStorage.getItem('numerologyEksempel') || '',
+    astrologyGenerelt: astro._generelt || '',
+    astrologySignName: '', astrologySignText: ''
+  };
+}
+
+// Patch input listeners to also save to DB
+document.addEventListener('input', e => {
+  if (e.target.classList.contains('about-field') || e.target.classList.contains('astro-field') || e.target.classList.contains('astro-sign')) {
+    dbSave(gatherGenereltData);
+  }
+});
+
+// Load fra DB ved opstart
+(async () => {
+  try {
+    const res = await fetch('/api/save-generelt.php');
+    if (!res.ok) return;
+    const d = await res.json();
+    const map = [
+      ['aboutNumerology', 'numerologyAbout'], ['defRent', 'numerologyDefRent'],
+      ['defUrent', 'numerologyDefUrent'], ['blokkeAfTal', 'numerologyBlokke'],
+      ['diamantAarstalsraekker', 'numerologyDiamantAar'], ['udrensning', 'numerologyUdrensning'],
+      ['numerologiAlder', 'numerologyAlder'], ['rapportStil', 'numerologyRapportStil'],
+      ['eksempelRapport', 'numerologyEksempel']
+    ];
+    map.forEach(([dbKey, lsKey]) => { if (d[dbKey]) localStorage.setItem(lsKey, d[dbKey]); });
+  } catch (e) { console.warn('DB load fejlede:', e); }
+})();
+
 // Init
 initAbout();
 

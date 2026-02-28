@@ -231,9 +231,27 @@ function computeYearEnergies(year, birthYear, grund, bund, soejle) {
   };
 }
 
-// ─── Gather all knowledge from localStorage ───
+// ─── Gather all knowledge — henter fra database (fallback: localStorage) ───
 
-function gatherKnowledge() {
+async function gatherKnowledge() {
+  try {
+    const res = await fetch('/api/get-knowledge.php');
+    if (!res.ok) throw new Error('DB svarede ikke');
+    const k = await res.json();
+    // Konverter aarEnergies array til objekt hvis nødvendigt
+    if (Array.isArray(k.aarEnergies)) {
+      const obj = {};
+      k.aarEnergies.forEach(e => { obj[e.tal] = { keywords: e.keywords, beskrivelse: e.beskrivelse }; });
+      k.aarEnergies = obj;
+    }
+    return k;
+  } catch (e) {
+    console.warn('DB fetch fejlede, bruger localStorage som fallback:', e);
+    return gatherKnowledgeFromLocalStorage();
+  }
+}
+
+function gatherKnowledgeFromLocalStorage() {
   const k = {};
 
   // Input Generelt
@@ -247,14 +265,11 @@ function gatherKnowledge() {
   k.rapportStil = localStorage.getItem('numerologyRapportStil') || '';
   k.eksempelRapport = localStorage.getItem('numerologyEksempel') || '';
 
-  // Energibeskrivelser (diamant) — merge base + edits
   try {
     const edits = JSON.parse(localStorage.getItem('energiesEdits') || '{}');
-    // We send the edits — the API doesn't need the full base file, only what was edited
     k.energies = Object.entries(edits).map(([id, data]) => ({ id, ...data }));
   } catch { k.energies = []; }
 
-  // Positioner
   try {
     const posData = JSON.parse(localStorage.getItem('diamondPositions') || '{}');
     k.positions = Object.entries(posData)
@@ -262,42 +277,25 @@ function gatherKnowledge() {
       .map(([id, description]) => ({ name: id, description }));
   } catch { k.positions = []; }
 
-  // Specielle regler (diamant)
-  try {
-    k.diamondRules = JSON.parse(localStorage.getItem('diamondRules') || '[]');
-  } catch { k.diamondRules = []; }
+  try { k.diamondRules = JSON.parse(localStorage.getItem('diamondRules') || '[]'); } catch { k.diamondRules = []; }
+  try { k.aarEnergies = JSON.parse(localStorage.getItem('aarEnergies') || '{}'); } catch { k.aarEnergies = {}; }
+  try { k.aarRules = JSON.parse(localStorage.getItem('aarRules') || '[]'); } catch { k.aarRules = []; }
 
-  // Energibeskrivelser (årstalsrækker)
-  try {
-    k.aarEnergies = JSON.parse(localStorage.getItem('aarEnergies') || '{}');
-  } catch { k.aarEnergies = {}; }
-
-  // Specielle regler (årstalsrækker)
-  try {
-    k.aarRules = JSON.parse(localStorage.getItem('aarRules') || '[]');
-  } catch { k.aarRules = []; }
-
-  // Cyklusser
   k.cycles_about = localStorage.getItem('cycles_about') || '';
   k.cycles_style = localStorage.getItem('cycles_style') || '';
   k.cycles_124875 = localStorage.getItem('cycles_124875') || '';
   k.cycles_36 = localStorage.getItem('cycles_36') || '';
   k.cycles_9 = localStorage.getItem('cycles_9') || '';
 
-  // Astrologi
   try {
     const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
     k.astrologyGenerelt = astro._generelt || '';
-    // We'll determine the sign from the birthdate on the API side or pass it
+    k._astrologyData = astro;
   } catch { k.astrologyGenerelt = ''; }
 
-  // Rapportsektioner (fra Input Rapport)
-  try {
-    k.rapportSections = JSON.parse(localStorage.getItem('rapportSections') || '[]');
-  } catch { k.rapportSections = []; }
+  try { k.rapportSections = JSON.parse(localStorage.getItem('rapportSections') || '[]'); } catch { k.rapportSections = []; }
   k.rapportGlobalInstruction = localStorage.getItem('rapportGlobalInstruction') || '';
 
-  // Track which energies have images (don't send actual image data to API)
   try {
     const imgs = JSON.parse(localStorage.getItem('energyImages') || '{}');
     k.energiesWithImages = Object.keys(imgs).filter(key => !!imgs[key]);
@@ -335,8 +333,8 @@ function getZodiacSign(day, month) {
 
 // ─── Knowledge status indicator ───
 
-function showKnowledgeStatus() {
-  const k = gatherKnowledge();
+async function showKnowledgeStatus() {
+  const k = await gatherKnowledge();
   const checks = [
     { label: 'Om numerologi', ok: !!k.aboutNumerology },
     { label: 'Energibeskrivelser (diamant)', ok: k.energies.length > 0 },
@@ -410,18 +408,20 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     aarstalsraekker.push(computeYearEnergies(fromYear + i, birthYear, grund, bund, soejle));
   }
 
-  // Gather knowledge
-  const knowledge = gatherKnowledge();
+  // Gather knowledge fra database
+  const knowledge = await gatherKnowledge();
 
-  // Add zodiac sign info
+  // Tilføj zodiac sign info for denne specifikke person
   const day = diamondResult.input.birthDate.day;
   const month = diamondResult.input.birthDate.month;
   const sign = getZodiacSign(day, month);
   if (sign) {
     try {
-      const astro = JSON.parse(localStorage.getItem('astrologyData') || '{}');
-      if (astro[sign.id]) {
-        knowledge.astrologySign = { name: sign.name, text: astro[sign.id] };
+      // Prøv DB-data først (fra get-knowledge), ellers localStorage
+      const astroData = knowledge._astrologyData || {};
+      const signText = astroData[sign.id] || '';
+      if (signText) {
+        knowledge.astrologySign = { name: sign.name, text: signText };
       }
     } catch {}
   }
