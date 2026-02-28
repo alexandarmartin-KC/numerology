@@ -230,16 +230,30 @@ function saveConfig(config) {
 }
 
 let _dbTimer;
+function _dbToast(msg) {
+  let el = document.getElementById('_dbErrToast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = '_dbErrToast';
+    el.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#c0392b;color:#fff;padding:10px 16px;border-radius:6px;z-index:9999;font-size:14px;max-width:400px;word-break:break-all;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 6000);
+}
 function dbSaveGratis(config) {
   clearTimeout(_dbTimer);
   _dbTimer = setTimeout(async () => {
     try {
-      await fetch('/api/save-gratisberegning.php', {
+      const res = await fetch('/api/save-gratisberegning.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
       });
-    } catch (e) { console.warn('DB save fejlede:', e); }
+      if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
+    } catch (e) { _dbToast('DB gem fejl: ' + e.message); }
   }, 800);
 }
 

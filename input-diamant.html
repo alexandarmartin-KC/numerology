@@ -691,16 +691,31 @@ init();
 
 // ─── Database sync ───
 const _dbTimers = {};
+function _dbToast(msg) {
+  let el = document.getElementById('_dbErrToast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = '_dbErrToast';
+    el.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#c0392b;color:#fff;padding:10px 16px;border-radius:6px;z-index:9999;font-size:14px;max-width:400px;word-break:break-all;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 6000);
+}
+
 function dbSave(type, getData) {
   clearTimeout(_dbTimers[type]);
   _dbTimers[type] = setTimeout(async () => {
     try {
-      await fetch('/api/save-diamant.php?type=' + type, {
+      const res = await fetch('/api/save-diamant.php?type=' + type, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(getData())
       });
-    } catch (e) { console.warn('DB save fejlede (' + type + '):', e); }
+      if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl (' + type + '): ' + res.status + ' ' + t); }
+    } catch (e) { _dbToast('DB gem fejl (' + type + '): ' + e.message); }
   }, 800);
 }
 
