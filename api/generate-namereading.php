@@ -46,7 +46,7 @@ try {
 } catch (Throwable $e) { /* tabel eksisterer måske ikke endnu — fortsæt med fallback */ }
 
 // ─── Rens energitekst (fjern planeter, horoskop etc. baseret på avoids-config) ───
-function cleanEnergyText(string $text, array $avoids, array $customAvoids): string {
+function cleanEnergyText(string $text, array $avoids, array $customAvoids, string $tone = 'warm'): string {
     $t = $text;
     if (in_array('planeter', $avoids)) {
         $planets = 'Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto';
@@ -74,6 +74,11 @@ function cleanEnergyText(string $text, array $avoids, array $customAvoids): stri
             $t = preg_replace('/' . $esc . '/iu', '', $t);
         }
     }
+    // For professionel og direkte tone: rens åndelige/spirituelle ord ud af energiteksten
+    if (in_array($tone, ['professional', 'direct'])) {
+        $spiritual = 'åndelig\w*|spirituel\w*|sjæl\w*|kosmisk\w*|universet|intuition\w*|energistrøm\w*|nærvær\w*|det høje selv|indre lys|højere bevidsthed|hellig\w*|mystisk\w*|mystik\w*|poet\w*|guddommelig\w*';
+        $t = preg_replace('/\b(' . $spiritual . ')\b/iu', '', $t);
+    }
     $t = preg_replace('/\n{3,}/', "\n\n", $t);
     $t = preg_replace('/  +/', ' ', $t);
     return trim($t);
@@ -94,10 +99,11 @@ if (!empty($relevantNumbers)) {
             $resE = $stmtE->get_result();
             $eavoids = $cfg['avoids'] ?? ['planeter'];
             $ecustom = $cfg['customAvoids'] ?? [];
+            $etone = $cfg['tone'] ?? 'warm';
             while ($erow = $resE->fetch_assoc()) {
                 $energyDescriptions .= "\n--- Energi {$erow['display']} ---\n";
-                if ($erow['grundenergi']) $energyDescriptions .= 'Grundenergi: ' . cleanEnergyText($erow['grundenergi'], $eavoids, $ecustom) . "\n";
-                if ($erow['keywords'])    $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($erow['keywords'],    $eavoids, $ecustom) . "\n";
+                if ($erow['grundenergi']) $energyDescriptions .= 'Grundenergi: ' . cleanEnergyText($erow['grundenergi'], $eavoids, $ecustom, $etone) . "\n";
+                if ($erow['keywords'])    $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($erow['keywords'],    $eavoids, $ecustom, $etone) . "\n";
             }
             $stmtE->close();
         }
@@ -196,6 +202,9 @@ if (!empty($cfg)) {
     $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n";
     $systemPrompt .= "- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
+    if (in_array($toneKey, ['professional', 'direct'])) {
+        $systemPrompt .= "- BRUG ALDRIG ordene: åndelig, spirituel, sjæl, kosmisk, universet, intuition, energistrøm, mystisk, hellig, guddommelig, indre lys eller lignende. Omskriv ALT sådant til konkrete personligheds- og adfærdstræk.\n";
+    }
     foreach ($toneRules as $rule) {
         $systemPrompt .= "- {$rule}\n";
     }
