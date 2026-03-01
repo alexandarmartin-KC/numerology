@@ -3,6 +3,7 @@
 // Indlæs lokalt .env.php hvis det findes (til lokal dev)
 $_DB_HOST = ''; $_DB_USER = ''; $_DB_PASS = ''; $_DB_NAME = '';
 $_ALLOWED_ORIGIN = ''; $_ADMIN_API_KEY = '';
+$_STRIPE_SECRET_KEY = ''; $_BASE_URL = '';
 $_envFile = __DIR__ . '/.env.php';
 if (file_exists($_envFile)) include $_envFile;
 

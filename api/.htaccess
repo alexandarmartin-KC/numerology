@@ -12,4 +12,6 @@
     RewriteRule ^generate-namereading$ generate-namereading.php [L]
     RewriteRule ^generate-rapport$     generate-rapport.php     [L]
     RewriteRule ^generate-artikel$     generate-artikel.php     [L]
+    RewriteRule ^detect-currency$      detect-currency.php      [L]
+    RewriteRule ^create-checkout$      create-checkout.php      [L]
 </IfModule>
