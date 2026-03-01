@@ -3,6 +3,6 @@
   "name": "numerology",
   "dependencies": {
     "mysql2": "^3.18.2",
-    "stripe": "^14.0.0"
+    "stripe": "^14.25.0"
   }
 }

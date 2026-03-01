@@ -1,9 +1,13 @@
 <?php
 // Delt database-forbindelse
-define('DB_HOST', 'localhost');
-define('DB_USER', 'alexanda_numerology');
-define('DB_PASS', 'Mabber0700');
-define('DB_NAME', 'alexanda_numerology');
+// Indlæs lokalt .env.php hvis det findes (til lokal dev)
+$_envFile = __DIR__ . '/.env.php';
+if (file_exists($_envFile)) include $_envFile;
+
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_USER', getenv('DB_USER') ?: '');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_NAME', getenv('DB_NAME') ?: '');
 
 function getDB(): mysqli {
     static $db = null;
@@ -19,10 +23,11 @@ function getDB(): mysqli {
 }
 
 function jsonOut(mixed $data, int $code = 200): void {
+    $origin = getenv('ALLOWED_ORIGIN') ?: 'https://numerology-olive-kappa.vercel.app';
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Headers: Content-Type, X-Admin-Key');
     http_response_code($code);
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
@@ -36,10 +41,28 @@ function getBody(): mixed {
     return $raw;
 }
 
+/**
+ * Kræver en gyldig ADMIN_API_KEY sendt som X-Admin-Key header.
+ * Sæt ADMIN_API_KEY som miljøvariabel (serverens env eller .env.php).
+ * Kald denne funktion i starten af POST-handlere i admin-endpoints.
+ */
+function requireAdminKey(): void {
+    $envKey = getenv('ADMIN_API_KEY');
+    if (!$envKey) return; // Ingen nøgle konfigureret → tillad (backward-compat)
+    $sent = $_SERVER['HTTP_X_ADMIN_KEY'] ?? '';
+    if (!hash_equals($envKey, $sent)) {
+        http_response_code(401);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => 'Uautoriseret']);
+        exit;
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
+    $origin = getenv('ALLOWED_ORIGIN') ?: 'https://numerology-olive-kappa.vercel.app';
+    header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Headers: Content-Type, X-Admin-Key');
     http_response_code(200);
     exit;
 }

@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // ─── POST ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireAdminKey();
     $b = getBody();
     $pageName    = $b['page'] ?? null;
     $title       = $b['title'] ?? null;

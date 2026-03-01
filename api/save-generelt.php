@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // ─── POST ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireAdminKey();
     $b = getBody();
     $fields = [
         'aboutNumerology','defRent','defUrent','blokkeAfTal',

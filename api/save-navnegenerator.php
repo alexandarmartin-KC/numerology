@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // ─── POST ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireAdminKey();
     $b = getBody();
     $principper = $b['principper'] ?? null;
     $recipes = $b['recipes'] ?? [];

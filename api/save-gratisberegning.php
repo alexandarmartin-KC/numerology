@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // ─── POST ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireAdminKey();
     $b = getBody();
     $positions        = json_encode($b['positions'] ?? [], JSON_UNESCAPED_UNICODE);
     $tone             = $b['tone'] ?? null;
