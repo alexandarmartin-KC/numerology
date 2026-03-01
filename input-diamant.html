@@ -185,7 +185,7 @@ const EDITABLE_FIELDS = [
   { key: 'keywords', label: 'Keywords', type: 'text', placeholder: 'Kommaseparerede nøgleord' },
   { key: 'keywords_urent_numeroskop', label: 'Keywords, ubalanceret numeroskop', type: 'text', placeholder: 'Keywords ved ubalanceret numeroskop' },
   { key: 'grundenergi', label: 'Grundenergi', type: 'textarea', placeholder: 'Beskrivelse af grundenergien' },
-  { key: 'beskrivelse', label: 'Beskrivelse af energien', type: 'textarea', placeholder: 'Beskrivelse af den generelle fortolkning af dette nummer' },
+  { key: 'beskrivelse', label: 'Beskrivelse af energien', type: 'textarea', placeholder: 'Beskrivelse af den generelle fortolkning af dette nummer', sammenSatOnly: true },
   { key: 'ubalance_i_urent_numeroskop', label: 'Ubalance, ubalanceret numeroskop', type: 'textarea', placeholder: 'Beskrivelse af ubalance' },
   { key: 'helheds_funktion', label: 'Helhedsfunktion', type: 'textarea', placeholder: 'Beskrivelse af helhedsfunktion' },
   { key: 'planet', label: 'Planet', type: 'text', placeholder: 'Hvilken planet tilhører denne grundenergi', grundtalOnly: true },
@@ -404,6 +404,7 @@ function renderList() {
     EDITABLE_FIELDS.forEach(f => {
       if (f.key === 'grundenergi' && !isGrundtal) return;
       if (f.grundtalOnly && !isGrundtal) return;
+      if (f.sammenSatOnly && isGrundtal) return;
       // Skip kendte and billede — they are rendered together with planet
       if (f.key === 'kendte' || f.key === 'billede') return;
 
