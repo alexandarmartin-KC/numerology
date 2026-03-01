@@ -1314,6 +1314,9 @@
         });
 
         if (!resp.ok) {
+          let errType = 'ukendt';
+          try { const j = await resp.json(); errType = j.error || errType; } catch(_) {}
+          console.error('Beregner fejl:', resp.status, errType);
           throw new Error('Der opstod en fejl. Prøv igen.');
         }
         const data = await resp.json();
