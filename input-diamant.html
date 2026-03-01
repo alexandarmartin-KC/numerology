@@ -293,6 +293,73 @@ async function init() {
 
   renderList();
   setupListeners();
+
+  // ─── Load fra DB og overskriv ───
+  try {
+    console.log('[DB] Henter data fra server...');
+    const [eRes, pRes, rRes] = await Promise.all([
+      fetch('/api/save-diamant.php?type=energies'),
+      fetch('/api/save-diamant.php?type=positions'),
+      fetch('/api/save-diamant.php?type=rules')
+    ]);
+
+    // ─── Energier ───
+    if (eRes.ok) {
+      const raw = await eRes.text();
+      console.log('[DB] Energier respons (' + eRes.status + '):', raw.substring(0, 200));
+      let dbEnergies;
+      try { dbEnergies = JSON.parse(raw); } catch (pe) {
+        console.error('[DB] Energier JSON parse fejl:', pe, 'Raw:', raw.substring(0, 500));
+        _dbToast('DB load: ugyldigt JSON-svar fra server');
+        return;
+      }
+      if (Array.isArray(dbEnergies) && dbEnergies.length) {
+        console.log('[DB] Modtaget', dbEnergies.length, 'energier fra DB. Første:', JSON.stringify(dbEnergies[0]).substring(0, 200));
+        const freshEdits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        let dbFieldCount = 0;
+        dbEnergies.forEach(e => {
+          if (!e.display) return;
+          // DB data overskriver altid
+          if (!freshEdits[e.display]) freshEdits[e.display] = {};
+          Object.assign(freshEdits[e.display], e);
+          if (!editedData[e.display]) editedData[e.display] = {};
+          Object.assign(editedData[e.display], e);
+          dbFieldCount++;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(freshEdits));
+        console.log('[DB] Opdateret', dbFieldCount, 'energier i editedData + localStorage');
+        renderList();
+      } else {
+        console.log('[DB] Ingen energier i DB endnu');
+      }
+    } else {
+      const errText = await eRes.text();
+      console.error('[DB] Energier GET fejlede:', eRes.status, errText.substring(0, 300));
+      _dbToast('DB load fejl (energier): ' + eRes.status);
+    }
+
+    // ─── Positioner ───
+    if (pRes.ok) {
+      const dbPos = await pRes.json();
+      if (Array.isArray(dbPos) && dbPos.length) {
+        const posObj = {};
+        dbPos.forEach(p => { posObj[p.name] = p.description; });
+        localStorage.setItem(POSITIONS_KEY, JSON.stringify(posObj));
+        console.log('[DB] Positioner loaded:', dbPos.length);
+      }
+    }
+    // ─── Regler ───
+    if (rRes.ok) {
+      const dbRules = await rRes.json();
+      if (Array.isArray(dbRules) && dbRules.length) {
+        localStorage.setItem(RULES_KEY, JSON.stringify(dbRules));
+        console.log('[DB] Regler loaded:', dbRules.length);
+      }
+    }
+  } catch (e) {
+    console.error('[DB] Load fejlede:', e);
+    _dbToast('DB load fejl: ' + e.message);
+  }
 }
 
 // ─── Render ───
@@ -730,73 +797,7 @@ function dbSave(type, getData) {
   }, 800);
 }
 
-// Load fra DB ved opstart
-(async () => {
-  try {
-    console.log('[DB] Henter data fra server...');
-    const [eRes, pRes, rRes] = await Promise.all([
-      fetch('/api/save-diamant.php?type=energies'),
-      fetch('/api/save-diamant.php?type=positions'),
-      fetch('/api/save-diamant.php?type=rules')
-    ]);
-
-    // ─── Energier ───
-    if (eRes.ok) {
-      const raw = await eRes.text();
-      console.log('[DB] Energier respons (' + eRes.status + '):', raw.substring(0, 200));
-      let dbEnergies;
-      try { dbEnergies = JSON.parse(raw); } catch (pe) {
-        console.error('[DB] Energier JSON parse fejl:', pe, 'Raw:', raw.substring(0, 500));
-        _dbToast('DB load: ugyldigt JSON-svar fra server');
-        dbEnergies = [];
-      }
-      if (Array.isArray(dbEnergies) && dbEnergies.length) {
-        console.log('[DB] Modtaget', dbEnergies.length, 'energier fra DB. Første:', dbEnergies[0]);
-        const edits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        dbEnergies.forEach(e => {
-          if (!e.display) return;
-          // DB data overskriver altid localStorage
-          if (!edits[e.display]) edits[e.display] = {};
-          Object.assign(edits[e.display], e);
-          // Opdater in-memory editedData
-          if (!editedData[e.display]) editedData[e.display] = {};
-          Object.assign(editedData[e.display], e);
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
-        console.log('[DB] editedData opdateret og gemt i localStorage');
-        renderList();
-      } else {
-        console.log('[DB] Ingen energier i DB (tom tabel eller tomt svar)');
-      }
-    } else {
-      const errText = await eRes.text();
-      console.error('[DB] Energier GET fejlede:', eRes.status, errText.substring(0, 300));
-      _dbToast('DB load fejl (energier): ' + eRes.status);
-    }
-
-    // ─── Positioner ───
-    if (pRes.ok) {
-      const dbPos = await pRes.json();
-      if (Array.isArray(dbPos) && dbPos.length) {
-        const posObj = {};
-        dbPos.forEach(p => { posObj[p.name] = p.description; });
-        localStorage.setItem(POSITIONS_KEY, JSON.stringify(posObj));
-        console.log('[DB] Positioner loaded:', dbPos.length);
-      }
-    }
-    // ─── Regler ───
-    if (rRes.ok) {
-      const dbRules = await rRes.json();
-      if (Array.isArray(dbRules) && dbRules.length) {
-        localStorage.setItem(RULES_KEY, JSON.stringify(dbRules));
-        console.log('[DB] Regler loaded:', dbRules.length);
-      }
-    }
-  } catch (e) {
-    console.error('[DB] Load fejlede helt:', e);
-    _dbToast('DB load fejl: ' + e.message);
-  }
-})();
+// DB load er nu integreret i init() ovenfor
 
 // ─── Document Upload ───
 
