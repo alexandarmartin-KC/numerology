@@ -1293,22 +1293,13 @@
       loadSpinner.classList.add('visible');
       document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Build custom system prompt from admin config if available
+      // Opdatér teaser-tekst fra config hvis tilgængelig
       const gratisConfig = getGratisConfig();
-      let customSystemPrompt = null;
-      let sentenceRange = null;
-      if (gratisConfig) {
-        customSystemPrompt = buildGratisSystemPrompt(gratisConfig);
-        const lo = gratisConfig.length || 8;
-        const hi = Math.min(lo + 2, 16);
-        sentenceRange = `${lo}–${hi}`;
-        // Update teaser text dynamically
-        if (gratisConfig.teaserText && gratisConfig.teaserText.trim()) {
-          const tLine = document.querySelector('.teaser-line');
-          const tSub = document.querySelector('.teaser-sub');
-          if (tLine) tLine.textContent = '';
-          if (tSub) tSub.textContent = gratisConfig.teaserText;
-        }
+      if (gratisConfig && gratisConfig.teaserText && gratisConfig.teaserText.trim()) {
+        const tLine = document.querySelector('.teaser-line');
+        const tSub = document.querySelector('.teaser-sub');
+        if (tLine) tLine.textContent = '';
+        if (tSub) tSub.textContent = gratisConfig.teaserText;
       }
 
       try {
@@ -1318,17 +1309,12 @@
           body: JSON.stringify({
             firstName: firstNameDisplay,
             nameData: buildDiamondText(result),
-            energyDescriptions: getEnergyDescriptions(relevantNums),
-            customSystemPrompt,
-            sentenceRange
+            energyDescriptions: getEnergyDescriptions(relevantNums)
           })
         });
 
         if (!resp.ok) {
-          let errBody = '';
-          try { errBody = await resp.text(); } catch(_) {}
-          console.error('generate-namereading fejl', resp.status, errBody);
-          throw new Error('Server fejl ' + resp.status + ': ' + errBody.slice(0, 800));
+          throw new Error('Der opstod en fejl. Prøv igen.');
         }
         const data = await resp.json();
 
@@ -1342,73 +1328,11 @@
         setTimeout(() => { teaserSection.classList.add('visible'); }, 1200);
 
       } catch (err) {
-        console.error('Gratis beregner fejl:', err);
         loadSpinner.classList.remove('visible');
         resultText.textContent = 'Der opstod en fejl. Prøv igen.';
         resultBox.classList.add('visible');
         resultNumber.textContent = '?';
       }
-    }
-
-    // ─── Build system prompt from gratis beregning config ───
-    function buildGratisSystemPrompt(cfg) {
-      const TONE_LABELS = {
-        warm: 'Varm, indsigtsfuld og lidt mystisk — som om du kender personen',
-        mystical: 'Mystisk og poetisk — med dybde og billeder',
-        direct: 'Direkte og konkret — hold det faktuelt og klart',
-        motivational: 'Motiverende og opløftende — inspirer til handling',
-        professional: 'Professionel og saglig — neutral ekspertise'
-      };
-      const POS_LABELS = {
-        grundenergi: 'Grundenergi (top)', livslinje: 'Livslinje', bundtal: 'Bundtal',
-        aura: 'Aura (4 hjørner)', hjertecenter: 'Hjertecenter', solarplexus: 'Solarplexus',
-        rygraden: 'Rygraden', soejletal: 'Søjletal'
-      };
-      const FOCUS_LABELS = {
-        personlighed: 'Personlighed & kerneenergi', styrker: 'Styrker & talenter',
-        udfordringer: 'Udfordringer & skyggesider', relationer: 'Relationer & kærlighed',
-        karriere: 'Karriere & livsretning', spiritualitet: 'Spiritualitet & indre vækst',
-        samspil: 'Samspil mellem tallene'
-      };
-      const AVOID_LABELS = {
-        planeter: 'Planeter (Sol, Saturn osv.)', horoskop: 'Horoskop / stjernetegn',
-        teknisk: 'Tekniske beregningsforklaringer', deterministisk: 'Deterministiske udsagn',
-        negativt: 'Stærkt negativt sprog'
-      };
-
-      const tone = TONE_LABELS[cfg.tone] || TONE_LABELS.warm;
-      const lo = cfg.length || 8;
-      const hi = Math.min(lo + 2, 16);
-
-      let p = 'Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk.\n\n';
-      p += 'DIAMANTPOSITIONER DU MODTAGER:\n';
-      (cfg.positions || []).forEach(id => { if (POS_LABELS[id]) p += `- ${POS_LABELS[id]}\n`; });
-      p += `\nTONE: ${tone}\n\n`;
-      p += `LÆNGDE: Skriv præcis ${lo}–${hi} sætninger i ét samlet afsnit.\n\n`;
-      if (cfg.focus && cfg.focus.length) {
-        p += 'FOKUSOMRÅDER (prioriter disse):\n';
-        cfg.focus.forEach(id => { if (FOCUS_LABELS[id]) p += `- ${FOCUS_LABELS[id]}\n`; });
-        p += '\n';
-      }
-      p += 'REGLER:\n';
-      p += '- Brug personens fornavn naturligt 1-2 gange.\n';
-      p += '- Grundenergien (top) er kerneenergien — vægt den tungest.\n';
-      p += '- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n';
-      p += '- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed.\n';
-      p += '- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n';
-      p += '- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n';
-      const allAvoids = [
-        ...(cfg.avoids || []).map(id => AVOID_LABELS[id]).filter(Boolean),
-        ...(cfg.customAvoids || [])
-      ];
-      if (allAvoids.length) {
-        p += '\nUNDGÅ (nævn ALDRIG):\n';
-        allAvoids.forEach(a => { p += `- ${a}\n`; });
-      }
-      if (cfg.extraInstruction && cfg.extraInstruction.trim()) {
-        p += `\nEKSTRA INSTRUKTION:\n${cfg.extraInstruction.trim()}\n`;
-      }
-      return p;
     }
 
     calcBtn.addEventListener('click', runAnalysis);
