@@ -162,7 +162,18 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
 }
 
+// Tone-specifik instruktion om brug af energividen
+$toneKeyForEnergy = $toneKey ?? 'warm';
+if ($toneKeyForEnergy === 'professional') {
+    $energyUseNote = "\n\nVIGTIGT OM VIDENBASEN OVENFOR: Brug KUN konkrete personligheds- og adfærdstræk derfra. Ignorer FULDSTÆNDIGT al spirituel, åndelig, mystisk eller kosmisk sprogbrug — omskriv det til neutrale, jordnære personlighedsbeskrivelser. Nævn aldrig: sjæl, universet, intuition, energistrømme, åndelighed, spiritualitet, kosmisk, det høje selv, eller lignende.";
+} elseif ($toneKeyForEnergy === 'direct') {
+    $energyUseNote = "\n\nVIGTIGT OM VIDENBASEN OVENFOR: Brug kun konkrete personligheds- og adfærdstræk. Ingen spirituel eller poetisk sprogbrug — oversæt alt til neutrale beskrivelser.";
+} else {
+    $energyUseNote = '';
+}
+
 $systemPrompt .= "\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+$systemPrompt .= $energyUseNote;
 $userPrompt    = "Personen hedder {$firstName}.\n\n{$nameData}\n\nSkriv en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).";
 
 // Brug tone-baseret temperature, fallback 0.7
