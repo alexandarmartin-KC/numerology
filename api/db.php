@@ -22,7 +22,7 @@ function getDB(): mysqli {
     return $db;
 }
 
-function jsonOut(mixed $data, int $code = 200): void {
+function jsonOut($data, int $code = 200): void {
     $origin = getenv('ALLOWED_ORIGIN') ?: 'https://numerology-olive-kappa.vercel.app';
     header('Content-Type: application/json; charset=utf-8');
     header('Access-Control-Allow-Origin: ' . $origin);
@@ -33,7 +33,7 @@ function jsonOut(mixed $data, int $code = 200): void {
     exit;
 }
 
-function getBody(): mixed {
+function getBody() {
     $raw = json_decode(file_get_contents('php://input'), true) ?? [];
     if (isset($raw['_b64'])) {
         return json_decode(base64_decode($raw['_b64']), true) ?? [];
