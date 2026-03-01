@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $b['description'] ?? null;
     $keywords    = $b['keywords'] ?? null;
     $ogImage     = $b['ogImage'] ?? null;
+    $seoImage    = $b['seoImage'] ?? null;
 
     if (!$pageName) jsonOut(['error' => 'page er påkrævet'], 400);
 
@@ -34,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $exists = $stmt->get_result()->num_rows > 0;
 
     if ($exists) {
-        $stmt2 = $db->prepare('UPDATE meta_data SET title=?,description=?,keywords=?,ogImage=? WHERE page=?');
-        $stmt2->bind_param('sssss', $title, $description, $keywords, $ogImage, $pageName);
+        $stmt2 = $db->prepare('UPDATE meta_data SET title=?,description=?,keywords=?,ogImage=?,seoImage=? WHERE page=?');
+        $stmt2->bind_param('ssssss', $title, $description, $keywords, $ogImage, $seoImage, $pageName);
     } else {
-        $stmt2 = $db->prepare('INSERT INTO meta_data (page,title,description,keywords,ogImage) VALUES (?,?,?,?,?)');
-        $stmt2->bind_param('sssss', $pageName, $title, $description, $keywords, $ogImage);
+        $stmt2 = $db->prepare('INSERT INTO meta_data (page,title,description,keywords,ogImage,seoImage) VALUES (?,?,?,?,?,?)');
+        $stmt2->bind_param('ssssss', $pageName, $title, $description, $keywords, $ogImage, $seoImage);
     }
     $stmt2->execute();
     jsonOut(['ok' => true]);

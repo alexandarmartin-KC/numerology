@@ -446,8 +446,9 @@ document.getElementById('navnegeneratorPrincipper').addEventListener('input', db
     const res = await fetch('/api/save-navnegenerator.php');
     if (!res.ok) return;
     const d = await res.json();
-    if (d.principper) localStorage.setItem(PRINCIPPER_KEY, d.principper);
+    if (d.principper !== undefined && d.principper !== null) localStorage.setItem(PRINCIPPER_KEY, d.principper);
     if (d.recipes && d.recipes.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(d.recipes));
+    else if (d.recipes && d.recipes.length === 0) localStorage.removeItem(STORAGE_KEY);
   } catch (e) { console.warn('DB load fejlede:', e); }
   render();
   const principperEl = document.getElementById('navnegeneratorPrincipper');

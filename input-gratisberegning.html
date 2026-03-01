@@ -476,7 +476,11 @@ init();
     const res = await fetch('/api/save-gratisberegning.php');
     if (!res.ok) return;
     const d = await res.json();
-    if (d && Object.keys(d).length) localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...defaultConfig(), ...d }));
+    if (d && Object.keys(d).length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...defaultConfig(), ...d }));
+      // Re-render UI med DB-data
+      init();
+    }
   } catch (e) { console.warn('DB load fejlede:', e); }
 })();
 

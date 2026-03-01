@@ -34,10 +34,64 @@ if ($check && $check->num_rows > 0) {
     $results["meta_data.ogImage"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
 }
 
+// ─── meta_data: tilføj manglende seoImage ───
+$check = $db->query("SHOW COLUMNS FROM meta_data LIKE 'seoImage'");
+if ($check && $check->num_rows > 0) {
+    $results["meta_data.seoImage"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE meta_data ADD COLUMN seoImage VARCHAR(255) DEFAULT NULL AFTER ogImage");
+    $results["meta_data.seoImage"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
+// ─── gratis_beregning: omdøb avoid → avoids ───
+$check = $db->query("SHOW COLUMNS FROM gratis_beregning LIKE 'avoid'");
+if ($check && $check->num_rows > 0) {
+    // Kolonne hedder stadig 'avoid' — omdøb til 'avoids'
+    $ok = $db->query("ALTER TABLE gratis_beregning CHANGE COLUMN avoid avoids TEXT DEFAULT NULL");
+    $results["gratis_beregning.avoid→avoids"] = $ok ? "OMDØBT" : "FEJL: " . $db->error;
+} else {
+    // Tjek om 'avoids' allerede eksisterer
+    $check2 = $db->query("SHOW COLUMNS FROM gratis_beregning LIKE 'avoids'");
+    if ($check2 && $check2->num_rows > 0) {
+        $results["gratis_beregning.avoids"] = "Eksisterer allerede";
+    } else {
+        $ok = $db->query("ALTER TABLE gratis_beregning ADD COLUMN avoids TEXT DEFAULT NULL AFTER focus");
+        $results["gratis_beregning.avoids"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+    }
+}
+
+// ─── gratis_beregning: tilføj customAvoids ───
+$check = $db->query("SHOW COLUMNS FROM gratis_beregning LIKE 'customAvoids'");
+if ($check && $check->num_rows > 0) {
+    $results["gratis_beregning.customAvoids"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE gratis_beregning ADD COLUMN customAvoids TEXT DEFAULT NULL AFTER avoids");
+    $results["gratis_beregning.customAvoids"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
+// ─── gratis_beregning: tilføj teaserText ───
+$check = $db->query("SHOW COLUMNS FROM gratis_beregning LIKE 'teaserText'");
+if ($check && $check->num_rows > 0) {
+    $results["gratis_beregning.teaserText"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE gratis_beregning ADD COLUMN teaserText TEXT DEFAULT NULL AFTER extraInstruction");
+    $results["gratis_beregning.teaserText"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
 // ─── Vis nuværende kolonner ───
 $colRes = $db->query("SHOW COLUMNS FROM diamant_energies");
 $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
 $results['diamant_energies_kolonner'] = $allCols;
+
+$colRes = $db->query("SHOW COLUMNS FROM gratis_beregning");
+$allCols = [];
+while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
+$results['gratis_beregning_kolonner'] = $allCols;
+
+$colRes = $db->query("SHOW COLUMNS FROM meta_data");
+$allCols = [];
+while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
+$results['meta_data_kolonner'] = $allCols;
 
 echo json_encode(['ok' => true, 'migrations' => $results], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

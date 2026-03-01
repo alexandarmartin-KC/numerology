@@ -453,19 +453,22 @@ document.addEventListener('input', e => {
       const dbC = await cRes.json();
       dbC.forEach(c => {
         const key = c.name === '1-2-4-8-7-5' ? 'cycles_124875' : c.name === '3-6' ? 'cycles_36' : 'cycles_9';
-        if (c.description) localStorage.setItem(key, c.description);
+        // Gem altid – også tom streng
+        if (c.description !== undefined && c.description !== null) localStorage.setItem(key, c.description);
       });
     }
     if (rRes.ok) {
       const dbR = await rRes.json();
-      if (dbR.length) localStorage.setItem(AAR_RULES_KEY, JSON.stringify(dbR));
+      localStorage.setItem(AAR_RULES_KEY, JSON.stringify(dbR));
     }
     if (gRes.ok) {
       const dbG = await gRes.json();
-      if (dbG.aboutCycles) localStorage.setItem('cycles_about', dbG.aboutCycles);
-      if (dbG.cycleStyle) localStorage.setItem('cycles_style', dbG.cycleStyle);
+      if (dbG.aboutCycles !== undefined && dbG.aboutCycles !== null) localStorage.setItem('cycles_about', dbG.aboutCycles);
+      if (dbG.cycleStyle !== undefined && dbG.cycleStyle !== null) localStorage.setItem('cycles_style', dbG.cycleStyle);
     }
   } catch (e) { console.warn('DB load fejlede:', e); }
+  // Re-render med DB-data
+  renderAarEnergies();
 })();
 
 // Init

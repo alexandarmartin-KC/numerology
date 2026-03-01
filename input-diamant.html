@@ -536,6 +536,8 @@ function resetAll() {
     editedData[key] = { ...val };
   }
   renderList();
+  // Push cleared data to DB
+  dbSave('energies', () => Object.entries(editedData).map(([display, d]) => ({ display, ...d })));
 }
 
 // ─── Download JSON ───
@@ -916,6 +918,7 @@ async function handleDocUpload(input) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
   renderList();
   showSaveIndicator();
+  dbSave('energies', () => Object.entries(editedData).map(([display, d]) => ({ display, ...d })));
 
   alert(`${count} energibeskrivelse${count !== 1 ? 'r' : ''} importeret fra dokumentet.`);
   input.value = '';

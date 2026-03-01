@@ -314,7 +314,7 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
     const res = await fetch('/api/save-rapport.php');
     if (!res.ok) return;
     const d = await res.json();
-    if (d.globalInstruction) localStorage.setItem(GLOBAL_KEY, d.globalInstruction);
+    if (d.globalInstruction !== undefined && d.globalInstruction !== null) localStorage.setItem(GLOBAL_KEY, d.globalInstruction);
     if (d.sections && d.sections.length) {
       const parsed = d.sections.map(s => ({
         ...s,
@@ -325,6 +325,9 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
   } catch (e) { console.warn('DB load fejlede:', e); }
   // Re-render med loadet data
   render();
+  // Opdater global instruction fra DB
+  const gEl = document.getElementById('globalInstruction');
+  if (gEl) gEl.value = localStorage.getItem(GLOBAL_KEY) || '';
 })();
 
 // ─── Init ───

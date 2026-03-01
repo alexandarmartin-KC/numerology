@@ -79,7 +79,7 @@
 
       <p class="text-muted mb-3">Skriv en udførlig beskrivelse af numerologi — baggrund, historie, hvad det kan, hvordan det bruges osv. Denne tekst bruges som kontekst til AI-motoren, så den forstår faget i dybden.</p>
 
-      <textarea id="aboutNumerology" class="form-control" rows="20" placeholder="Skriv alt hvad motoren skal vide om numerologi som fag..." style="font-size:14px;line-height:1.7;"></textarea>
+      <textarea id="aboutNumerology" class="form-control about-field" rows="20" placeholder="Skriv alt hvad motoren skal vide om numerologi som fag..." style="font-size:14px;line-height:1.7;"></textarea>
 
       <h5 class="mt-4 mb-2">Definition af rent numeroskop</h5>
       <p class="text-muted mb-2" style="font-size:13px;">Beskriv hvad et rent numeroskop er, og hvad det betyder for personen.</p>
@@ -301,6 +301,9 @@ function dbSave(getData) {
 
 function gatherGenereltData() {
   const astro = loadAstro();
+  // Saml alle stjernetegn-data som JSON
+  const signs = {};
+  ZODIAC_SIGNS.forEach(s => { if (astro[s.id]) signs[s.id] = astro[s.id]; });
   return {
     aboutNumerology: localStorage.getItem('numerologyAbout') || '',
     defRent: localStorage.getItem('numerologyDefRent') || '',
@@ -312,7 +315,8 @@ function gatherGenereltData() {
     rapportStil: localStorage.getItem('numerologyRapportStil') || '',
     eksempelRapport: localStorage.getItem('numerologyEksempel') || '',
     astrologyGenerelt: astro._generelt || '',
-    astrologySignName: '', astrologySignText: ''
+    astrologySignName: JSON.stringify(signs),
+    astrologySignText: ''
   };
 }
 
@@ -336,7 +340,32 @@ document.addEventListener('input', e => {
       ['numerologiAlder', 'numerologyAlder'], ['rapportStil', 'numerologyRapportStil'],
       ['eksempelRapport', 'numerologyEksempel']
     ];
-    map.forEach(([dbKey, lsKey]) => { if (d[dbKey]) localStorage.setItem(lsKey, d[dbKey]); });
+    map.forEach(([dbKey, lsKey]) => {
+      if (d[dbKey] !== undefined && d[dbKey] !== null) localStorage.setItem(lsKey, d[dbKey]);
+    });
+    // Astrologi-data fra DB
+    if (d.astrologyGenerelt || d.astrologySignName) {
+      const astro = loadAstro();
+      if (d.astrologyGenerelt !== undefined && d.astrologyGenerelt !== null) astro._generelt = d.astrologyGenerelt;
+      if (d.astrologySignName) {
+        try {
+          const signs = JSON.parse(d.astrologySignName);
+          Object.assign(astro, signs);
+        } catch (e) { /* ignorér parse-fejl */ }
+      }
+      saveAstro(astro);
+    }
+    // Opdater UI med loadede data
+    ABOUT_FIELDS.forEach(f => {
+      const ta = document.getElementById(f.id);
+      if (ta) ta.value = localStorage.getItem(f.storageKey) || '';
+    });
+    // Opdater astrologi-felter hvis fanen er åben
+    const astroGen = document.getElementById('astroGenerelt');
+    if (astroGen) {
+      const freshAstro = loadAstro();
+      astroGen.value = freshAstro._generelt || '';
+    }
   } catch (e) { console.warn('DB load fejlede:', e); }
 })();
 

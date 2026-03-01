@@ -613,17 +613,32 @@
 
       const baseData = parseMetaFromHtml(originalHtmls[pageName]);
       const saved = localStorage.getItem(storageKey(pageName));
+      let merged = baseData;
 
       if (saved) {
-        try {
-          setFormValues({ ...baseData, ...JSON.parse(saved) });
-        } catch {
-          setFormValues(baseData);
-        }
-      } else {
-        setFormValues(baseData);
+        try { merged = { ...baseData, ...JSON.parse(saved) }; } catch {}
       }
 
+      // Load fra DB — overskriver localStorage
+      try {
+        const dbRes = await fetch('/api/save-meta.php?page=' + encodeURIComponent(pageName));
+        if (dbRes.ok) {
+          const dbData = await dbRes.json();
+          if (dbData && dbData.page) {
+            // Gem i localStorage så fremtidige page-switches bruger det
+            const toStore = {
+              title:       dbData.title ?? merged.title,
+              description: dbData.description ?? merged.description,
+              ogImage:     dbData.ogImage ?? merged.ogImage,
+              seoImage:    dbData.seoImage ?? merged.seoImage
+            };
+            localStorage.setItem(storageKey(pageName), JSON.stringify(toStore));
+            merged = { ...merged, ...toStore };
+          }
+        }
+      } catch (e) { console.warn('DB load fejlede:', e); }
+
+      setFormValues(merged);
       updatePageStatus();
     }
 
