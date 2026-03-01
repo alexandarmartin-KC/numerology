@@ -5,3 +5,11 @@
 <IfModule mod_security2.c>
     SecRuleEngine Off
 </IfModule>
+
+# Videresend extensionless API-kald til PHP-filer
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^generate-namereading$ generate-namereading.php [L]
+    RewriteRule ^generate-rapport$     generate-rapport.php     [L]
+    RewriteRule ^generate-artikel$     generate-artikel.php     [L]
+</IfModule>
