@@ -17,10 +17,10 @@ $apiKey = getenv('OPENAI_API_KEY') ?: ($_OPENAI_API_KEY ?? '');
 if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
 
 // ─── Input ───
-$body               = json_decode(file_get_contents('php://input'), true) ?? [];
-$firstName          = $body['firstName'] ?? '';
-$nameData           = $body['nameData'] ?? '';
-$energyDescriptions = $body['energyDescriptions'] ?? '';
+$body            = json_decode(file_get_contents('php://input'), true) ?? [];
+$firstName       = $body['firstName'] ?? '';
+$nameData        = $body['nameData'] ?? '';
+$relevantNumbers = $body['relevantNumbers'] ?? [];
 
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
@@ -44,6 +44,65 @@ try {
         ];
     }
 } catch (Throwable $e) { /* tabel eksisterer måske ikke endnu — fortsæt med fallback */ }
+
+// ─── Rens energitekst (fjern planeter, horoskop etc. baseret på avoids-config) ───
+function cleanEnergyText(string $text, array $avoids, array $customAvoids): string {
+    $t = $text;
+    if (in_array('planeter', $avoids)) {
+        $planets = 'Solen|Månen|Mars|Venus|Jupiter|Saturn|Merkur|Neptun|Uranus|Pluto';
+        $t = preg_replace('/^\d+\s+(' . $planets . ')\s*$/mu', '', $t);
+        $t = preg_replace('/\b(' . $planets . ')\b/iu', '', $t);
+        $t = preg_replace('/vibrerer med\s*,?\s*/iu', '', $t);
+        $t = preg_replace('/Tallet \d+\s*,?\s*som repræsenterer/iu', 'Tallet repræsenterer', $t);
+    }
+    if (in_array('horoskop', $avoids)) {
+        $zodiac = 'Vædder\w*|Tyr\w*|Tvilling\w*|Krebs\w*|Løv\w*|Jomfru\w*|Vægt\w*|Skorpion\w*|Skytt\w*|Stenbuk\w*|Vandmand\w*|Fisk\w*';
+        $t = preg_replace('/\b(' . $zodiac . ')\b/iu', '', $t);
+        $t = preg_replace('/soltegn\w*/iu', '', $t);
+        $t = preg_replace('/horoskop\w*/iu', '', $t);
+        $t = preg_replace('/stjernetegn\w*/iu', '', $t);
+        $t = preg_replace('/zodiak\w*/iu', '', $t);
+    }
+    if (in_array('teknisk', $avoids)) {
+        $t = preg_replace('/^Lykketal:.*$/mu', '', $t);
+        $t = preg_replace('/^Lykkedage:.*$/mu', '', $t);
+        $t = preg_replace('/\d+\s*\+\s*\d+\s*=\s*\d+/u', '', $t);
+    }
+    foreach ($customAvoids as $phrase) {
+        if ($phrase && trim($phrase) !== '') {
+            $esc = preg_quote(trim($phrase), '/');
+            $t = preg_replace('/' . $esc . '/iu', '', $t);
+        }
+    }
+    $t = preg_replace('/\n{3,}/', "\n\n", $t);
+    $t = preg_replace('/  +/', ' ', $t);
+    return trim($t);
+}
+
+// ─── Hent energibeskrivelser fra DB (virker for alle besøgende) ───
+$energyDescriptions = '';
+if (!empty($relevantNumbers)) {
+    try {
+        $dbE  = getDB();
+        $nums = array_values(array_map('intval', $relevantNumbers));
+        $ph   = implode(',', array_fill(0, count($nums), '?'));
+        $types = str_repeat('i', count($nums));
+        $stmtE = $dbE->prepare("SELECT display, reduced, grundenergi, keywords FROM diamant_energies WHERE reduced IN ($ph) ORDER BY reduced ASC");
+        if ($stmtE) {
+            $stmtE->bind_param($types, ...$nums);
+            $stmtE->execute();
+            $resE = $stmtE->get_result();
+            $eavoids = $cfg['avoids'] ?? ['planeter'];
+            $ecustom = $cfg['customAvoids'] ?? [];
+            while ($erow = $resE->fetch_assoc()) {
+                $energyDescriptions .= "\n--- Energi {$erow['display']} ---\n";
+                if ($erow['grundenergi']) $energyDescriptions .= 'Grundenergi: ' . cleanEnergyText($erow['grundenergi'], $eavoids, $ecustom) . "\n";
+                if ($erow['keywords'])    $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($erow['keywords'],    $eavoids, $ecustom) . "\n";
+            }
+            $stmtE->close();
+        }
+    } catch (Throwable $e) { /* energier utilgængelige — GPT bruger egne viden */ }
+}
 
 // ─── Label-tabeller ───
 $TONE_LABELS = [
