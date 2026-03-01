@@ -219,6 +219,8 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Skriv IKKE 'dit tal er...' eller tekniske forklaringer. Gå direkte til personlighed.\n";
     $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n";
     $systemPrompt .= "- Vær ærlig og balanceret. Skriv IKKE udelukkende positivt — folk med udfordrende energier skal kunne genkende sig selv i teksten. Præsenter udfordringer som opmærksomhedspunkter: mønstre personen kan blive bevidst om og arbejde med, ikke som dom eller skæbne. Tag ikke håbet fra folk, men skjul heller ikke virkeligheden.\n";
+    $systemPrompt .= "- NÆVN ALDRIG positionsnavne i teksten (fx 'din livslinje', 'bundtallet', 'solarplexus', 'rygraden', 'auraen', 'hjertecenteret', 'søjletallet'). Oversæt energierne til personlighedstræk uden at afsløre hvilken position de kommer fra.\n";
+    $systemPrompt .= "- Skriv som én sammenhængende personlig fortælling — ikke som en rapport der gennemgår position for position.\n";
     $systemPrompt .= "- UNDGÅ generiske vendinger som 'stærk kerneenergi', 'naturlig evne til at skabe harmoni', 'magnetisk tiltrækning', 'prioriterer nære relationer' og lignende klichéer der kunne passe på hvem som helst. Brug konkrete, specifikke formuleringer der afspejler DENNE persons unikke kombination af energier.\n";
     $systemPrompt .= "- Lad de øvrige positioners nuancer (livslinje, bundtal, solarplexus osv.) aktivt farve og modificere grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde tydeligt forskelligt.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
