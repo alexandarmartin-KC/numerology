@@ -3,3 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/alexanda/public_html
     - /bin/cp -rf . $DEPLOYPATH
+    - chmod 755 $DEPLOYPATH
+    - find $DEPLOYPATH -type d -exec chmod 755 {} \;
+    - find $DEPLOYPATH -type f -exec chmod 644 {} \;
