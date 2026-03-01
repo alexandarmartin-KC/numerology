@@ -2,7 +2,6 @@
 require_once __DIR__ . '/db.php';
 error_reporting(E_ERROR);
 
-$origin = CFG_ALLOWED_ORIGIN;
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -11,54 +10,133 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
-$apiKey = getenv('OPENAI_API_KEY') ?: ($_OPENAI_API_KEY ?? '');
+// ─── API-nøgle ───
+$_OPENAI_API_KEY = '';
+$apiKey = getenv('OPENAI_API_KEY') ?: '';
 if (!$apiKey) {
-    // Læs fra .env.php direkte hvis ikke sat som env
     $envFile = __DIR__ . '/.env.php';
-    if (file_exists($envFile)) {
-        $_OPENAI_API_KEY = '';
-        include $envFile;
-        $apiKey = $_OPENAI_API_KEY ?? '';
-    }
+    if (file_exists($envFile)) include $envFile;
+    $apiKey = $_OPENAI_API_KEY ?? '';
 }
 if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
 
-$body = json_decode(file_get_contents('php://input'), true) ?? [];
+// ─── Input ───
+$body               = json_decode(file_get_contents('php://input'), true) ?? [];
 $firstName          = $body['firstName'] ?? '';
 $nameData           = $body['nameData'] ?? '';
 $energyDescriptions = $body['energyDescriptions'] ?? '';
-$customSystemPrompt = $body['customSystemPrompt'] ?? null;
-$sentenceRange      = $body['sentenceRange'] ?? '8–10';
 
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
 }
 
-if ($customSystemPrompt) {
-    $systemPrompt = $customSystemPrompt . "\n\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+// ─── Hent gratis-konfiguration direkte fra DB ───
+$cfg = [];
+try {
+    $db  = getDB();
+    $res = $db->query('SELECT * FROM gratis_beregning WHERE id = 1');
+    if ($res && $res->num_rows > 0) {
+        $row = $res->fetch_assoc();
+        $cfg = [
+            'positions'        => json_decode($row['positions']    ?? '[]', true) ?: [],
+            'tone'             => $row['tone']             ?? 'warm',
+            'length'           => (int)($row['length']     ?? 8),
+            'focus'            => json_decode($row['focus']        ?? '[]', true) ?: [],
+            'avoids'           => json_decode($row['avoids']       ?? '[]', true) ?: [],
+            'customAvoids'     => json_decode($row['customAvoids'] ?? '[]', true) ?: [],
+            'extraInstruction' => $row['extraInstruction'] ?? '',
+        ];
+    }
+} catch (Exception $e) { /* fortsæt med defaults */ }
+
+// ─── Label-tabeller ───
+$TONE_LABELS = [
+    'warm'         => 'Varm, indsigtsfuld og lidt mystisk — som om du kender personen',
+    'mystical'     => 'Mystisk og poetisk — med dybde og billeder',
+    'direct'       => 'Direkte og konkret — hold det faktuelt og klart',
+    'motivational' => 'Motiverende og opløftende — inspirer til handling',
+    'professional' => 'Professionel og saglig — neutral ekspertise',
+];
+$FOCUS_LABELS = [
+    'personlighed'  => 'Personlighed & kerneenergi',
+    'styrker'       => 'Styrker & talenter',
+    'udfordringer'  => 'Udfordringer & skyggesider',
+    'relationer'    => 'Relationer & kærlighed',
+    'karriere'      => 'Karriere & livsretning',
+    'spiritualitet' => 'Spiritualitet & indre vækst',
+    'samspil'       => 'Samspil mellem tallene',
+];
+$AVOID_LABELS = [
+    'planeter'       => 'Planeter (Sol, Saturn osv.)',
+    'horoskop'       => 'Horoskop / stjernetegn',
+    'teknisk'        => 'Tekniske beregningsforklaringer',
+    'deterministisk' => 'Deterministiske udsagn',
+    'negativt'       => 'Stærkt negativt sprog',
+];
+$POSITION_LABELS = [
+    'grundenergi'  => 'Grundenergi (top)',
+    'livslinje'    => 'Livslinje',
+    'bundtal'      => 'Bundtal',
+    'aura'         => 'Aura (4 hjørner)',
+    'hjertecenter' => 'Hjertecenter',
+    'solarplexus'  => 'Solarplexus',
+    'rygraden'     => 'Rygraden',
+    'soejletal'    => 'Søjletal',
+];
+
+// ─── Byg systemprompt fra DB-konfiguration ───
+if (!empty($cfg)) {
+    $lo          = $cfg['length'];
+    $hi          = min($lo + 2, 16);
+    $tone        = $TONE_LABELS[$cfg['tone']] ?? $TONE_LABELS['warm'];
+    $posLabels   = array_values(array_filter(array_map(fn($id) => $POSITION_LABELS[$id] ?? null, $cfg['positions'])));
+    $focusLabels = array_values(array_filter(array_map(fn($id) => $FOCUS_LABELS[$id]    ?? null, $cfg['focus'])));
+    $avoidLabels = array_values(array_filter(array_map(fn($id) => $AVOID_LABELS[$id]    ?? null, $cfg['avoids'])));
+    $allAvoids   = array_merge($avoidLabels, $cfg['customAvoids'] ?? []);
+
+    $systemPrompt  = "Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk.\n\n";
+    if ($posLabels) {
+        $systemPrompt .= "DIAMANTPOSITIONER DU MODTAGER:\n";
+        foreach ($posLabels as $l) $systemPrompt .= "- $l\n";
+        $systemPrompt .= "\n";
+    }
+    $systemPrompt .= "TONE: $tone\n\n";
+    $systemPrompt .= "LAENGDE: Skriv præcis {$lo}–{$hi} sætninger i ét samlet afsnit.\n\n";
+    if ($focusLabels) {
+        $systemPrompt .= "FOKUSOMRAADER (prioriter disse):\n";
+        foreach ($focusLabels as $l) $systemPrompt .= "- $l\n";
+        $systemPrompt .= "\n";
+    }
+    $systemPrompt .= "REGLER:\n";
+    $systemPrompt .= "- Brug personens fornavn naturligt 1-2 gange.\n";
+    $systemPrompt .= "- Grundenergien (top) er kerneenergien — vægt den tungest.\n";
+    $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
+    $systemPrompt .= "- Skriv IKKE \"dit tal er...\" eller tekniske forklaringer. Gå direkte til personlighed.\n";
+    $systemPrompt .= "- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n";
+    $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
+    if ($allAvoids) {
+        $systemPrompt .= "\nUNDGAA (nævn ALDRIG):\n";
+        foreach ($allAvoids as $a) $systemPrompt .= "- $a\n";
+    }
+    if (!empty($cfg['extraInstruction'])) {
+        $systemPrompt .= "\nEKSTRA INSTRUKTION:\n{$cfg['extraInstruction']}\n";
+    }
 } else {
-    $systemPrompt = "Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons fulde numerologiske diamant.
-
-Du modtager de præcise diamantpositioner: grundenergi (top/fødselsdagstal), livslinje (navnedele), bundtal, aura (4 hjørner), hjertecenter, solarplexus, rygraden og søjletal.
-
-REGLER:
-- Skriv præcis 8-10 korte, personlige sætninger i ét samlet afsnit.
-- Brug personens fornavn naturligt 1-2 gange.
-- Basér analysen på de KONKRETE diamantpositioner du modtager.
-- Grundenergien (top) er personens kerneenergi — vægt den tungest.
-- Nævn kort samspillet mellem fx hjertecenter og grundenergi, eller aura og bundtal.
-- Tonen skal være varm, indsigtsfuld og lidt mystisk — som om du kender dem.
-- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.
-- Skriv IKKE \"dit tal er...\" eller tekniske forklaringer. Gå direkte til personlighed.
-- Nævn ALDRIG planeter (Sol, Saturn, Jupiter osv.) — hold fokus rent på tallenes energi.
-- Hold det positivt men ærligt — nævn gerne en mild udfordring.
-- Slut med en sætning der antyder at den fulde diamant rummer endnu mere at udforske.
-
-NUMEROLOGISK VIDEN:
-" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+    // Fallback hvis ingen DB-konfiguration endnu
+    $lo = 8; $hi = 10;
+    $systemPrompt  = "Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons numerologiske diamant.\n\n";
+    $systemPrompt .= "REGLER:\n";
+    $systemPrompt .= "- Skriv præcis 8-10 korte, personlige sætninger i ét samlet afsnit.\n";
+    $systemPrompt .= "- Brug personens fornavn naturligt 1-2 gange.\n";
+    $systemPrompt .= "- Grundenergien (top) er personens kerneenergi — vægt den tungest.\n";
+    $systemPrompt .= "- Tonen skal være varm, indsigtsfuld og lidt mystisk.\n";
+    $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
+    $systemPrompt .= "- Nævn ALDRIG planeter. Hold fokus på tallenes energi.\n";
+    $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
 }
 
-$userPrompt = "Personen hedder {$firstName}.\n\n{$nameData}\n\nSkriv en kort, personlig numerologisk analyse ({$sentenceRange} sætninger i ét afsnit).";
+$systemPrompt .= "\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+$userPrompt    = "Personen hedder {$firstName}.\n\n{$nameData}\n\nSkriv en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).";
 
 $payload = json_encode([
     'model'       => 'gpt-4o',
