@@ -395,10 +395,77 @@ function updatePreview(config) {
 
 // ─── Init ───
 
+let _listenersAttached = false;
+
 function init() {
   const config = loadConfig();
 
-  // Positions
+  if (!_listenersAttached) {
+    _listenersAttached = true;
+
+    // Tone
+    const toneSelect = document.getElementById('toneSelect');
+    toneSelect.addEventListener('change', () => {
+      const c = loadConfig();
+      c.tone = toneSelect.value;
+      saveConfig(c);
+    });
+
+    // Length
+    const lengthRange = document.getElementById('lengthRange');
+    lengthRange.addEventListener('input', () => {
+      const val = parseInt(lengthRange.value);
+      updateLengthLabel(val);
+      const c = loadConfig();
+      c.length = val;
+      saveConfig(c);
+    });
+
+    // Custom avoid input
+    document.getElementById('customAvoidInput').addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const val = e.target.value.trim();
+      if (!val) return;
+      const c = loadConfig();
+      if (!c.customAvoids) c.customAvoids = [];
+      if (!c.customAvoids.includes(val)) {
+        c.customAvoids.push(val);
+        saveConfig(c);
+        renderAvoids();
+      }
+      e.target.value = '';
+    });
+
+    // Extra instruction
+    const extraEl = document.getElementById('extraInstruction');
+    extraEl.addEventListener('input', () => {
+      const c = loadConfig();
+      c.extraInstruction = extraEl.value;
+      saveConfig(c);
+    });
+
+    // Teaser text
+    const teaserEl = document.getElementById('teaserText');
+    teaserEl.addEventListener('input', () => {
+      const c = loadConfig();
+      c.teaserText = teaserEl.value;
+      saveConfig(c);
+    });
+
+    // Preview toggle
+    const previewBox = document.getElementById('previewBox');
+    document.getElementById('togglePreview').addEventListener('click', () => {
+      previewBox.classList.toggle('d-none');
+    });
+  }
+
+  // Always refresh UI values from config
+  document.getElementById('toneSelect').value = config.tone;
+  document.getElementById('lengthRange').value = config.length;
+  updateLengthLabel(config.length);
+  document.getElementById('extraInstruction').value = config.extraInstruction || '';
+  document.getElementById('teaserText').value = config.teaserText || '';
   renderBadges('positionsContainer', DIAMOND_POSITIONS, config.positions, (id, checked) => {
     const c = loadConfig();
     if (checked && !c.positions.includes(id)) c.positions.push(id);
@@ -406,29 +473,6 @@ function init() {
     saveConfig(c);
     renderBadges('positionsContainer', DIAMOND_POSITIONS, c.positions, arguments.callee);
   });
-
-  // Tone
-  const toneSelect = document.getElementById('toneSelect');
-  toneSelect.value = config.tone;
-  toneSelect.addEventListener('change', () => {
-    const c = loadConfig();
-    c.tone = toneSelect.value;
-    saveConfig(c);
-  });
-
-  // Length
-  const lengthRange = document.getElementById('lengthRange');
-  lengthRange.value = config.length;
-  updateLengthLabel(config.length);
-  lengthRange.addEventListener('input', () => {
-    const val = parseInt(lengthRange.value);
-    updateLengthLabel(val);
-    const c = loadConfig();
-    c.length = val;
-    saveConfig(c);
-  });
-
-  // Focus
   renderBadges('focusContainer', FOCUS_OPTIONS, config.focus, (id, checked) => {
     const c = loadConfig();
     if (checked && !c.focus.includes(id)) c.focus.push(id);
@@ -436,77 +480,34 @@ function init() {
     saveConfig(c);
     renderBadges('focusContainer', FOCUS_OPTIONS, c.focus, arguments.callee);
   });
-
-  // Avoids
-  function renderAvoids() {
-    const c = loadConfig();
-    const allItems = [
-      ...DEFAULT_AVOIDS,
-      ...(c.customAvoids || []).map(txt => ({ id: 'custom_' + txt, label: txt }))
-    ];
-    const selectedIds = [
-      ...c.avoids,
-      ...(c.customAvoids || []).map(txt => 'custom_' + txt)
-    ];
-    renderBadges('avoidContainer', allItems, selectedIds, (id, checked) => {
-      const c2 = loadConfig();
-      if (id.startsWith('custom_')) {
-        const txt = id.replace('custom_', '');
-        if (!checked) {
-          c2.customAvoids = (c2.customAvoids || []).filter(a => a !== txt);
-        }
-      } else {
-        if (checked && !c2.avoids.includes(id)) c2.avoids.push(id);
-        if (!checked) c2.avoids = c2.avoids.filter(a => a !== id);
-      }
-      saveConfig(c2);
-      renderAvoids();
-    });
-  }
   renderAvoids();
-
-  // Custom avoid input
-  document.getElementById('customAvoidInput').addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const val = e.target.value.trim();
-    if (!val) return;
-    const c = loadConfig();
-    if (!c.customAvoids) c.customAvoids = [];
-    if (!c.customAvoids.includes(val)) {
-      c.customAvoids.push(val);
-      saveConfig(c);
-      renderAvoids();
-    }
-    e.target.value = '';
-  });
-
-  // Extra instruction
-  const extraEl = document.getElementById('extraInstruction');
-  extraEl.value = config.extraInstruction || '';
-  extraEl.addEventListener('input', () => {
-    const c = loadConfig();
-    c.extraInstruction = extraEl.value;
-    saveConfig(c);
-  });
-
-  // Teaser text
-  const teaserEl = document.getElementById('teaserText');
-  teaserEl.value = config.teaserText || '';
-  teaserEl.addEventListener('input', () => {
-    const c = loadConfig();
-    c.teaserText = teaserEl.value;
-    saveConfig(c);
-  });
-
-  // Preview toggle
-  const previewBox = document.getElementById('previewBox');
-  document.getElementById('togglePreview').addEventListener('click', () => {
-    previewBox.classList.toggle('d-none');
-  });
-
-  // Initial preview
   updatePreview(config);
+}
+
+function renderAvoids() {
+  const c = loadConfig();
+  const allItems = [
+    ...DEFAULT_AVOIDS,
+    ...(c.customAvoids || []).map(txt => ({ id: 'custom_' + txt, label: txt }))
+  ];
+  const selectedIds = [
+    ...c.avoids,
+    ...(c.customAvoids || []).map(txt => 'custom_' + txt)
+  ];
+  renderBadges('avoidContainer', allItems, selectedIds, (id, checked) => {
+    const c2 = loadConfig();
+    if (id.startsWith('custom_')) {
+      const txt = id.replace('custom_', '');
+      if (!checked) {
+        c2.customAvoids = (c2.customAvoids || []).filter(a => a !== txt);
+      }
+    } else {
+      if (checked && !c2.avoids.includes(id)) c2.avoids.push(id);
+      if (!checked) c2.avoids = c2.avoids.filter(a => a !== id);
+    }
+    saveConfig(c2);
+    renderAvoids();
+  });
 }
 
 init();
