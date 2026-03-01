@@ -110,7 +110,24 @@
 
 // ─── Knowledge gathering (same as rapport.html) ───
 
-function gatherKnowledge() {
+async function gatherKnowledge() {
+  try {
+    const res = await fetch('/api/get-knowledge.php');
+    if (!res.ok) throw new Error('DB svarede ikke');
+    const k = await res.json();
+    if (Array.isArray(k.aarEnergies)) {
+      const obj = {};
+      k.aarEnergies.forEach(e => { obj[e.tal] = { keywords: e.keywords, beskrivelse: e.beskrivelse }; });
+      k.aarEnergies = obj;
+    }
+    return k;
+  } catch (e) {
+    console.warn('DB fetch fejlede, bruger localStorage som fallback:', e);
+    return gatherKnowledgeFromLocalStorage();
+  }
+}
+
+function gatherKnowledgeFromLocalStorage() {
   const k = {};
   k.aboutNumerology = localStorage.getItem('numerologyAbout') || '';
   k.defRent = localStorage.getItem('numerologyDefRent') || '';
@@ -239,7 +256,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     return;
   }
 
-  const knowledge = gatherKnowledge();
+  const knowledge = await gatherKnowledge();
 
   document.getElementById('spinnerOverlay').classList.remove('d-none');
   document.getElementById('generateBtn').disabled = true;

@@ -94,7 +94,7 @@
 
   fetch('energies.v1.json')
     .then(r => r.json())
-    .then(data => {
+    .then(async data => {
       const base = data.energies;
       // Merge any localStorage edits on top
       const saved = localStorage.getItem('energiesEdits');
@@ -103,6 +103,24 @@
       for (const [key, val] of Object.entries(base)) {
         energiesData[key] = { ...val, ...(edits[key] || {}) };
       }
+      // Overlay med DB-data (så alle besøgende ser admin-redigeringer)
+      try {
+        const dbRes = await fetch('/api/save-diamant.php?type=energies');
+        if (dbRes.ok) {
+          const dbEnergies = await dbRes.json();
+          if (Array.isArray(dbEnergies) && dbEnergies.length) {
+            const freshEdits = JSON.parse(localStorage.getItem('energiesEdits') || '{}');
+            dbEnergies.forEach(e => {
+              if (!e.display) return;
+              if (!freshEdits[e.display]) freshEdits[e.display] = {};
+              Object.assign(freshEdits[e.display], e);
+              if (!energiesData[e.display]) energiesData[e.display] = {};
+              Object.assign(energiesData[e.display], e);
+            });
+            localStorage.setItem('energiesEdits', JSON.stringify(freshEdits));
+          }
+        }
+      } catch (e) { console.warn('DB energier load fejlede:', e); }
     })
     .catch(() => { console.warn('Kunne ikke hente energies.v1.json'); });
 

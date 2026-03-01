@@ -1101,6 +1101,30 @@
       startAuto();
     })();
 
+    // ─── Preload admin-data fra database (så alle besøgende har adgang) ───
+    (async () => {
+      try {
+        const res = await fetch('/api/get-knowledge.php');
+        if (!res.ok) return;
+        const k = await res.json();
+        // Gratis beregning config
+        if (k.gratisBeregning && Object.keys(k.gratisBeregning).length) {
+          localStorage.setItem('gratisBeregningConfig', JSON.stringify(k.gratisBeregning));
+        }
+        // Energibeskrivelser
+        if (Array.isArray(k.energies) && k.energies.length) {
+          const editsObj = {};
+          k.energies.forEach(e => {
+            if (!e.display) return;
+            const copy = { ...e };
+            delete copy.id;
+            editsObj[e.display] = copy;
+          });
+          localStorage.setItem('energiesEdits', JSON.stringify(editsObj));
+        }
+      } catch (e) { console.warn('DB preload fejlede:', e); }
+    })();
+
     // ─── Build diamond summary text for the API ───
     // ─── Load gratis config from admin page ───
     function getGratisConfig() {

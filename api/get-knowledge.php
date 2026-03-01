@@ -49,8 +49,13 @@ $parsedSections = array_map(function($s) {
 // Gratis beregning
 $gratis = $rows['gratis'][0] ?? [];
 if ($gratis) {
-    $gratis['positions'] = json_decode($gratis['positions'] ?? '[]', true) ?: [];
-    $gratis['focus']     = json_decode($gratis['focus'] ?? '[]', true) ?: [];
+    $gratis['positions']    = json_decode($gratis['positions'] ?? '[]', true) ?: [];
+    $gratis['focus']        = json_decode($gratis['focus'] ?? '[]', true) ?: [];
+    $gratis['avoids']       = json_decode($gratis['avoids'] ?? '[]', true) ?: [];
+    $gratis['customAvoids'] = json_decode($gratis['customAvoids'] ?? '[]', true) ?: [];
+    if (isset($gratis['length'])) $gratis['length'] = (int)$gratis['length'];
+    // Fjern DB-only felter der forvirrer JS
+    unset($gratis['id']);
 }
 
 $knowledge = [
