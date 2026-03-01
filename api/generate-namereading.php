@@ -199,7 +199,7 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
     $systemPrompt .= "- Skriv IKKE 'dit tal er...' eller tekniske forklaringer. Gå direkte til personlighed.\n";
     $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n";
-    $systemPrompt .= "- Afspejl energiernes faktiske karakter ærligt. Forsøg IKKE at vende negativt til positivt — hvis en energi er udfordrende, beskriv den som sådan. Nævn gerne både styrker og udfordringer.\n";
+    $systemPrompt .= "- Afspejl energiernes faktiske karakter ærligt. Udfordrende energier skal præsenteres som opmærksomhedspunkter — ikke som dom eller skæbne, men som mønstre personen kan blive bevidst om og arbejde med. Tag ikke håbet fra folk.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
     if (in_array($toneKey, ['professional', 'direct'])) {
         $systemPrompt .= "- BRUG ALDRIG ordene: åndelig, spirituel, sjæl, kosmisk, universet, intuition, energistrøm, mystisk, hellig, guddommelig, indre lys eller lignende. Omskriv ALT sådant til konkrete personligheds- og adfærdstræk.\n";
