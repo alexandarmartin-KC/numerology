@@ -88,7 +88,7 @@
           <option value="mystical">Mystisk & poetisk</option>
           <option value="direct">Direkte & konkret</option>
           <option value="motivational">Motiverende & opløftende</option>
-          <option value="professional">Professionel & saglig</option>
+          <option value="professional">Professionel & saglig (ingen åndelighed)</option>
         </select>
       </div>
     </div>
@@ -207,11 +207,32 @@ const DEFAULT_AVOIDS = [
 ];
 
 const TONE_LABELS = {
-  warm: 'Varm, indsigtsfuld og lidt mystisk — som om du kender personen',
-  mystical: 'Mystisk og poetisk — med dybde og billeder',
-  direct: 'Direkte og konkret — hold det faktuelt og klart',
-  motivational: 'Motiverende og opløftende — inspirer til handling',
-  professional: 'Professionel og saglig — neutral ekspertise'
+  warm:         'Varm, indsigtsfuld og lidt poetisk — som om du kender personen personligt',
+  mystical:     'Mystisk og poetisk — brug billeder, symbolik og dybde',
+  direct:       'Direkte og konkret — hold det kortfattet og faktuelt, ingen blomstrende sprog',
+  motivational: 'Motiverende og opløftende — fokuser på muligheder og styrker, inspirer til handling',
+  professional: 'Professionel og saglig — neutral eksperttone, ingen mystik, ingen åndelighed, ingen poetiske vendinger',
+};
+
+const TONE_RULES = {
+  warm:         [],
+  mystical:     ['Brug gerne poetiske billeder og symbolik.'],
+  direct:       ['Ingen blomstrende eller poetiske vendinger.', 'Ingen mystiske eller åndelige referencer overhovedet.'],
+  motivational: ['Fokuser på handlingsorienteret sprog.', 'Undgå det negative — vend det til muligheder.'],
+  professional: [
+    'Ingen mystiske, åndelige eller poetiske vendinger overhovedet.',
+    'Ingen referencer til intuition, sjæl, ånd, universet, energistrømme eller lignende.',
+    'Skriv som en faglig karriere- eller personlighedsrådgiver — ikke som en spirituel guide.',
+    'Hold sproget neutralt og jordnært.',
+  ],
+};
+
+const TEMPERATURE_NOTE = {
+  warm:         '(temperature: 0.75)',
+  mystical:     '(temperature: 0.85)',
+  direct:       '(temperature: 0.50)',
+  motivational: '(temperature: 0.60)',
+  professional: '(temperature: 0.40)',
 };
 
 // ─── State ───
@@ -307,7 +328,10 @@ function updateLengthLabel(val) {
 // ─── Preview ───
 
 function buildSystemPrompt(config) {
-  const toneText = TONE_LABELS[config.tone] || TONE_LABELS.warm;
+  const toneKey  = config.tone || 'warm';
+  const toneText = TONE_LABELS[toneKey] || TONE_LABELS.warm;
+  const toneRules = TONE_RULES[toneKey] || [];
+  const tempNote  = TEMPERATURE_NOTE[toneKey] || '';
   const lo = config.length;
   const hi = Math.min(lo + 2, 16);
 
@@ -326,16 +350,17 @@ function buildSystemPrompt(config) {
 
   let prompt = `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk.\n\n`;
 
-  prompt += `DIAMANTPOSITIONER DU MODTAGER:\n`;
-  posLabels.forEach(l => { prompt += `- ${l}\n`; });
-  prompt += `\n`;
+  if (posLabels.length) {
+    prompt += `DIAMANTPOSITIONER DU MODTAGER:\n`;
+    posLabels.forEach(l => { prompt += `- ${l}\n`; });
+    prompt += `\n`;
+  }
 
   prompt += `TONE: ${toneText}\n\n`;
-
-  prompt += `LÆNGDE: Skriv præcis ${lo}–${hi} sætninger i ét samlet afsnit.\n\n`;
+  prompt += `LAENGDE: Skriv præcis ${lo}–${hi} sætninger i ét samlet afsnit.\n\n`;
 
   if (focusLabels.length) {
-    prompt += `FOKUSOMRÅDER (prioriter disse):\n`;
+    prompt += `FOKUS — skriv KUN om disse emner, intet andet:\n`;
     focusLabels.forEach(l => { prompt += `- ${l}\n`; });
     prompt += `\n`;
   }
@@ -345,11 +370,13 @@ function buildSystemPrompt(config) {
   prompt += `- Grundenergien (top) er kerneenergien — vægt den tungest.\n`;
   prompt += `- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n`;
   prompt += `- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed.\n`;
+  prompt += `- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n`;
   prompt += `- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n`;
   prompt += `- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n`;
+  toneRules.forEach(r => { prompt += `- ${r}\n`; });
 
   if (allAvoids.length) {
-    prompt += `\nUNDGÅ (nævn ALDRIG):\n`;
+    prompt += `\nUNDGAA (nævn ALDRIG):\n`;
     allAvoids.forEach(a => { prompt += `- ${a}\n`; });
   }
 
@@ -357,6 +384,7 @@ function buildSystemPrompt(config) {
     prompt += `\nEKSTRA INSTRUKTION:\n${config.extraInstruction.trim()}\n`;
   }
 
+  prompt += `\n— ${tempNote}`;
   return prompt;
 }
 
