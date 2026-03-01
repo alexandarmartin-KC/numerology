@@ -729,22 +729,17 @@ function dbSave(type, getData) {
     ]);
     if (eRes.ok) {
       const dbEnergies = await eRes.json();
-      const edits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      let changed = false;
-      dbEnergies.forEach(e => {
-        if (!edits[e.display]) { edits[e.display] = e; changed = true; }
-        // Altid opdater billede fra DB (persisteret server-URL)
-        if (e.billede && (!edits[e.display] || edits[e.display].billede !== e.billede)) {
+      if (dbEnergies.length) {
+        const edits = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        dbEnergies.forEach(e => {
+          // DB data overskriver altid localStorage
           if (!edits[e.display]) edits[e.display] = {};
-          edits[e.display].billede = e.billede;
-          changed = true;
-        }
-        // Opdater in-memory editedData.billede
-        if (e.billede && editedData[e.display]) editedData[e.display].billede = e.billede;
-      });
-      if (changed) {
+          Object.assign(edits[e.display], e);
+          // Opdater in-memory editedData
+          if (editedData[e.display]) Object.assign(editedData[e.display], e);
+        });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
-        renderList(); // Tegn listen igen med billeder fra DB
+        renderList();
       }
     }
     if (pRes.ok) {
