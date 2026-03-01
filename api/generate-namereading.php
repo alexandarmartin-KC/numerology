@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/db.php';
 error_reporting(E_ERROR);
+ini_set('display_errors', '0');
+require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -47,7 +48,7 @@ try {
             'extraInstruction' => $row['extraInstruction'] ?? '',
         ];
     }
-} catch (Exception $e) { /* fortsæt med defaults */ }
+} catch (Throwable $e) { /* tabel eksisterer måske ikke endnu — fortsæt med fallback */ }
 
 // ─── Label-tabeller ───
 $TONE_LABELS = [
