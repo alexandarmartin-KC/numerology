@@ -910,9 +910,11 @@ async function handleDocUpload(input) {
     const key = numberToKey(parseInt(num));
     if (!editedData[key]) continue;
 
-    editedData[key].beskrivelse = desc;
+    const isGrundtal = !key.includes('/');
+    const field = isGrundtal ? 'grundenergi' : 'beskrivelse';
+    editedData[key][field] = desc;
     if (!edits[key]) edits[key] = {};
-    edits[key].beskrivelse = desc;
+    edits[key][field] = desc;
     count++;
   }
 
