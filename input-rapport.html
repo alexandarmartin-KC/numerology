@@ -89,6 +89,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
 
+function getAdminKey() {
+  let key = localStorage.getItem('adminApiKey') || '';
+  if (!key) { key = prompt('Indtast admin API-nøgle (lad blank hvis ingen er sat):') || ''; if (key) localStorage.setItem('adminApiKey', key); }
+  return key;
+}
+function adminHeaders(extra) { return Object.assign({ 'X-Admin-Key': getAdminKey() }, extra || {}); }
+
 const STORAGE_KEY = 'rapportSections';
 const GLOBAL_KEY = 'rapportGlobalInstruction';
 
@@ -297,7 +304,7 @@ function dbSaveRapport() {
     try {
       const res = await fetch('/api/save-rapport.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ globalInstruction: localStorage.getItem(GLOBAL_KEY) || '', sections: loadSections() })))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }

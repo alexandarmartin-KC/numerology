@@ -305,6 +305,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
+  function getAdminKey() {
+    let key = localStorage.getItem('adminApiKey') || '';
+    if (!key) { key = prompt('Indtast admin API-nøgle (lad blank hvis ingen er sat):') || ''; if (key) localStorage.setItem('adminApiKey', key); }
+    return key;
+  }
+  function adminHeaders(extra) { return Object.assign({ 'X-Admin-Key': getAdminKey() }, extra || {}); }
   (function () {
     /* ── Constants ─────────────────────────────── */
     const STORAGE_PREFIX = 'inputMetaData_';
@@ -535,7 +541,7 @@
         try {
           await fetch('/api/save-meta.php?page=' + encodeURIComponent(currentPage), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: adminHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ page: currentPage, ...vals })))) })
           });
         } catch (e) { console.warn('DB save fejlede:', e); }
