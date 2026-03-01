@@ -1,9 +1,12 @@
 <?php
 // Kør dette ÉN gang for at tilføje manglende kolonner
 // Åbn i browseren: https://alexandarmartin.dk/api/migrate.php
-require_once __DIR__ . '/db.php';
+error_reporting(E_ERROR);
+ini_set('display_errors', '0');
 
 header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/db.php';
 $db = getDB();
 $results = [];
 
