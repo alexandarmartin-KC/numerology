@@ -1240,8 +1240,10 @@
       const cfg = getGratisConfig();
       const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
       const displays = new Set();
+      // Helper: same rule as diamondEngine displayValue()
+      const disp = (compound, reduced) => compound < 10 ? `${compound}` : `${compound}/${reduced}`;
       if (pos.includes('grundenergi'))   displays.add(diamond.grundenergi.display);
-      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => displays.add(e.display));
+      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => displays.add(disp(e.compound, e.reduced)));
       if (pos.includes('bundtal'))       displays.add(diamond.bundtal.display);
       if (pos.includes('aura')) {
         displays.add(diamond.aura.auraUpperLeft.display);
@@ -1252,7 +1254,7 @@
       if (pos.includes('hjertecenter'))  displays.add(diamond.body.hjertecenter.centerTal.display);
       if (pos.includes('solarplexus'))   displays.add(diamond.body.solarplexus.centerTal.display);
       if (pos.includes('rygraden'))      displays.add(diamond.rygraden.display);
-      if (pos.includes('soejletal'))     displays.add(diamond.soejletal.compound + '/' + diamond.soejletal.reduced);
+      if (pos.includes('soejletal'))     displays.add(disp(diamond.soejletal.compound, diamond.soejletal.reduced));
       return [...displays];
     }
 
