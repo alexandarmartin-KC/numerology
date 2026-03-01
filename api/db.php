@@ -1,13 +1,19 @@
 <?php
 // Delt database-forbindelse
 // Indlæs lokalt .env.php hvis det findes (til lokal dev)
+$_DB_HOST = ''; $_DB_USER = ''; $_DB_PASS = ''; $_DB_NAME = '';
+$_ALLOWED_ORIGIN = ''; $_ADMIN_API_KEY = '';
 $_envFile = __DIR__ . '/.env.php';
 if (file_exists($_envFile)) include $_envFile;
 
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_USER', getenv('DB_USER') ?: '');
-define('DB_PASS', getenv('DB_PASS') ?: '');
-define('DB_NAME', getenv('DB_NAME') ?: '');
+// Understøtter både putenv() og direkte variabel-tildeling i .env.php
+// (LiteSpeed og nogle cPanel-servere blokerer putenv)
+define('DB_HOST',        getenv('DB_HOST')        ?: ($_DB_HOST        ?: 'localhost'));
+define('DB_USER',        getenv('DB_USER')        ?: ($_DB_USER        ?: ''));
+define('DB_PASS',        getenv('DB_PASS')        ?: ($_DB_PASS        ?: ''));
+define('DB_NAME',        getenv('DB_NAME')        ?: ($_DB_NAME        ?: ''));
+define('CFG_ALLOWED_ORIGIN', getenv('ALLOWED_ORIGIN') ?: ($_ALLOWED_ORIGIN ?: 'https://numerology-olive-kappa.vercel.app'));
+define('CFG_ADMIN_KEY',      getenv('ADMIN_API_KEY')  ?: ($_ADMIN_API_KEY  ?: ''));
 
 function getDB(): mysqli {
     static $db = null;
@@ -23,7 +29,7 @@ function getDB(): mysqli {
 }
 
 function jsonOut($data, int $code = 200): void {
-    $origin = getenv('ALLOWED_ORIGIN') ?: 'https://numerology-olive-kappa.vercel.app';
+    $origin = CFG_ALLOWED_ORIGIN;
     header('Content-Type: application/json; charset=utf-8');
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -47,7 +53,7 @@ function getBody() {
  * Kald denne funktion i starten af POST-handlere i admin-endpoints.
  */
 function requireAdminKey(): void {
-    $envKey = getenv('ADMIN_API_KEY');
+    $envKey = CFG_ADMIN_KEY;
     if (!$envKey) return; // Ingen nøgle konfigureret → tillad (backward-compat)
     $sent = $_SERVER['HTTP_X_ADMIN_KEY'] ?? '';
     if (!hash_equals($envKey, $sent)) {
@@ -59,7 +65,7 @@ function requireAdminKey(): void {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    $origin = getenv('ALLOWED_ORIGIN') ?: 'https://numerology-olive-kappa.vercel.app';
+    $origin = CFG_ALLOWED_ORIGIN;
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, X-Admin-Key');
