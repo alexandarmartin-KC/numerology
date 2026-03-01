@@ -1,13 +1,21 @@
 <?php
 require_once __DIR__ . '/db.php';
 
+// Undertrykker warnings i output (kan ødelægge JSON)
+error_reporting(E_ERROR);
+
 $type = $_GET['type'] ?? '';
 $db = getDB();
+
+// ─── Helper: hent felt fra energi-array med fallback ───
+function ef(array $e, string $key, string $default = ''): string {
+    return $e[$key] ?? $default;
+}
 
 // ─── GET ───
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($type === 'energies') {
-        $res = $db->query('SELECT *, billede_url AS billede FROM diamant_energies ORDER BY id ASC');
+        $res = $db->query('SELECT *, billede_url AS billede, ubalanceret_keywords AS ubalance_i_urent_numeroskop FROM diamant_energies ORDER BY id ASC');
         jsonOut(mysqli_fetch_all($res, MYSQLI_ASSOC));
     }
     if ($type === 'positions') {
@@ -29,23 +37,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!is_array($body)) jsonOut(['error' => 'Array forventet'], 400);
         $stmt_upd = $db->prepare('UPDATE diamant_energies SET reduced=?,keywords=?,grundenergi=?,ubalanceret_keywords=?,beskrivelse=?,planet=?,kendte=?,helheds_funktion=?,billede_url=? WHERE display=?');
         $stmt_ins = $db->prepare('INSERT INTO diamant_energies (display,reduced,keywords,grundenergi,ubalanceret_keywords,beskrivelse,planet,kendte,helheds_funktion,billede_url) VALUES (?,?,?,?,?,?,?,?,?,?)');
-        foreach ($body as $e) {
-            $display = $e['display'] ?? '';
+
+        if (!$stmt_upd || !$stmt_ins) {
+            jsonOut(['error' => 'Prepare fejl: ' . $db->error], 500);
+        }
+
+        $errors = [];
+        foreach ($body as $i => $e) {
+            $display = ef($e, 'display');
+            if ($display === '') continue;
+
+            // Map JS-feltnavne → DB-kolonner
+            $reduced      = ef($e, 'reduced', '0');
+            $keywords     = ef($e, 'keywords');
+            $grundenergi  = ef($e, 'grundenergi');
+            // JS sender "ubalance_i_urent_numeroskop", DB-kolonnen hedder "ubalanceret_keywords"
+            $ubalanceret  = ef($e, 'ubalance_i_urent_numeroskop', ef($e, 'ubalanceret_keywords'));
+            $beskrivelse  = ef($e, 'beskrivelse');
+            $planet       = ef($e, 'planet');
+            $kendte       = ef($e, 'kendte');
+            $helheds      = ef($e, 'helheds_funktion');
+            $billede      = ef($e, 'billede', ef($e, 'billede_url'));
+
             $r = $db->query("SELECT id FROM diamant_energies WHERE display='" . $db->real_escape_string($display) . "'");
-            $billede = $e['billede'] ?? $e['billede_url'] ?? null;
             if ($r && $r->num_rows > 0) {
                 $stmt_upd->bind_param('ssssssssss',
-                    $e['reduced'],$e['keywords'],$e['grundenergi'],$e['ubalanceret_keywords'],
-                    $e['beskrivelse'],$e['planet'],$e['kendte'],$e['helheds_funktion'],$billede,$display);
-                $stmt_upd->execute();
+                    $reduced, $keywords, $grundenergi, $ubalanceret,
+                    $beskrivelse, $planet, $kendte, $helheds, $billede, $display);
+                if (!$stmt_upd->execute()) $errors[] = "UPD $display: " . $stmt_upd->error;
             } else {
                 $stmt_ins->bind_param('ssssssssss',
-                    $display,$e['reduced'],$e['keywords'],$e['grundenergi'],$e['ubalanceret_keywords'],
-                    $e['beskrivelse'],$e['planet'],$e['kendte'],$e['helheds_funktion'],$billede);
-                $stmt_ins->execute();
+                    $display, $reduced, $keywords, $grundenergi, $ubalanceret,
+                    $beskrivelse, $planet, $kendte, $helheds, $billede);
+                if (!$stmt_ins->execute()) $errors[] = "INS $display: " . $stmt_ins->error;
             }
         }
-        jsonOut(['ok' => true]);
+        if ($errors) {
+            jsonOut(['ok' => false, 'errors' => $errors], 500);
+        }
+        jsonOut(['ok' => true, 'saved' => count($body)]);
     }
 
     if ($type === 'positions') {
