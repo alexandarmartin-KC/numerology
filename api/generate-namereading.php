@@ -91,7 +91,7 @@ if (!empty($relevantDisplays)) {
         $dbE  = getDB();
         $ph   = implode(',', array_fill(0, count($relevantDisplays), '?'));
         $types = str_repeat('s', count($relevantDisplays));
-        $stmtE = $dbE->prepare("SELECT display, grundenergi, keywords FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
+        $stmtE = $dbE->prepare("SELECT display, grundenergi, beskrivelse, keywords, keywords_urent_numeroskop, ubalanceret_keywords FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
         if ($stmtE) {
             $stmtE->bind_param($types, ...$relevantDisplays);
             $stmtE->execute();
@@ -100,9 +100,13 @@ if (!empty($relevantDisplays)) {
             $ecustom = $cfg['customAvoids'] ?? [];
             $etone = $cfg['tone'] ?? 'warm';
             while ($erow = $resE->fetch_assoc()) {
+                // Grundtal (1-9) bruger grundenergi; sammensatte tal (12/3 osv.) bruger beskrivelse
+                $mainText = $erow['grundenergi'] ?: $erow['beskrivelse'];
+                // Keywords: brug ubalancerede keywords hvis almindelige mangler (typisk for sammensatte tal)
+                $kw = $erow['keywords'] ?: ($erow['keywords_urent_numeroskop'] ?: $erow['ubalanceret_keywords']);
                 $energyDescriptions .= "\n--- Energi {$erow['display']} ---\n";
-                if ($erow['grundenergi']) $energyDescriptions .= 'Grundenergi: ' . cleanEnergyText($erow['grundenergi'], $eavoids, $ecustom, $etone) . "\n";
-                if ($erow['keywords'])    $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($erow['keywords'],    $eavoids, $ecustom, $etone) . "\n";
+                if ($mainText) $energyDescriptions .= 'Beskrivelse: ' . cleanEnergyText($mainText, $eavoids, $ecustom, $etone) . "\n";
+                if ($kw)       $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($kw,       $eavoids, $ecustom, $etone) . "\n";
             }
             $stmtE->close();
         }
