@@ -1,0 +1,15 @@
+api/generate-namereading.php
+api/generate-rapport.php
+api/generate-artikel.php
+api/.htaccess
+api/db.php
+api/migrate.php
+api/save-diamant.php
+api/save-generelt.php
+api/save-rapport.php
+api/save-aarstalsraekker.php
+api/save-gratisberegning.php
+api/save-meta.php
+api/save-navnegenerator.php
+api/get-knowledge.php
+api/upload-image.php
