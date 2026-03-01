@@ -1,2 +1,11 @@
-DirectoryIndex index.html
-Options -Indexes
+<IfModule mod_dir.c>
+    DirectoryIndex index.html index.php
+</IfModule>
+
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Fallback: redirect root to index.html
+RewriteEngine On
+RewriteRule ^$ /index.html [L]
