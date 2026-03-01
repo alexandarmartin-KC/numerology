@@ -80,7 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $billede      = ef($e, 'billede', ef($e, 'billede_url'));
 
             $r = $db->query("SELECT id FROM diamant_energies WHERE display='" . $db->real_escape_string($display) . "'");
-            if ($r && $r->num_rows > 0) {
+            $exists = $r && $r->num_rows > 0;
+            if ($r) $r->free(); // Frigør result for at undgå "commands out of sync"
+            if ($exists) {
                 $stmt_upd->bind_param('sssssssssssss',
                     $label, $reduced, $keywords, $kw_urent,
                     $grundenergi, $ubalanceret, $beskrivelse,

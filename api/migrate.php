@@ -10,8 +10,9 @@ $results = [];
 // ─── diamant_energies: tilføj manglende kolonner ───
 $cols = [
     'keywords_urent_numeroskop' => "ALTER TABLE diamant_energies ADD COLUMN keywords_urent_numeroskop TEXT DEFAULT NULL AFTER keywords",
-    'kilde' => "ALTER TABLE diamant_energies ADD COLUMN kilde TEXT DEFAULT NULL AFTER kendte",
-    'label_col' => "ALTER TABLE diamant_energies ADD COLUMN label VARCHAR(100) DEFAULT '' AFTER display",
+    'kilde'              => "ALTER TABLE diamant_energies ADD COLUMN kilde TEXT DEFAULT NULL AFTER kendte",
+    'helheds_funktion'   => "ALTER TABLE diamant_energies ADD COLUMN helheds_funktion TEXT DEFAULT NULL AFTER kilde",
+    'label_col'          => "ALTER TABLE diamant_energies ADD COLUMN label VARCHAR(100) DEFAULT '' AFTER display",
 ];
 
 foreach ($cols as $name => $sql) {

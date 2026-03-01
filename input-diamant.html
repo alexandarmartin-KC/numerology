@@ -788,8 +788,8 @@ function dbSave(type, getData) {
       });
       const txt = await res.text();
       if (!res.ok) {
-        console.error('[DB] Gem fejl (' + type + '):', res.status, txt.substring(0, 500));
-        _dbToast('DB gem fejl (' + type + '): ' + res.status + ' ' + txt.substring(0, 200));
+        console.error('[DB] Gem fejl (' + type + '):', res.status, txt);
+        _dbToast('DB gem fejl (' + type + '): ' + res.status + (txt ? ' – ' + txt.substring(0, 300) : ' (tom svar)'));
       } else {
         console.log('[DB] Gem OK (' + type + '):', txt.substring(0, 200));
       }
