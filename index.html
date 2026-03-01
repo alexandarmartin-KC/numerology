@@ -1235,25 +1235,25 @@
       return desc || '';
     }
 
-    // ─── Collect unique reduced numbers from diamond (respects position config) ───
-    function collectNumbers(diamond) {
+    // ─── Collect display strings from diamond (respects position config) ───
+    function collectDisplays(diamond) {
       const cfg = getGratisConfig();
       const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
-      const nums = new Set();
-      if (pos.includes('grundenergi'))   nums.add(diamond.grundenergi.value);
-      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => nums.add(e.reduced));
-      if (pos.includes('bundtal'))       nums.add(diamond.bundtal.reduced);
+      const displays = new Set();
+      if (pos.includes('grundenergi'))   displays.add(diamond.grundenergi.display);
+      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => displays.add(e.display));
+      if (pos.includes('bundtal'))       displays.add(diamond.bundtal.display);
       if (pos.includes('aura')) {
-        nums.add(diamond.aura.auraUpperLeft.reduced);
-        nums.add(diamond.aura.auraUpperRight.reduced);
-        nums.add(diamond.aura.auraLowerLeft.reduced);
-        nums.add(diamond.aura.auraLowerRight.reduced);
+        displays.add(diamond.aura.auraUpperLeft.display);
+        displays.add(diamond.aura.auraUpperRight.display);
+        displays.add(diamond.aura.auraLowerLeft.display);
+        displays.add(diamond.aura.auraLowerRight.display);
       }
-      if (pos.includes('hjertecenter'))  nums.add(diamond.body.hjertecenter.centerTal.reduced);
-      if (pos.includes('solarplexus'))   nums.add(diamond.body.solarplexus.centerTal.reduced);
-      if (pos.includes('rygraden'))      nums.add(diamond.rygraden.reduced);
-      if (pos.includes('soejletal'))     nums.add(diamond.soejletal.reduced);
-      return [...nums];
+      if (pos.includes('hjertecenter'))  displays.add(diamond.body.hjertecenter.centerTal.display);
+      if (pos.includes('solarplexus'))   displays.add(diamond.body.solarplexus.centerTal.display);
+      if (pos.includes('rygraden'))      displays.add(diamond.rygraden.display);
+      if (pos.includes('soejletal'))     displays.add(diamond.soejletal.compound + '/' + diamond.soejletal.reduced);
+      return [...displays];
     }
 
     // ─── Main flow ───
@@ -1283,7 +1283,7 @@
       }
 
       const diamond = result.diamond;
-      const relevantNums = collectNumbers(diamond);
+      const relevantDisplays = collectDisplays(diamond);
       const firstName = name.trim().split(/\s+/)[0];
       const firstNameDisplay = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
 
@@ -1309,7 +1309,7 @@
           body: JSON.stringify({
             firstName: firstNameDisplay,
             nameData: buildDiamondText(result),
-            relevantNumbers: relevantNums
+            relevantDisplays: relevantDisplays
           })
         });
 

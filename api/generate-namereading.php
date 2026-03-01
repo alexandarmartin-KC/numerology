@@ -20,7 +20,7 @@ if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_AP
 $body            = json_decode(file_get_contents('php://input'), true) ?? [];
 $firstName       = $body['firstName'] ?? '';
 $nameData        = $body['nameData'] ?? '';
-$relevantNumbers = $body['relevantNumbers'] ?? [];
+$relevantDisplays = array_values(array_filter($body['relevantDisplays'] ?? [], fn($v) => is_string($v) && $v !== ''));
 
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
@@ -86,15 +86,14 @@ function cleanEnergyText(string $text, array $avoids, array $customAvoids, strin
 
 // ─── Hent energibeskrivelser fra DB (virker for alle besøgende) ───
 $energyDescriptions = '';
-if (!empty($relevantNumbers)) {
+if (!empty($relevantDisplays)) {
     try {
         $dbE  = getDB();
-        $nums = array_values(array_map('intval', $relevantNumbers));
-        $ph   = implode(',', array_fill(0, count($nums), '?'));
-        $types = str_repeat('i', count($nums));
-        $stmtE = $dbE->prepare("SELECT display, reduced, grundenergi, keywords FROM diamant_energies WHERE reduced IN ($ph) ORDER BY reduced ASC");
+        $ph   = implode(',', array_fill(0, count($relevantDisplays), '?'));
+        $types = str_repeat('s', count($relevantDisplays));
+        $stmtE = $dbE->prepare("SELECT display, grundenergi, keywords FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
         if ($stmtE) {
-            $stmtE->bind_param($types, ...$nums);
+            $stmtE->bind_param($types, ...$relevantDisplays);
             $stmtE->execute();
             $resE = $stmtE->get_result();
             $eavoids = $cfg['avoids'] ?? ['planeter'];
@@ -200,7 +199,7 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
     $systemPrompt .= "- Skriv IKKE 'dit tal er...' eller tekniske forklaringer. Gå direkte til personlighed.\n";
     $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n";
-    $systemPrompt .= "- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n";
+    $systemPrompt .= "- Afspejl energiernes faktiske karakter ærligt. Forsøg IKKE at vende negativt til positivt — hvis en energi er udfordrende, beskriv den som sådan. Nævn gerne både styrker og udfordringer.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
     if (in_array($toneKey, ['professional', 'direct'])) {
         $systemPrompt .= "- BRUG ALDRIG ordene: åndelig, spirituel, sjæl, kosmisk, universet, intuition, energistrøm, mystisk, hellig, guddommelig, indre lys eller lignende. Omskriv ALT sådant til konkrete personligheds- og adfærdstræk.\n";
