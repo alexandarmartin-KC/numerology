@@ -10,6 +10,22 @@ require_once __DIR__ . '/db.php';
 $db = getDB();
 $results = [];
 
+// ─── gratis_beregning: opret tabel hvis den ikke eksisterer ───
+$ok = $db->query("
+    CREATE TABLE IF NOT EXISTS gratis_beregning (
+        id INT PRIMARY KEY,
+        positions TEXT DEFAULT NULL,
+        tone VARCHAR(50) DEFAULT 'warm',
+        length INT DEFAULT 8,
+        focus TEXT DEFAULT NULL,
+        avoids TEXT DEFAULT NULL,
+        customAvoids TEXT DEFAULT NULL,
+        extraInstruction TEXT DEFAULT NULL,
+        teaserText TEXT DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$results['gratis_beregning.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
 // ─── diamant_energies: tilføj manglende kolonner ───
 $cols = [
     'keywords_urent_numeroskop' => "ALTER TABLE diamant_energies ADD COLUMN keywords_urent_numeroskop TEXT DEFAULT NULL AFTER keywords",

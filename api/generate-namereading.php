@@ -111,7 +111,8 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Brug personens fornavn naturligt 1-2 gange.\n";
     $systemPrompt .= "- Grundenergien (top) er kerneenergien — vægt den tungest.\n";
     $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
-    $systemPrompt .= "- Skriv IKKE \"dit tal er...\" eller tekniske forklaringer. Gå direkte til personlighed.\n";
+    $systemPrompt .= "- Skriv IKKE 'dit tal er...' eller tekniske forklaringer. Gå direkte til personlighed.\n";
+    $systemPrompt .= "- NÆVN ALDRIG specifikke tal eller talenergier direkte (fx IKKE: '9', '9'er energi', 'tal 5', '5'eren', 'med din 3'er'). Tallene er baggrundsviden for dig — oversæt dem til menneskelige egenskaber og personlighed.\n";
     $systemPrompt .= "- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
     if ($allAvoids) {
@@ -131,7 +132,8 @@ if (!empty($cfg)) {
     $systemPrompt .= "- Grundenergien (top) er personens kerneenergi — vægt den tungest.\n";
     $systemPrompt .= "- Tonen skal være varm, indsigtsfuld og lidt mystisk.\n";
     $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
-    $systemPrompt .= "- Nævn ALDRIG planeter. Hold fokus på tallenes energi.\n";
+    $systemPrompt .= "- NÆVN ALDRIG specifikke tal eller talenergier direkte (fx IKKE: '9', '9'er energi', 'tal 5', '5'eren', 'med din 3'er'). Tallene er baggrundsviden for dig — oversæt dem til menneskelige egenskaber og personlighed.\n";
+    $systemPrompt .= "- Nævn ALDRIG planeter. Hold fokus på energi og personlighed.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
 }
 
