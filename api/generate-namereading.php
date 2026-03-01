@@ -12,13 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
 // ─── API-nøgle ───
-$_OPENAI_API_KEY = '';
-$apiKey = getenv('OPENAI_API_KEY') ?: '';
-if (!$apiKey) {
-    $envFile = __DIR__ . '/.env.php';
-    if (file_exists($envFile)) include $envFile;
-    $apiKey = $_OPENAI_API_KEY ?? '';
-}
+// db.php har allerede inkluderet .env.php, så $_OPENAI_API_KEY er sat
+$apiKey = getenv('OPENAI_API_KEY') ?: ($_OPENAI_API_KEY ?? '');
 if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
 
 // ─── Input ───

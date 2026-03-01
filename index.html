@@ -1328,7 +1328,7 @@
           let errBody = '';
           try { errBody = await resp.text(); } catch(_) {}
           console.error('generate-namereading fejl', resp.status, errBody);
-          throw new Error('Server fejl ' + resp.status + ': ' + errBody.slice(0, 200));
+          throw new Error('Server fejl ' + resp.status + ': ' + errBody.slice(0, 800));
         }
         const data = await resp.json();
 
