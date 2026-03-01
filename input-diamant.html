@@ -176,6 +176,19 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
 
+// ─── Admin Key ───
+function getAdminKey() {
+  let key = localStorage.getItem('adminApiKey') || '';
+  if (!key) {
+    key = prompt('Indtast admin API-nøgle (sættes én gang):') || '';
+    if (key) localStorage.setItem('adminApiKey', key);
+  }
+  return key;
+}
+function adminHeaders(extra) {
+  return Object.assign({ 'X-Admin-Key': getAdminKey() }, extra || {});
+}
+
 // ─── State ───
 let originalData = null;   // from JSON file
 let editedData = null;     // merged (original + localStorage overrides)
@@ -298,9 +311,9 @@ async function init() {
   try {
     console.log('[DB] Henter data fra server...');
     const [eRes, pRes, rRes] = await Promise.all([
-      fetch('/api/save-diamant.php?type=energies'),
-      fetch('/api/save-diamant.php?type=positions'),
-      fetch('/api/save-diamant.php?type=rules')
+      fetch('/api/save-diamant.php?type=energies',  { headers: adminHeaders() }),
+      fetch('/api/save-diamant.php?type=positions', { headers: adminHeaders() }),
+      fetch('/api/save-diamant.php?type=rules',     { headers: adminHeaders() })
     ]);
 
     // ─── Energier ───
@@ -783,7 +796,7 @@ function dbSave(type, getData) {
       console.log('[DB] Gemmer', type, '–', Array.isArray(payload) ? payload.length + ' rækker' : 'data');
       const res = await fetch('/api/save-diamant.php?type=' + type, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify(payload)))) })
       });
       const txt = await res.text();

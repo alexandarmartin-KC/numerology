@@ -14,6 +14,7 @@ function ef(array $e, string $key, string $default = ''): string {
 
 // ─── GET ───
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    requireAdminKey();
     if ($type === 'energies') {
         $res = $db->query('
             SELECT id, display, label, reduced,
