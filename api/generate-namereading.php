@@ -91,7 +91,7 @@ if (!empty($relevantDisplays)) {
         $dbE  = getDB();
         $ph   = implode(',', array_fill(0, count($relevantDisplays), '?'));
         $types = str_repeat('s', count($relevantDisplays));
-        $stmtE = $dbE->prepare("SELECT display, grundenergi, beskrivelse, keywords, keywords_urent_numeroskop, ubalanceret_keywords FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
+        $stmtE = $dbE->prepare("SELECT display, grundenergi, beskrivelse, keywords, keywords_urent_numeroskop, ubalanceret_keywords, helheds_funktion FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
         if ($stmtE) {
             $stmtE->bind_param($types, ...$relevantDisplays);
             $stmtE->execute();
@@ -100,13 +100,28 @@ if (!empty($relevantDisplays)) {
             $ecustom = $cfg['customAvoids'] ?? [];
             $etone = $cfg['tone'] ?? 'warm';
             while ($erow = $resE->fetch_assoc()) {
-                // Grundtal (1-9) bruger grundenergi; sammensatte tal (12/3 osv.) bruger beskrivelse
-                $mainText = $erow['grundenergi'] ?: $erow['beskrivelse'];
-                // Keywords: brug ubalancerede keywords hvis almindelige mangler (typisk for sammensatte tal)
-                $kw = $erow['keywords'] ?: ($erow['keywords_urent_numeroskop'] ?: $erow['ubalanceret_keywords']);
+                $isCompound = str_contains($erow['display'], '/');
+
+                // Grundtal (1-9) bruger grundenergi; sammensatte tal bruger beskrivelse
+                $mainText = $isCompound
+                    ? ($erow['beskrivelse'] ?: $erow['grundenergi'])
+                    : ($erow['grundenergi'] ?: $erow['beskrivelse']);
+
+                // Keywords: positive først, ellers ubalancerede
+                $kw = $erow['keywords'] ?: $erow['keywords_urent_numeroskop'];
+
+                // Ubalanceret beskrivelse (opmærksomhedspunkt)
+                $ubalance = $erow['ubalanceret_keywords'] ?? '';
+
+                // Helhedsfunktion
+                $helhed = $erow['helheds_funktion'] ?? '';
+
                 $energyDescriptions .= "\n--- Energi {$erow['display']} ---\n";
                 if ($mainText) $energyDescriptions .= 'Beskrivelse: ' . cleanEnergyText($mainText, $eavoids, $ecustom, $etone) . "\n";
                 if ($kw)       $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($kw,       $eavoids, $ecustom, $etone) . "\n";
+                if ($ubalance && $ubalance !== $mainText)
+                               $energyDescriptions .= 'Udfordrende aspekter: ' . cleanEnergyText($ubalance, $eavoids, $ecustom, $etone) . "\n";
+                if ($helhed)   $energyDescriptions .= 'Helhedsfunktion: '  . cleanEnergyText($helhed,   $eavoids, $ecustom, $etone) . "\n";
             }
             $stmtE->close();
         }
