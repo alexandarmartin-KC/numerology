@@ -30,18 +30,10 @@ if (!$firstName || !$nameData) {
 $cfg = [];
 try {
     $db  = getDB();
-    $res = $db->query('SELECT * FROM gratis_beregning WHERE id = 1');
+    $res = $db->query('SELECT customPrompt FROM gratis_beregning WHERE id = 1');
     if ($res && $res->num_rows > 0) {
         $row = $res->fetch_assoc();
-        $cfg = [
-            'positions'        => json_decode($row['positions']    ?? '[]', true) ?: [],
-            'tone'             => $row['tone']             ?? 'warm',
-            'length'           => (int)($row['length']     ?? 8),
-            'focus'            => json_decode($row['focus']        ?? '[]', true) ?: [],
-            'avoids'           => json_decode($row['avoids']       ?? '[]', true) ?: [],
-            'customAvoids'     => json_decode($row['customAvoids'] ?? '[]', true) ?: [],
-            'extraInstruction' => $row['extraInstruction'] ?? '',
-        ];
+        $cfg = ['customPrompt' => $row['customPrompt'] ?? ''];
     }
 } catch (Throwable $e) { /* tabel eksisterer måske ikke endnu — fortsæt med fallback */ }
 
@@ -96,9 +88,9 @@ if (!empty($relevantDisplays)) {
             $stmtE->bind_param($types, ...$relevantDisplays);
             $stmtE->execute();
             $resE = $stmtE->get_result();
-            $eavoids = $cfg['avoids'] ?? ['planeter'];
-            $ecustom = $cfg['customAvoids'] ?? [];
-            $etone = $cfg['tone'] ?? 'warm';
+            $eavoids = [];
+            $ecustom = [];
+            $etone   = 'warm';
             while ($erow = $resE->fetch_assoc()) {
                 $isCompound = str_contains($erow['display'], '/');
 
@@ -128,142 +120,31 @@ if (!empty($relevantDisplays)) {
     } catch (Throwable $e) { /* energier utilgængelige — GPT bruger egne viden */ }
 }
 
-// ─── Label-tabeller ───
-$TONE_LABELS = [
-    'warm'         => 'Varm, indsigtsfuld og lidt poetisk — som om du kender personen personligt',
-    'mystical'     => 'Mystisk og poetisk — brug billeder, symbolik og dybde',
-    'direct'       => 'Direkte og konkret — hold det kortfattet og faktuelt, ingen blomstrende sprog',
-    'motivational' => 'Motiverende og opløftende — fokuser på muligheder og styrker, inspirer til handling',
-    'professional' => 'Professionel og saglig — neutral eksperttone, ingen mystik, ingen åndelighed, ingen poetiske vendinger',
-];
+// ─── Byg systemprompt fra customPrompt ───
+$lo = 8; $hi = 10;
+$temperature = 0.75;
 
-// Tone-specifikke ekstra regler
-$TONE_RULES = [
-    'warm'         => [],
-    'mystical'     => ['Brug gerne poetiske billeder og symbolik.'],
-    'direct'       => ['Ingen blomstrende eller poetiske vendinger.', 'Ingen mystiske eller åndelige referencer overhovedet.'],
-    'motivational' => ['Fokuser på handlingsorienteret sprog.', 'Undgå det negative — vend det til muligheder.'],
-    'professional' => [
-        'Ingen mystiske, åndelige eller poetiske vendinger overhovedet.',
-        'Ingen referencer til intuition, sjæl, ånd, universet, energistrømme eller lignende.',
-        'Skriv som en faglig karriere- eller personlighedsrådgiver — ikke som en spirituel guide.',
-        'Hold sproget neutralt og jordnært.',
-    ],
-];
-$FOCUS_LABELS = [
-    'personlighed'  => 'Personlighed & kerneenergi',
-    'styrker'       => 'Styrker & talenter',
-    'udfordringer'  => 'Udfordringer & skyggesider',
-    'relationer'    => 'Relationer & kærlighed',
-    'karriere'      => 'Karriere & livsretning',
-    'spiritualitet' => 'Spiritualitet & indre vækst',
-    'samspil'       => 'Samspil mellem tallene',
-];
-$AVOID_LABELS = [
-    'planeter'       => 'Planeter (Sol, Saturn osv.)',
-    'horoskop'       => 'Horoskop / stjernetegn',
-    'teknisk'        => 'Tekniske beregningsforklaringer',
-    'deterministisk' => 'Deterministiske udsagn',
-    'negativt'       => 'Stærkt negativt sprog',
-];
-$POSITION_LABELS = [
-    'grundenergi'  => 'Grundenergi (top)',
-    'livslinje'    => 'Livslinje',
-    'bundtal'      => 'Bundtal',
-    'aura'         => 'Aura (4 hjørner)',
-    'hjertecenter' => 'Hjertecenter',
-    'solarplexus'  => 'Solarplexus',
-    'rygraden'     => 'Rygraden',
-    'soejletal'    => 'Søjletal',
-];
-
-// ─── Byg systemprompt fra DB-konfiguration ───
-if (!empty($cfg)) {
-    $lo          = $cfg['length'];
-    $hi          = min($lo + 2, 16);
-    $toneKey     = $cfg['tone'] ?? 'warm';
-    $tone        = $TONE_LABELS[$toneKey] ?? $TONE_LABELS['warm'];
-    $toneRules   = $TONE_RULES[$toneKey] ?? [];
-    $posLabels   = array_values(array_filter(array_map(fn($id) => $POSITION_LABELS[$id] ?? null, $cfg['positions'])));
-    $focusLabels = array_values(array_filter(array_map(fn($id) => $FOCUS_LABELS[$id]    ?? null, $cfg['focus'])));
-    $avoidLabels = array_values(array_filter(array_map(fn($id) => $AVOID_LABELS[$id]    ?? null, $cfg['avoids'])));
-    $allAvoids   = array_merge($avoidLabels, $cfg['customAvoids'] ?? []);
-
-    // Temperature afhænger af tone: strenge toner = lavere kreativitet
-    $temperature = match($toneKey) {
-        'professional' => 0.4,
-        'direct'       => 0.5,
-        'motivational' => 0.6,
-        'warm'         => 0.75,
-        'mystical'     => 0.85,
-        default        => 0.7,
-    };
-
-    $systemPrompt  = "Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk.\n\n";
-    if ($posLabels) {
-        $systemPrompt .= "DIAMANTPOSITIONER DU MODTAGER:\n";
-        foreach ($posLabels as $l) $systemPrompt .= "- $l\n";
-        $systemPrompt .= "\n";
-    }
-    $systemPrompt .= "TONE: {$tone}\n\n";
-    $systemPrompt .= "LAENGDE: Skriv præcis {$lo}–{$hi} sætninger i ét samlet afsnit.\n\n";
-    if ($focusLabels) {
-        $systemPrompt .= "FOKUS — skriv KUN om disse emner, intet andet:\n";
-        foreach ($focusLabels as $l) $systemPrompt .= "- $l\n";
-        $systemPrompt .= "\n";
-    }
-    $systemPrompt .= "REGLER:\n";
-    $systemPrompt .= "- Brug personens fornavn naturligt 1-2 gange.\n";
-    $systemPrompt .= "- Grundenergien (top) er kerneenergien — vægt den tungest.\n";
-    $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
-    $systemPrompt .= "- Skriv IKKE 'dit tal er...' eller tekniske forklaringer. Gå direkte til personlighed.\n";
-    $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n";
-    $systemPrompt .= "- Vær ærlig og balanceret. Skriv IKKE udelukkende positivt — folk med udfordrende energier skal kunne genkende sig selv i teksten. Præsenter udfordringer som opmærksomhedspunkter: mønstre personen kan blive bevidst om og arbejde med, ikke som dom eller skæbne. Tag ikke håbet fra folk, men skjul heller ikke virkeligheden.\n";
-    $systemPrompt .= "- NÆVN ALDRIG positionsnavne i teksten (fx 'din livslinje', 'bundtallet', 'solarplexus', 'rygraden', 'auraen', 'hjertecenteret', 'søjletallet'). Oversæt energierne til personlighedstræk uden at afsløre hvilken position de kommer fra.\n";
-    $systemPrompt .= "- Skriv som én sammenhængende personlig fortælling — ikke som en rapport der gennemgår position for position.\n";
-    $systemPrompt .= "- UNDGÅ generiske vendinger som 'stærk kerneenergi', 'naturlig evne til at skabe harmoni', 'magnetisk tiltrækning', 'prioriterer nære relationer' og lignende klichéer der kunne passe på hvem som helst. Brug konkrete, specifikke formuleringer der afspejler DENNE persons unikke kombination af energier.\n";
-    $systemPrompt .= "- Lad de øvrige positioners nuancer (livslinje, bundtal, solarplexus osv.) aktivt farve og modificere grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde tydeligt forskelligt.\n";
-    $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
-    if (in_array($toneKey, ['professional', 'direct'])) {
-        $systemPrompt .= "- BRUG ALDRIG ordene: åndelig, spirituel, sjæl, kosmisk, universet, intuition, energistrøm, mystisk, hellig, guddommelig, indre lys eller lignende. Omskriv ALT sådant til konkrete personligheds- og adfærdstræk.\n";
-    }
-    foreach ($toneRules as $rule) {
-        $systemPrompt .= "- {$rule}\n";
-    }
-    if ($allAvoids) {
-        $systemPrompt .= "\nUNDGAA (nævn ALDRIG):\n";
-        foreach ($allAvoids as $a) $systemPrompt .= "- $a\n";
-    }
-    if (!empty($cfg['extraInstruction'])) {
-        $systemPrompt .= "\nEKSTRA INSTRUKTION:\n{$cfg['extraInstruction']}\n";
-    }
+if (!empty($cfg['customPrompt'])) {
+    $systemPrompt = $cfg['customPrompt'];
 } else {
-    // Fallback hvis ingen DB-konfiguration endnu
-    $lo = 8; $hi = 10;
     $systemPrompt  = "Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons numerologiske diamant.\n\n";
     $systemPrompt .= "REGLER:\n";
-    $systemPrompt .= "- Skriv præcis 8-10 korte, personlige sætninger i ét samlet afsnit.\n";
+    $systemPrompt .= "- Skriv præcis 8–10 sætninger i ét samlet afsnit.\n";
     $systemPrompt .= "- Brug personens fornavn naturligt 1-2 gange.\n";
-    $systemPrompt .= "- Grundenergien (top) er personens kerneenergi — vægt den tungest.\n";
-    $systemPrompt .= "- Tonen skal være varm, indsigtsfuld og lidt mystisk.\n";
+    $systemPrompt .= "- Grundenergien (top) er kerneenergien — vægt den tungest.\n";
+    $systemPrompt .= "- Lad de øvrige energiers nuancer aktivt farve grundenergi-beskrivelsen.\n";
     $systemPrompt .= "- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n";
-    $systemPrompt .= "- NÆVN ALDRIG specifikke tal eller talenergier direkte (fx IKKE: '9', '9'er energi', 'tal 5', '5'eren', 'med din 3'er'). Tallene er baggrundsviden for dig — oversæt dem til menneskelige egenskaber og personlighed.\n";
-    $systemPrompt .= "- Nævn ALDRIG planeter. Hold fokus på energi og personlighed.\n";
+    $systemPrompt .= "- NÆVN ALDRIG specifikke tal direkte. Oversæt tallene til menneskelige egenskaber.\n";
+    $systemPrompt .= "- NÆVN ALDRIG positionsnavne (livslinje, bundtal, solarplexus, rygraden, auraen, hjertecenteret).\n";
+    $systemPrompt .= "- Skriv som én sammenhængende personlig fortælling — ikke en rapport.\n";
+    $systemPrompt .= "- Vær ærlig og balanceret. Præsenter udfordringer som opmærksomhedspunkter.\n";
+    $systemPrompt .= "- UNDGÅ generiske klichéer. Brug konkrete formuleringer der afspejler denne persons unikke kombination.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
-}
-
-// Tone-specifik instruktion om brug af energividen
-$toneKeyForEnergy = $toneKey ?? 'warm';
-if ($toneKeyForEnergy === 'professional') {
-    $energyUseNote = "\n\nVIGTIGT OM VIDENBASEN OVENFOR: Brug KUN konkrete personligheds- og adfærdstræk derfra. Ignorer FULDSTÆNDIGT al spirituel, åndelig, mystisk eller kosmisk sprogbrug — omskriv det til neutrale, jordnære personlighedsbeskrivelser. Nævn aldrig: sjæl, universet, intuition, energistrømme, åndelighed, spiritualitet, kosmisk, det høje selv, eller lignende.";
-} elseif ($toneKeyForEnergy === 'direct') {
-    $energyUseNote = "\n\nVIGTIGT OM VIDENBASEN OVENFOR: Brug kun konkrete personligheds- og adfærdstræk. Ingen spirituel eller poetisk sprogbrug — oversæt alt til neutrale beskrivelser.";
-} else {
-    $energyUseNote = '';
 }
 
 $systemPrompt .= "\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
-$systemPrompt .= $energyUseNote;
+
+
 $userPrompt    = "Personen hedder {$firstName}.\n\n{$nameData}\n\nSkriv en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).";
 
 // Brug tone-baseret temperature, fallback 0.7

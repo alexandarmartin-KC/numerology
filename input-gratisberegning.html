@@ -67,465 +67,125 @@
       <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
     </div>
 
-    <p class="text-muted mb-4">Konfigurer den gratis beregning på forsiden — bestem hvilke data der skal sendes, tone, længde, fokusområder og ekstra instruktion til AI-motoren.</p>
+    <p class="text-muted mb-4">Skriv den systemprompt der sendes til GPT når en bruger beregner sin gratis diamant. Energibeskrivelserne fra databasen tilføjes automatisk til sidst i prompten.</p>
 
-    <!-- ─── Diamantpositioner ─── -->
+    <!-- ─── Systemprompt ─── -->
     <div class="card mb-4">
       <div class="card-body">
-        <label class="form-label fw-bold">Diamantpositioner at inkludere</label>
-        <p class="hint mb-2">Vælg hvilke dele af diamanten den gratis beregning må bruge. Færre positioner = kortere, mere fokuseret resultat.</p>
-        <div id="positionsContainer" class="d-flex flex-wrap gap-1"></div>
+        <label for="customPrompt" class="form-label fw-bold">Systemprompt til GPT</label>
+        <p class="hint mb-2">Dit direkte instruktionsbrev til AI. Skriv regler, tone og format herinde. Energibeskrivelserne fra DB tilføjes automatisk bagefter.</p>
+        <textarea id="customPrompt" class="form-control font-monospace" rows="22" placeholder="Skriv systemprompt her..."></textarea>
       </div>
     </div>
 
-    <!-- ─── Tone & stil ─── -->
+    <!-- ─── Teaser tekst ─── -->
     <div class="card mb-4">
       <div class="card-body">
-        <label class="form-label fw-bold">Tone & stil</label>
-        <p class="hint mb-2">Vælg den overordnede tone for den gratis beregning.</p>
-        <select id="toneSelect" class="form-select form-select-sm" style="max-width: 340px;">
-          <option value="warm">Varm & indsigtsfuld</option>
-          <option value="mystical">Mystisk & poetisk</option>
-          <option value="direct">Direkte & konkret</option>
-          <option value="motivational">Motiverende & opløftende</option>
-          <option value="professional">Professionel & saglig (ingen åndelighed)</option>
-        </select>
+        <label for="teaserText" class="form-label fw-bold">Teaser-tekst under beregningen</label>
+        <p class="hint mb-2">Vises mens brugeren venter på AI-svaret. Kan indeholde HTML.</p>
+        <textarea id="teaserText" class="form-control" rows="4" placeholder="Fx: &lt;strong&gt;Din diamant fortæller...&lt;/strong&gt;"></textarea>
       </div>
     </div>
 
-    <!-- ─── Længde ─── -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Længde (antal sætninger)</label>
-        <p class="hint mb-2">Hvor mange sætninger AI-motoren skal skrive. Færre sætninger giver en hurtigere, mere teasende oplevelse.</p>
-        <div class="d-flex align-items-center gap-3">
-          <input type="range" id="lengthRange" class="form-range" min="4" max="16" step="1" value="8" style="max-width: 260px;">
-          <span id="lengthLabel" class="badge bg-primary" style="min-width: 80px; font-size: 13px;">8–10</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Fokusområder ─── -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Fokusområder</label>
-        <p class="hint mb-2">Hvad skal den gratis beregning primært handle om? Vælg ét eller flere.</p>
-        <div id="focusContainer" class="d-flex flex-wrap gap-1"></div>
-      </div>
-    </div>
-
-    <!-- ─── Ting der skal undgås ─── -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Undgå</label>
-        <p class="hint mb-2">Emner eller elementer motoren IKKE må nævne.</p>
-        <div id="avoidContainer" class="d-flex flex-wrap gap-1"></div>
-        <div class="mt-2">
-          <input type="text" id="customAvoidInput" class="form-control form-control-sm" placeholder="Tilføj eget punkt og tryk Enter" style="max-width: 340px;">
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Ekstra instruktion ─── -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Ekstra instruktion til motoren</label>
-        <p class="hint mb-2">Fritekst der tilføjes til AI-systemprompten. Brug dette til specifikke krav der ikke dækkes af ovenstående.</p>
-        <textarea id="extraInstruction" class="form-control" rows="5" placeholder="Fx: Nævn altid grundenergien først. Afslut med en sætning der frister til at købe den fulde rapport. Brug personens fornavn 2 gange." style="font-size: 13px;"></textarea>
-      </div>
-    </div>
-
-    <!-- ─── CTA-tekst ─── -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Teaser-tekst under beregningen</label>
-        <p class="hint mb-2">Teksten der vises under den gratis analyse for at konvertere til betaling. Lad være blank for standard.</p>
-        <textarea id="teaserText" class="form-control" rows="3" placeholder="Fx: Dette er blot en forsmag på din fulde numerologiske profil. Den komplette analyse afslører dybere mønstre i din livsvej..." style="font-size: 13px;"></textarea>
-      </div>
-    </div>
-
-    <!-- ─── Forhåndsvisning af systemprompt ─── -->
+    <!-- ─── Preview ─── -->
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-2">
-          <label class="form-label fw-bold mb-0">Forhåndsvisning af systemprompt</label>
-          <button class="btn btn-outline-secondary btn-sm" id="togglePreview">Vis / skjul</button>
+          <span class="fw-bold">Preview</span>
+          <button id="togglePreview" class="btn btn-sm btn-outline-secondary">Vis / skjul</button>
         </div>
-        <p class="hint mb-2">Sådan ser den endelige systemprompt ud der sendes til GPT — baseret på dine valg ovenfor.</p>
-        <div id="previewBox" class="preview-box p-3 d-none"></div>
+        <div id="previewBox" class="d-none preview-box p-3"></div>
       </div>
     </div>
+
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmKMQJMSHNFGqaJnBGTQniw/mUj" crossorigin="anonymous"></script>
   <script>
+    // ─── Hjælpefunktioner ───
+    function getAdminKey() { return localStorage.getItem('adminApiKey') || ''; }
+    function adminHeaders() { return { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() }; }
 
-// ─── Admin key ───
-function getAdminKey() {
-  let key = localStorage.getItem('adminApiKey') || '';
-  if (!key) {
-    key = prompt('Indtast admin API-nøgle (lad blank og tryk OK hvis ingen nøgle er sat):') || '';
-    if (key) localStorage.setItem('adminApiKey', key);
-  }
-  return key;
-}
-function adminHeaders(extra) {
-  return Object.assign({ 'X-Admin-Key': getAdminKey() }, extra || {});
-}
+    function flash(el, ok) {
+      el.classList.remove('bg-success', 'bg-danger', 'show');
+      void el.offsetWidth;
+      el.classList.add(ok ? 'bg-success' : 'bg-danger', 'show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
 
-// ─── Constants ───
+    // ─── Gem til DB (debounced) ───
+    let _saveTimer = null;
+    const saveIndicator = document.getElementById('saveIndicator');
 
-const STORAGE_KEY = 'gratisBeregningConfig';
+    function scheduleSave() {
+      clearTimeout(_saveTimer);
+      _saveTimer = setTimeout(doSave, 800);
+    }
 
-const DIAMOND_POSITIONS = [
-  { id: 'grundenergi',   label: 'Grundenergi (top)',   default: true },
-  { id: 'livslinje',     label: 'Livslinje',           default: true },
-  { id: 'bundtal',       label: 'Bundtal',             default: true },
-  { id: 'aura',          label: 'Aura (4 hjørner)',    default: false },
-  { id: 'hjertecenter',  label: 'Hjertecenter',        default: false },
-  { id: 'solarplexus',   label: 'Solarplexus',         default: false },
-  { id: 'rygraden',      label: 'Rygraden',            default: false },
-  { id: 'soejletal',     label: 'Søjletal',            default: false }
-];
-
-const FOCUS_OPTIONS = [
-  { id: 'personlighed',   label: 'Personlighed & kerneenergi' },
-  { id: 'styrker',        label: 'Styrker & talenter' },
-  { id: 'udfordringer',   label: 'Udfordringer & skyggesider' },
-  { id: 'relationer',     label: 'Relationer & kærlighed' },
-  { id: 'karriere',       label: 'Karriere & livsretning' },
-  { id: 'spiritualitet',  label: 'Spiritualitet & indre vækst' },
-  { id: 'samspil',        label: 'Samspil mellem tallene' }
-];
-
-const DEFAULT_AVOIDS = [
-  { id: 'planeter',     label: 'Planeter (Sol, Saturn osv.)' },
-  { id: 'horoskop',     label: 'Horoskop / stjernetegn' },
-  { id: 'teknisk',      label: 'Tekniske beregningsforklaringer' },
-  { id: 'deterministisk', label: 'Deterministiske udsagn' },
-  { id: 'negativt',     label: 'Stærkt negativt sprog' }
-];
-
-const TONE_LABELS = {
-  warm:         'Varm, indsigtsfuld og lidt poetisk — som om du kender personen personligt',
-  mystical:     'Mystisk og poetisk — brug billeder, symbolik og dybde',
-  direct:       'Direkte og konkret — hold det kortfattet og faktuelt, ingen blomstrende sprog',
-  motivational: 'Motiverende og opløftende — fokuser på muligheder og styrker, inspirer til handling',
-  professional: 'Professionel og saglig — neutral eksperttone, ingen mystik, ingen åndelighed, ingen poetiske vendinger',
-};
-
-const TONE_RULES = {
-  warm:         [],
-  mystical:     ['Brug gerne poetiske billeder og symbolik.'],
-  direct:       ['Ingen blomstrende eller poetiske vendinger.', 'Ingen mystiske eller åndelige referencer overhovedet.'],
-  motivational: ['Fokuser på handlingsorienteret sprog.', 'Undgå det negative — vend det til muligheder.'],
-  professional: [
-    'Ingen mystiske, åndelige eller poetiske vendinger overhovedet.',
-    'Ingen referencer til intuition, sjæl, ånd, universet, energistrømme eller lignende.',
-    'Skriv som en faglig karriere- eller personlighedsrådgiver — ikke som en spirituel guide.',
-    'Hold sproget neutralt og jordnært.',
-  ],
-};
-
-const TEMPERATURE_NOTE = {
-  warm:         '(temperature: 0.75)',
-  mystical:     '(temperature: 0.85)',
-  direct:       '(temperature: 0.50)',
-  motivational: '(temperature: 0.60)',
-  professional: '(temperature: 0.40)',
-};
-
-// ─── State ───
-
-function loadConfig() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultConfig();
-  } catch { return defaultConfig(); }
-}
-
-function defaultConfig() {
-  return {
-    positions: DIAMOND_POSITIONS.filter(p => p.default).map(p => p.id),
-    tone: 'warm',
-    length: 8,
-    focus: ['personlighed'],
-    avoids: ['planeter'],
-    customAvoids: [],
-    extraInstruction: '',
-    teaserText: ''
-  };
-}
-
-function saveConfig(config) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  flash();
-  updatePreview(config);
-  dbSaveGratis(config);
-}
-
-let _dbTimer;
-function _dbToast(msg) {
-  let el = document.getElementById('_dbErrToast');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = '_dbErrToast';
-    el.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#c0392b;color:#fff;padding:10px 16px;border-radius:6px;z-index:9999;font-size:14px;max-width:400px;word-break:break-all;';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.style.display = 'block';
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.style.display = 'none', 6000);
-}
-function dbSaveGratis(config) {
-  clearTimeout(_dbTimer);
-  _dbTimer = setTimeout(async () => {
-    try {
-      const res = await fetch('/api/save-gratisberegning.php', {
-        method: 'POST',
-        headers: adminHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify(config)))) })
-      });
-      if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
-    } catch (e) { _dbToast('DB gem fejl: ' + e.message); }
-  }, 800);
-}
-
-function flash() {
-  const el = document.getElementById('saveIndicator');
-  el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 1500);
-}
-
-// ─── Render badge toggles ───
-
-function renderBadges(containerId, items, selectedIds, onToggle) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  items.forEach(item => {
-    const active = selectedIds.includes(item.id);
-    const label = document.createElement('label');
-    label.className = `badge source-badge ${active ? 'bg-primary' : 'bg-light text-dark border'}`;
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = active;
-    cb.addEventListener('change', () => onToggle(item.id, cb.checked));
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(' ' + item.label));
-    container.appendChild(label);
-  });
-}
-
-// ─── Length slider ───
-
-function updateLengthLabel(val) {
-  const lo = parseInt(val);
-  const hi = Math.min(lo + 2, 16);
-  document.getElementById('lengthLabel').textContent = `${lo}–${hi}`;
-}
-
-// ─── Preview ───
-
-function buildSystemPrompt(config) {
-  const toneKey  = config.tone || 'warm';
-  const toneText = TONE_LABELS[toneKey] || TONE_LABELS.warm;
-  const toneRules = TONE_RULES[toneKey] || [];
-  const tempNote  = TEMPERATURE_NOTE[toneKey] || '';
-  const lo = config.length;
-  const hi = Math.min(lo + 2, 16);
-
-  const posLabels = DIAMOND_POSITIONS
-    .filter(p => config.positions.includes(p.id))
-    .map(p => p.label);
-
-  const focusLabels = FOCUS_OPTIONS
-    .filter(f => config.focus.includes(f.id))
-    .map(f => f.label);
-
-  const allAvoids = [
-    ...DEFAULT_AVOIDS.filter(a => config.avoids.includes(a.id)).map(a => a.label),
-    ...(config.customAvoids || [])
-  ];
-
-  let prompt = `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk.\n\n`;
-
-  if (posLabels.length) {
-    prompt += `DIAMANTPOSITIONER DU MODTAGER:\n`;
-    posLabels.forEach(l => { prompt += `- ${l}\n`; });
-    prompt += `\n`;
-  }
-
-  prompt += `TONE: ${toneText}\n\n`;
-  prompt += `LAENGDE: Skriv præcis ${lo}–${hi} sætninger i ét samlet afsnit.\n\n`;
-
-  if (focusLabels.length) {
-    prompt += `FOKUS — skriv KUN om disse emner, intet andet:\n`;
-    focusLabels.forEach(l => { prompt += `- ${l}\n`; });
-    prompt += `\n`;
-  }
-
-  prompt += `REGLER:\n`;
-  prompt += `- Brug personens fornavn naturligt 1-2 gange.\n`;
-  prompt += `- Grundenergien (top) er kerneenergien — vægt den tungest.\n`;
-  prompt += `- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.\n`;
-  prompt += `- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed.\n`;
-  prompt += `- NÆVN ALDRIG specifikke tal direkte (fx IKKE: '9', '9'er energi', '5'eren'). Oversæt tallene til menneskelige egenskaber.\n`;
-  prompt += `- Hold det positivt men ærligt — nævn gerne en mild udfordring.\n`;
-  prompt += `- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n`;
-  toneRules.forEach(r => { prompt += `- ${r}\n`; });
-
-  if (allAvoids.length) {
-    prompt += `\nUNDGAA (nævn ALDRIG):\n`;
-    allAvoids.forEach(a => { prompt += `- ${a}\n`; });
-  }
-
-  if (config.extraInstruction && config.extraInstruction.trim()) {
-    prompt += `\nEKSTRA INSTRUKTION:\n${config.extraInstruction.trim()}\n`;
-  }
-
-  prompt += `\n— ${tempNote}`;
-  return prompt;
-}
-
-function updatePreview(config) {
-  const box = document.getElementById('previewBox');
-  box.textContent = buildSystemPrompt(config);
-}
-
-// ─── Init ───
-
-let _listenersAttached = false;
-
-function init() {
-  const config = loadConfig();
-
-  if (!_listenersAttached) {
-    _listenersAttached = true;
-
-    // Tone
-    const toneSelect = document.getElementById('toneSelect');
-    toneSelect.addEventListener('change', () => {
-      const c = loadConfig();
-      c.tone = toneSelect.value;
-      saveConfig(c);
-    });
-
-    // Length
-    const lengthRange = document.getElementById('lengthRange');
-    lengthRange.addEventListener('input', () => {
-      const val = parseInt(lengthRange.value);
-      updateLengthLabel(val);
-      const c = loadConfig();
-      c.length = val;
-      saveConfig(c);
-    });
-
-    // Custom avoid input
-    document.getElementById('customAvoidInput').addEventListener('keydown', e => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      const val = e.target.value.trim();
-      if (!val) return;
-      const c = loadConfig();
-      if (!c.customAvoids) c.customAvoids = [];
-      if (!c.customAvoids.includes(val)) {
-        c.customAvoids.push(val);
-        saveConfig(c);
-        renderAvoids();
+    async function doSave() {
+      const payload = {
+        customPrompt: document.getElementById('customPrompt').value,
+        teaserText:   document.getElementById('teaserText').value,
+      };
+      try {
+        const r = await fetch('/api/save-gratisberegning.php', {
+          method: 'POST',
+          headers: adminHeaders(),
+          body: JSON.stringify(payload)
+        });
+        flash(saveIndicator, r.ok);
+      } catch (e) {
+        flash(saveIndicator, false);
       }
-      e.target.value = '';
-    });
+    }
 
-    // Extra instruction
-    const extraEl = document.getElementById('extraInstruction');
-    extraEl.addEventListener('input', () => {
-      const c = loadConfig();
-      c.extraInstruction = extraEl.value;
-      saveConfig(c);
-    });
-
-    // Teaser text
-    const teaserEl = document.getElementById('teaserText');
-    teaserEl.addEventListener('input', () => {
-      const c = loadConfig();
-      c.teaserText = teaserEl.value;
-      saveConfig(c);
-    });
-
-    // Preview toggle
-    const previewBox = document.getElementById('previewBox');
+    // ─── Preview ───
+    let previewVisible = false;
     document.getElementById('togglePreview').addEventListener('click', () => {
-      previewBox.classList.toggle('d-none');
-    });
-  }
-
-  // Always refresh UI values from config
-  document.getElementById('toneSelect').value = config.tone;
-  document.getElementById('lengthRange').value = config.length;
-  updateLengthLabel(config.length);
-  document.getElementById('extraInstruction').value = config.extraInstruction || '';
-  document.getElementById('teaserText').value = config.teaserText || '';
-  renderBadges('positionsContainer', DIAMOND_POSITIONS, config.positions, (id, checked) => {
-    const c = loadConfig();
-    if (checked && !c.positions.includes(id)) c.positions.push(id);
-    if (!checked) c.positions = c.positions.filter(p => p !== id);
-    saveConfig(c);
-    renderBadges('positionsContainer', DIAMOND_POSITIONS, c.positions, arguments.callee);
-  });
-  renderBadges('focusContainer', FOCUS_OPTIONS, config.focus, (id, checked) => {
-    const c = loadConfig();
-    if (checked && !c.focus.includes(id)) c.focus.push(id);
-    if (!checked) c.focus = c.focus.filter(f => f !== id);
-    saveConfig(c);
-    renderBadges('focusContainer', FOCUS_OPTIONS, c.focus, arguments.callee);
-  });
-  renderAvoids();
-  updatePreview(config);
-}
-
-function renderAvoids() {
-  const c = loadConfig();
-  const allItems = [
-    ...DEFAULT_AVOIDS,
-    ...(c.customAvoids || []).map(txt => ({ id: 'custom_' + txt, label: txt }))
-  ];
-  const selectedIds = [
-    ...c.avoids,
-    ...(c.customAvoids || []).map(txt => 'custom_' + txt)
-  ];
-  renderBadges('avoidContainer', allItems, selectedIds, (id, checked) => {
-    const c2 = loadConfig();
-    if (id.startsWith('custom_')) {
-      const txt = id.replace('custom_', '');
-      if (!checked) {
-        c2.customAvoids = (c2.customAvoids || []).filter(a => a !== txt);
+      previewVisible = !previewVisible;
+      const box = document.getElementById('previewBox');
+      if (previewVisible) {
+        box.textContent = document.getElementById('customPrompt').value
+          + '\n\n[...energibeskrivelser fra DB tilføjes her automatisk...]';
+        box.classList.remove('d-none');
+      } else {
+        box.classList.add('d-none');
       }
-    } else {
-      if (checked && !c2.avoids.includes(id)) c2.avoids.push(id);
-      if (!checked) c2.avoids = c2.avoids.filter(a => a !== id);
-    }
-    saveConfig(c2);
-    renderAvoids();
-  });
-}
+    });
 
-init();
+    // ─── Standard prompt (bruges hvis DB er tom) ───
+    const DEFAULT_PROMPT =
+`Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons numerologiske diamant.
 
-// Load fra DB ved opstart
-(async () => {
-  try {
-    const res = await fetch('/api/save-gratisberegning.php');
-    if (!res.ok) return;
-    const d = await res.json();
-    if (d && Object.keys(d).length) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...defaultConfig(), ...d }));
-      // Re-render UI med DB-data
-      init();
-    }
-  } catch (e) { console.warn('DB load fejlede:', e); }
-})();
+TONE: Varm, indsigtsfuld og lidt poetisk — som om du kender personen personligt.
 
+REGLER:
+- Skriv præcis 8–10 sætninger i ét samlet afsnit.
+- Brug personens fornavn naturligt 1-2 gange.
+- Grundenergien (top) er kerneenergien — vægt den tungest.
+- Lad de øvrige energiers nuancer aktivt farve grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde tydeligt forskelligt.
+- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.
+- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed.
+- NÆVN ALDRIG specifikke tal direkte (fx IKKE: "9", "9'er energi", "5'eren"). Oversæt tallene til menneskelige egenskaber.
+- NÆVN ALDRIG positionsnavne i teksten (fx "din livslinje", "bundtallet", "solarplexus", "rygraden", "auraen", "hjertecenteret", "søjletallet"). Oversæt energierne til personlighedstræk.
+- Skriv som én sammenhængende personlig fortælling — ikke som en rapport der gennemgår position for position.
+- Vær ærlig og balanceret. Skriv IKKE udelukkende positivt — folk med udfordrende energier skal kunne genkende sig selv i teksten. Præsenter udfordringer som opmærksomhedspunkter: mønstre personen kan blive bevidst om og arbejde med, ikke som dom eller skæbne.
+- UNDGÅ generiske vendinger som "stærk kerneenergi", "naturlig evne til at skabe harmoni", "magnetisk tiltrækning", "prioriterer nære relationer" og lignende klichéer der kunne passe på hvem som helst. Brug konkrete, specifikke formuleringer der afspejler DENNE persons unikke kombination af energier.
+- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.`;
+
+    // ─── Hent fra DB og fyld felter ───
+    (async () => {
+      try {
+        const r = await fetch('/api/save-gratisberegning.php');
+        const d = await r.json();
+        document.getElementById('customPrompt').value = d.customPrompt || DEFAULT_PROMPT;
+        document.getElementById('teaserText').value   = d.teaserText   || '';
+      } catch (e) {
+        document.getElementById('customPrompt').value = DEFAULT_PROMPT;
+      }
+      document.getElementById('customPrompt').addEventListener('input', scheduleSave);
+      document.getElementById('teaserText').addEventListener('input', scheduleSave);
+    })();
   </script>
 </body>
 </html>

@@ -98,6 +98,15 @@ if ($check && $check->num_rows > 0) {
     $results["gratis_beregning.teaserText"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
 }
 
+// ─── gratis_beregning: tilføj customPrompt ───
+$check = $db->query("SHOW COLUMNS FROM gratis_beregning LIKE 'customPrompt'");
+if ($check && $check->num_rows > 0) {
+    $results["gratis_beregning.customPrompt"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE gratis_beregning ADD COLUMN customPrompt TEXT DEFAULT NULL AFTER id");
+    $results["gratis_beregning.customPrompt"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
 // ─── Vis nuværende kolonner ───
 $colRes = $db->query("SHOW COLUMNS FROM diamant_energies");
 $allCols = [];
