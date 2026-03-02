@@ -69,6 +69,10 @@
 
     <p class="text-muted mb-4">Skriv den systemprompt der sendes til GPT når en bruger beregner sin gratis diamant. Energibeskrivelserne fra databasen tilføjes automatisk til sidst i prompten.</p>
 
+    <div id="migrateWarning" class="alert alert-warning d-none">
+      ⚠️ <strong>DB-kolonnen <code>customPrompt</code> mangler.</strong> Kør <a href="/api/migrate.php" target="_blank">/api/migrate.php</a> og genindlæs siden — ellers bruges en intern fallback-prompt i stedet for din.
+    </div>
+
     <!-- ─── Systemprompt ─── -->
     <div class="card mb-4">
       <div class="card-body">
@@ -213,10 +217,13 @@ REGLER:
       try {
         const r = await fetch('/api/save-gratisberegning.php');
         const d = await r.json();
-        document.getElementById('customPrompt').value = d.customPrompt || DEFAULT_PROMPT;
-        document.getElementById('teaserText').value   = d.teaserText   || '';
+        const hasDbPrompt = d && d.customPrompt;
+        document.getElementById('customPrompt').value = hasDbPrompt ? d.customPrompt : DEFAULT_PROMPT;
+        document.getElementById('teaserText').value   = (d && d.teaserText) ? d.teaserText : '';
+        if (!hasDbPrompt) document.getElementById('migrateWarning').classList.remove('d-none');
       } catch (e) {
         document.getElementById('customPrompt').value = DEFAULT_PROMPT;
+        document.getElementById('migrateWarning').classList.remove('d-none');
       }
       document.getElementById('customPrompt').addEventListener('input', scheduleSave);
       document.getElementById('teaserText').addEventListener('input', scheduleSave);
