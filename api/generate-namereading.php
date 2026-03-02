@@ -70,6 +70,9 @@ function cleanEnergyText(string $text, array $avoids, array $customAvoids, strin
     if (in_array($tone, ['professional', 'direct'])) {
         $spiritual = 'åndelig\w*|spirituel\w*|sjæl\w*|kosmisk\w*|universet|intuition\w*|energistrøm\w*|nærvær\w*|det høje selv|indre lys|højere bevidsthed|hellig\w*|mystisk\w*|mystik\w*|poet\w*|guddommelig\w*';
         $t = preg_replace('/\b(' . $spiritual . ')\b/iu', '', $t);
+        // Rens også forbudte generiske klichéer ud af energibeskrivelserne
+        $banned = 'viljestyrke|handlekraft|beslutsomhed|naturlig leder|naturlig evne|medfødt evne|går foran|gøre en forskel|positive forandringer|karisma\w*|magnetisk tiltrækning|magnetisk udstråling|udstråling|tiltrækningskraft|skaber harmoni|dybe relationer|kærligt hjerte|æstetisk sans|livsrejse|fascinerende dybde|stort potentiale|indre ro|kunstnerisk sans|lederegenskaber';
+        $t = preg_replace('/\b(' . $banned . ')\b/iu', '', $t);
     }
     $t = preg_replace('/\n{3,}/', "\n\n", $t);
     $t = preg_replace('/  +/', ' ', $t);
@@ -120,85 +123,136 @@ if (!empty($relevantDisplays)) {
     } catch (Throwable $e) { /* energier utilgængelige — GPT bruger egne viden */ }
 }
 
+// ─── Masker forbudte ord i energibeskrivelserne inden de sendes til GPT ───
+function maskBannedWords(string $text): string {
+    $banned = [
+        'viljestyrke','handlekraft','beslutsomhed','naturlig leder','naturlig evne',
+        'medfødt evne','går foran','gøre en forskel','positive forandringer',
+        'karismatisk','magnetisk tiltrækning','magnetisk udstråling','magnetisk',
+        'udstråling','tiltrækningskraft','charme','selvtillid',
+        'skaber harmoni','dybe relationer','kærligt hjerte','æstetisk sans',
+        'livsrejse','fascinerende dybde','stort potentiale','dybere mening',
+        'indre ro','kunstnerisk sans','lederegenskaber','harmoniskaber',
+        'karisma','harmoni','skønhed',
+    ];
+    foreach ($banned as $word) {
+        $esc = preg_quote($word, '/');
+        $text = preg_replace('/\b' . $esc . '\b/iu', '[...]', $text);
+    }
+    return $text;
+}
+
+// ─── Validator: tjek om output indeholder forbudte ord eller tal ───
+function containsBannedContent(string $text): bool {
+    $banned = [
+        'viljestyrk','handlekraft','beslutsomhed','naturlig leder','naturlig evne',
+        'medfødt evne','går foran','gøre en forskel','karisma','magnetisk',
+        'udstråling','tiltrækk','charme','selvtillid','skaber harmoni',
+        'dybe relation','kærligt hjerte','æstetisk sans','livsrejse','skæbne',
+        'forudbestemt','dybere mening','fascinerende dybde','stort potentiale',
+        'indre ro','finde balance','finde ro','kunstnerisk','åndelig','spirituel',
+        'kosmisk','universet','intuition','mystik','healing','heale','indre lys',
+        'energistrøm','harmoni','stærk vilje',
+    ];
+    foreach ($banned as $word) {
+        if (mb_stripos($text, $word) !== false) return true;
+    }
+    // Tjek for tal/cifre i teksten (undtagen årstal der evt. er en del af sætninger)
+    if (preg_match('/\b\d+\/\d+\b/', $text)) return true;
+    return false;
+}
+
 // ─── Byg systemprompt fra customPrompt ───
 $lo = 8; $hi = 10;
-$temperature = 0.75;
+$temperature = 0.3;
 
 if (!empty($cfg['customPrompt'])) {
     $systemPrompt = $cfg['customPrompt'];
 } else {
-    // Fallback-prompt med fulde regler (bruges når DB-kolonnen mangler eller er tom)
-    $systemPrompt  = "Du er en erfaren numerolog med psykologisk indsigt. Du skriver kort, præcist og konkret – uden spirituelt eller abstrakt sprog.\n\n";
-    $systemPrompt .= "Lav en personlig analyse på dansk baseret på personens numerologiske diamant.\n\n";
-    $systemPrompt .= "Skriv direkte til personen, fx: \"Marianne, …\"\n\n";
-    $systemPrompt .= "FORMAT: Ét samlet afsnit på 8–10 sætninger.\nIngen overskrifter. Ingen bullets. Ingen tomme linjer.\n\n";
-    $systemPrompt .= "Brug fornavnet naturligt 1–2 gange.\n\n";
-    $systemPrompt .= "GRUNDENERGIEN (top-tallet) er kernen i personligheden. Den skal fylde mest og tydeligt præge hele teksten. De øvrige energier skal ændre, nuancere eller skabe friktion – så to personer med samme grundenergi ikke beskrives ens.\n\n";
-    $systemPrompt .= "Du må ikke skrive generelle karaktertræk. Beskriv adfærdsmønstre.\n\n";
-    $systemPrompt .= "Teksten SKAL indeholde:\n";
-    $systemPrompt .= "Én konkret reaktion på modgang\n";
-    $systemPrompt .= "Én typisk konfliktadfærd i relationer\n";
-    $systemPrompt .= "Én blind vinkel personen ofte overser\n";
-    $systemPrompt .= "Én indre drivkraft som faktisk styrer deres valg\n\n";
-    $systemPrompt .= "Skriv så specifikt, at personen tænker: \"Det der er uhyggeligt præcist.\"\n\n";
-    $systemPrompt .= "Undgå brede vendinger som:\nat søge mening, have stort potentiale, finde balance, være sensitiv, være dyb, være kreativ, have mange lag, være kompleks.\n\n";
-    $systemPrompt .= "ABSOLUT FORBUD – disse ord må ikke forekomme (heller ikke i bøjet form):\n";
-    $systemPrompt .= "stærk vilje, viljestyrke, handlekraft, beslutsomhed, naturlig leder, naturlig evne, tager initiativ, går foran, gøre en forskel, positive forandringer, betydelig forskel, medfødt evne\n";
-    $systemPrompt .= "karisma, karismatisk, magnetisk, udstråling, tiltrække, charme, selvtillid\n";
-    $systemPrompt .= "skaber harmoni, dybe relationer, kærligt hjerte, nære relationer, dyb forståelse, æstetisk sans\n";
-    $systemPrompt .= "sjæl, åndelig, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, indre lys, energistrøm\n";
-    $systemPrompt .= "livsrejse, skæbne, forudbestemt, livets muligheder, dybere mening, fascinerende dybde, stort potentiale\n";
+    // Fallback-prompt
+    $systemPrompt  = "Du er en erfaren numerolog, der skriver som en adfærdsanalytiker. Du har adgang til en intern database med tal-betydninger (råmaterialet nedenfor). Du må bruge det til forståelse, men du må ikke efterligne eller kopiere ordvalg, fraser eller tone fra råmaterialet. Du skal oversætte til konkrete, observerbare mønstre i adfærd og valg.\n\n";
+    $systemPrompt .= "DIN OPGAVE\nOversæt denne persons diamantkombination til en kort, personlig tekst, som føles specifik og genkendelig for netop denne person. Undgå alt generisk horoskop-sprog.\n\n";
+    $systemPrompt .= "FORMAT\nÉt samlet afsnit på 8–10 sætninger. Ingen overskrifter, ingen bullets, ingen linjeskift. Skriv direkte til personen (brug fornavnet 1–2 gange naturligt).\n\n";
+    $systemPrompt .= "HÅRDE KRAV (skal være med, ellers er svaret forkert)\n";
+    $systemPrompt .= "1. Beskriv personens standardreaktion under pres som konkret handling (hvad gør de først).\n";
+    $systemPrompt .= "2. Beskriv én konfliktmekanik: hvad gør de typisk i en uenighed, og hvad er deres typiske linje (en kort realistisk sætning de kunne sige).\n";
+    $systemPrompt .= "3. Beskriv én blind vinkel (noget de konsekvent overser), og hvordan den viser sig i praksis.\n";
+    $systemPrompt .= "4. Beskriv én pris: hvad det mønster koster dem (socialt, i parforhold, på job eller mentalt).\n";
+    $systemPrompt .= "5. Indsæt én konkret hverdagsscene med detaljer (tidspunkt/situation/valg) — fx en travl arbejdsdag, en beskedtråd, et familiemøde, økonomi, planlægning, deadlines.\n";
+    $systemPrompt .= "6. Hele teksten skal hænge sammen om én gennemgående mekanisme (fx kontrol, tempo, undgåelse, rastløshed, stolthed, behov for at afslutte, osv.). Ingen buffet af modsatrettede typer.\n\n";
+    $systemPrompt .= "SÅDAN SKRIVER DU\nSkriv om adfærd i små beslutninger: afbrydelser, beskeder, deadlines, reaktionstid, tone, timing, undvigemanøvrer, overkompensering. Brug konkrete verber og konkrete situationer. Undgå abstrakte værdier og pyntesprog. Hvis en sætning kunne passe på 500+ personer, omskriv den til noget mere specifikt.\n\n";
+    $systemPrompt .= "ABSOLUT FORBUD — disse ord og vendinger må IKKE forekomme (heller ikke i bøjet form):\n";
+    $systemPrompt .= "karisma, magnetisk, udstråling, tiltrække, charme, selvtillid\n";
+    $systemPrompt .= "stærk vilje, viljestyrke, handlekraft, beslutsomhed, naturlig leder, naturlig evne, medfødt evne, går foran, gøre en forskel, positive forandringer\n";
+    $systemPrompt .= "harmoni, skaber harmoni, dybe relationer, kærligt hjerte, æstetisk sans, skønhed\n";
+    $systemPrompt .= "sjæl, åndelig, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, healing, indre lys, energistrøm\n";
+    $systemPrompt .= "livsrejse, skæbne, forudbestemt, dybere mening, fascinerende dybde, stort potentiale\n";
     $systemPrompt .= "indre ro, finde balance, finde ro, kunstnerisk sans, indre konflikt\n";
-    $systemPrompt .= "Tal eller positions-labels må ikke nævnes (ikke \"9\", ikke \"14/5\", ikke \"top-tal\", osv.)\n\n";
-    $systemPrompt .= "Skriv levende og konkret. Hvis noget er en styrke, vis også hvad det koster. Udfordringer skal beskrives som genkendelige mønstre – ikke som fejl.\n\n";
-    $systemPrompt .= "Indsæt én sætning, hvor du beskriver en situation fra hverdagen (arbejde, parforhold, familie eller pres).\n\n";
-    $systemPrompt .= "Afslut med én diskret sætning, der antyder at den fulde diamant viser endnu flere nuancer.\n\n";
-    $systemPrompt .= "Før du afslutter, gennemlæs og fjern enhver formulering, der kunne passe på de fleste mennesker.\n";
+    $systemPrompt .= "Tal, brøker eller positions-labels (ikke cifre overhovedet, ikke 'top', 'bund', 'center' osv.)\n\n";
+    $systemPrompt .= "STOP-REGEL (meget vigtig)\nInden du afleverer teksten: scan din egen tekst. Hvis den indeholder ét eneste ord fra forbudslisten, eller et tal/ciffer, skal du omskrive og fjerne det — ikke erstatte med et synonym der stadig lyder som numerologi-floskel.\n\n";
+    $systemPrompt .= "AFSLUTNING\nSlut med én enkelt sætning der antyder at hele diamanten rummer flere konkrete mønstre, uden at bruge ordene 'nuancer', 'mange lag' eller 'kompleks'.\n";
 }
 
-$systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — brug det til at forstå tallets kerne, men kopier ALDRIG sproget fra beskrivelserne direkte ind i analysen. Oversæt til konkrete adfærdsmønstre med dine egne ord):\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+$maskedEnergy = maskBannedWords($energyDescriptions);
+$systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — kun til forståelse. Kopiér aldrig formuleringer herfra):\n" . ($maskedEnergy ?: 'Ingen energibeskrivelser tilgængelige.');
 
 $userPrompt  = "Personen hedder {$firstName}.\n\n";
-$userPrompt .= "DIAMANTDATA (kun til din orientering — tallene og labels herunder må ALDRIG citeres eller nævnes i teksten):\n";
+$userPrompt .= "DIAMANTDATA (kun til orientering — må ikke citeres):\n";
 $userPrompt .= "{$nameData}\n\n";
-$userPrompt .= "Skriv nu en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).\n";
-$userPrompt .= "HUSK: Nævn IKKE et eneste tal (ikke '9', '19/1', '14/5', ingenting). Nævn IKKE positionsnavne (ikke 'bundtal', 'hjertecenter', 'solarplexus', ingenting). Oversæt ALT til konkrete menneskelige egenskaber og adfærd.";
+$userPrompt .= "Skriv nu teksten.";
 
-// Brug tone-baseret temperature, fallback 0.7
-$temperature = $temperature ?? 0.7;
+function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
+    $payload = json_encode([
+        'model'       => 'gpt-4o',
+        'messages'    => [
+            ['role' => 'system', 'content' => $systemPrompt],
+            ['role' => 'user',   'content' => $userPrompt]
+        ],
+        'temperature' => $temp,
+        'max_tokens'  => 700
+    ], JSON_UNESCAPED_UNICODE);
 
-$payload = json_encode([
-    'model'       => 'gpt-4o',
-    'messages'    => [
-        ['role' => 'system', 'content' => $systemPrompt],
-        ['role' => 'user',   'content' => $userPrompt]
-    ],
-    'temperature' => $temperature,
-    'max_tokens'  => 600
-], JSON_UNESCAPED_UNICODE);
+    $ch = curl_init('https://api.openai.com/v1/chat/completions');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $payload,
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Authorization: Bearer ' . $apiKey],
+        CURLOPT_TIMEOUT        => 60
+    ]);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr  = curl_error($ch);
+    curl_close($ch);
+    return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
+}
 
-$ch = curl_init('https://api.openai.com/v1/chat/completions');
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_HTTPHEADER     => [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ],
-    CURLOPT_TIMEOUT        => 60
-]);
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curlErr  = curl_error($ch);
-curl_close($ch);
+// ─── Første kald ───
+$result = callOpenAI($systemPrompt, $userPrompt, $apiKey, $temperature);
+if ($result['curlErr']) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $result['curlErr']]); exit; }
+if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['error' => 'OpenAI API fejl', 'details' => $result['response']]); exit; }
 
-if ($curlErr) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $curlErr]); exit; }
-if ($httpCode !== 200) { http_response_code(500); echo json_encode(['error' => 'OpenAI API fejl', 'details' => $response]); exit; }
-
-$data    = json_decode($response, true);
+$data    = json_decode($result['response'], true);
 $reading = $data['choices'][0]['message']['content'] ?? '';
-$debug   = !empty($body['debug']);
+$rewritten = false;
+
+// ─── Automatisk rewrite hvis forbudte ord opdages ───
+if (containsBannedContent($reading)) {
+    $rewritePrompt  = "Teksten nedenfor indeholder forbudte ord eller tal. Omskriv den så alle forbudte vendinger er væk.\n\n";
+    $rewritePrompt .= "FORBUDTE: karisma, magnetisk, udstråling, tiltrække, charme, selvtillid, harmoni, stærk vilje, viljestyrke, handlekraft, naturlig leder, naturlig evne, sjæl, åndelig, kosmisk, universet, intuition, mystik, heale, healing, indre lys, livsrejse, skæbne, dybere mening, indre ro, finde balance, tal/cifre, brøker.\n\n";
+    $rewritePrompt .= "Bevar alle konkrete adfærdsbeskrivelser. Bevar hverdagsscenen. Ændre KUN de forbudte formuleringer.\n\n";
+    $rewritePrompt .= "TEKST:\n{$reading}";
+
+    $r2 = callOpenAI("Du er en præcis tekstredigerer.", $rewritePrompt, $apiKey, 0.2);
+    if ($r2['httpCode'] === 200) {
+        $d2 = json_decode($r2['response'], true);
+        $reading = $d2['choices'][0]['message']['content'] ?? $reading;
+        $rewritten = true;
+        $data['usage']['rewrite'] = $d2['usage'] ?? null;
+    }
+}
+
+$debug = !empty($body['debug']);
 $out = ['reading' => $reading, 'usage' => $data['usage'] ?? null];
 if ($debug) {
     $out['debug'] = [
@@ -206,6 +260,7 @@ if ($debug) {
         'userPrompt'               => $userPrompt,
         'relevantDisplays'         => $relevantDisplays,
         'energyDescriptionsLength' => strlen($energyDescriptions),
+        'rewritten'                => $rewritten,
     ];
 }
 echo json_encode($out, JSON_UNESCAPED_UNICODE);

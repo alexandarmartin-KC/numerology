@@ -392,7 +392,7 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
         document.getElementById('testReading').textContent = data.reading;
         if (data.debug) {
           document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
-          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn';
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite');
           document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
           document.getElementById('debugUser').textContent = data.debug.userPrompt;
         }
