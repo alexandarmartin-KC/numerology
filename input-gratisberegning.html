@@ -220,7 +220,11 @@ REGLER:
         const hasDbPrompt = d && d.customPrompt;
         document.getElementById('customPrompt').value = hasDbPrompt ? d.customPrompt : DEFAULT_PROMPT;
         document.getElementById('teaserText').value   = (d && d.teaserText) ? d.teaserText : '';
-        if (!hasDbPrompt) document.getElementById('migrateWarning').classList.remove('d-none');
+        if (!hasDbPrompt) {
+          document.getElementById('migrateWarning').classList.remove('d-none');
+          // Auto-gem DEFAULT_PROMPT til DB med det samme
+          await doSave();
+        }
       } catch (e) {
         document.getElementById('customPrompt').value = DEFAULT_PROMPT;
         document.getElementById('migrateWarning').classList.remove('d-none');
