@@ -99,8 +99,12 @@
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <span class="fw-bold">Preview</span>
-          <button id="togglePreview" class="btn btn-sm btn-outline-secondary">Vis / skjul</button>
+          <div class="d-flex gap-2">
+            <button id="checkDbBtn" class="btn btn-sm btn-outline-info">Hvad er i DB nu?</button>
+            <button id="togglePreview" class="btn btn-sm btn-outline-secondary">Vis / skjul prompt</button>
+          </div>
         </div>
+        <div id="dbCheckBox" class="d-none preview-box p-3 mb-2 border border-info"></div>
         <div id="previewBox" class="d-none preview-box p-3"></div>
       </div>
     </div>
@@ -204,33 +208,32 @@
 
     // ─── Standard prompt ───
     const DEFAULT_PROMPT =
-`Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons numerologiske diamant.
+`Du er en erfaren numerolog. Lav en kort, personlig analyse på dansk baseret på personens numerologiske diamant.
 
-TONE: Varm og indsigtsfuld — konkret og menneskelig, ikke poetisk eller mystisk.
+DIN OPGAVE er at oversætte et specifikt sæt af tal til en konkret beskrivelse af DENNE persons mønstre — ikke at skrive en generisk karakter-skitse der kunne passe på mange mennesker.
 
-REGLER:
-- Skriv præcis 8–10 sætninger i ét samlet afsnit.
-- Brug personens fornavn naturligt 1-2 gange.
-- Grundenergien (top) er kerneenergien — vægt den tungest.
-- Lad de øvrige energiers nuancer aktivt modificere grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde TYDELIGT forskelligt.
-- Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.
-- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed og adfærd.
-- NÆVN ALDRIG specifikke tal direkte. Oversæt tallene til menneskelige egenskaber og konkrete tendenser.
-- NÆVN ALDRIG positionsnavne (livslinje, bundtal, solarplexus, rygraden, auraen, hjertecenteret, søjletallet).
-- Skriv som én sammenhængende personlig fortælling — ikke position for position.
-- Vær ærlig og balanceret. Udfordringer præsenteres som opmærksomhedspunkter — ikke dom, ikke falsk positivitet.
-- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.
+FORMAT: ét samlet afsnit på 8–10 sætninger. Ingen overskrifter, ingen bullets.
 
-FORBUDTE ORD OG VENDINGER — brug ALDRIG disse, uanset hvad:
-- Forbud mod abstrakt/spirituelt: åndelig, spirituel, sjæl, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, healing, indre lys, energistrøm, det høje selv, højere bevidsthed
-- Forbud mod generiske styrke-klichéer: stærk viljestyrke, stærk vilje, stærk grundenergi, stærk kerneenergi, stærk indre kerne, stærk tilstedeværelse, stærk fremtoning, handlekraft, viljestyrke, beslutsomhed og mod, naturlig leder, tager lederskab naturligt, naturlig evne til at lede, naturlig evne til at motivere, motivere og inspirere andre, naturlig evne til at kommunikere, uovertruffen leder, medfødt evne, gøre en forskel, betydelig forskel
-- Forbud mod generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på, tiltrække andres opmærksomhed, charme og selvtillid
-- Forbud mod generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans, skønhed og harmoni, dyb længsel efter
-- Forbud mod generiske konflikt-klichéer: indre konflikt, balancen mellem handling og refleksion, finde balance, finde ro og fokus, lytte til de mere blide sider, forbinde handling med refleksion
-- Forbud mod held og skæbne: heldet med dig, held, skæbne, forudbestemt, livsrejse, livets muligheder
-- Forbud mod vage mystik-vendinger: strejf af mystik, fascinerende dybde, noget der rummer, bag facaderne, store potentiale
+BRUG personens fornavn 1-2 gange naturligt i teksten.
 
-Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler der faktisk stammer fra DENNE persons unikke talkombination.`;
+GRUNDENERGIEN (top-tallet) er kernen — vægt den tungest. De øvrige energier modificerer og nuancerer — brug dem aktivt så to personer med samme grundenergi lyder FORSKELLIGT.
+
+SKRIV ALDRIG:
+· Tal eller positions-labels i teksten (ikke "9", ikke "14/5", ikke "bundtal", ikke "hjertecenter")
+· Abstrakt eller åndeligt sprog: sjæl, åndelig, kosmisk, universet, intuition, mystik, heale, indre lys
+· Generiske fraser der passer på alle: karisma, naturlig leder, stærk vilje, gøre en forskel, går foran med et godt eksempel, magnetisk, skaber harmoni, dybe relationer, kunstnerisk sans, indre ro, finde balance, livsrejse
+
+SKRIV I STEDET konkret: Hvad gør denne specifikke talkombination ved den måde personen håndterer modgang? Hvad er et typisk mønster i konflikter? Hvad er en blind vinkel denne person typisk har? Vær specifik nok til at personen nikker genkendende — ikke bare "ja, det passer på mig", men "how did you know that?"
+
+EKSEMPEL PÅ HVAD DU IKKE MÅ SKRIVE:
+"…en naturlig leder der motiverer sine omgivelser og søger harmoni i relationer …"
+
+EKSEMPEL PÅ HVAD DU SKAL SIGTE EFTER:
+"… når noget går galt, er [fornavn]s første bevægelse at handle — ikke at bearbejde. Det kan være en styrke i kaos, men efterlader ham/hende med et efterslæb af ting der aldrig rigtig er landet …"
+
+BALANCE: Vær ærlig. Ikke alt er en styrke. Udfordringer er reelle — præsenter dem som mønstre der kan genkendes og arbejdes med, ikke som dom.
+
+SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
 
     // ─── Hent fra DB og fyld felter ───
     (async () => {
@@ -252,6 +255,22 @@ Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler d
       document.getElementById('customPrompt').addEventListener('input', scheduleSave);
       document.getElementById('teaserText').addEventListener('input', scheduleSave);
     })();
+
+    // ─── DB check ───
+    document.getElementById('checkDbBtn').addEventListener('click', async () => {
+      const box = document.getElementById('dbCheckBox');
+      box.textContent = 'Henter fra DB...';
+      box.classList.remove('d-none');
+      try {
+        const r = await fetch('/api/save-gratisberegning.php?ts=' + Date.now());
+        const d = await r.json();
+        const prompt = d.customPrompt || '(tom — ingen prompt gemt)';
+        const firstLine = prompt.split('\n')[0];
+        box.textContent = `DB indeholder (${prompt.length} tegn): "${firstLine}..."\n\nFørste 300 tegn:\n${prompt.substring(0, 300)}`;
+      } catch(e) {
+        box.textContent = 'Fejl: ' + e.message;
+      }
+    });
 
     // ─── Nulstil til standard ───
     document.getElementById('resetPromptBtn').addEventListener('click', async () => {
