@@ -90,7 +90,7 @@ if (!empty($relevantDisplays)) {
             $resE = $stmtE->get_result();
             $eavoids = [];
             $ecustom = [];
-            $etone   = 'warm';
+            $etone   = 'direct';
             while ($erow = $resE->fetch_assoc()) {
                 $isCompound = str_contains($erow['display'], '/');
 
@@ -128,25 +128,35 @@ if (!empty($cfg['customPrompt'])) {
     $systemPrompt = $cfg['customPrompt'];
 } else {
     // Fallback-prompt med fulde regler (bruges når DB-kolonnen mangler eller er tom)
-    $systemPrompt  = "Du er en erfaren numerolog. Lav en kort, personlig analyse på dansk baseret på personens numerologiske diamant.\n\n";
-    $systemPrompt .= "DIN OPGAVE er at oversætte et specifikt sæt af tal til en konkret beskrivelse af DENNE persons mønstre — ikke at skrive en generisk karakter-skitse der kunne passe på mange mennesker.\n\n";
-    $systemPrompt .= "FORMAT: ét samlet afsnit på 8–10 sætninger. Ingen overskrifter, ingen bullets.\n\n";
-    $systemPrompt .= "BRUG personens fornavn 1-2 gange naturligt i teksten.\n\n";
-    $systemPrompt .= "GRUNDENERGIEN (top-tallet) er kernen — vægt den tungest. De øvrige energier modificerer og nuancerer — brug dem aktivt så to personer med samme grundenergi lyder FORSKELLIGT.\n\n";
-    $systemPrompt .= "SKRIV ALDRIG:\n";
-    $systemPrompt .= "· Tal eller positions-labels i teksten (ikke \"9\", ikke \"14/5\", ikke \"bundtal\", ikke \"hjertecenter\")\n";
-    $systemPrompt .= "· Abstrakt eller åndeligt sprog: sjæl, åndelig, kosmisk, universet, intuition, mystik, heale, indre lys\n";
-    $systemPrompt .= "· Generiske fraser der passer på alle: karisma, naturlig leder, stærk vilje, gøre en forskel, går foran med et godt eksempel, magnetisk, skaber harmoni, dybe relationer, kunstnerisk sans, indre ro, finde balance, livsrejse\n\n";
-    $systemPrompt .= "SKRIV I STEDET konkret: Hvad gør denne specifikke talkombination ved den måde personen håndterer modgang? Hvad er et typisk mønster i konflikter? Hvad er en blind vinkel denne person typisk har? Vær specifik nok til at personen nikker genkendende — ikke bare \"ja, det passer på mig\", men \"how did you know that?\"\n\n";
-    $systemPrompt .= "EKSEMPEL PÅ HVAD DU IKKE MÅ SKRIVE:\n";
-    $systemPrompt .= "\"…en naturlig leder der motiverer sine omgivelser og søger harmoni i relationer …\"\n\n";
-    $systemPrompt .= "EKSEMPEL PÅ HVAD DU SKAL SIGTE EFTER:\n";
-    $systemPrompt .= "\"… når noget går galt, er [fornavn]s første bevægelse at handle — ikke at bearbejde. Det kan være en styrke i kaos, men efterlader ham/hende med et efterslæb af ting der aldrig rigtig er landet …\"\n\n";
-    $systemPrompt .= "BALANCE: Vær ærlig. Ikke alt er en styrke. Udfordringer er reelle — præsenter dem som mønstre der kan genkendes og arbejdes med, ikke som dom.\n\n";
-    $systemPrompt .= "SLUT med én sætning der antyder at den fulde diamant rummer mere.\n";
+    $systemPrompt  = "Du er en erfaren numerolog med psykologisk indsigt. Du skriver kort, præcist og konkret – uden spirituelt eller abstrakt sprog.\n\n";
+    $systemPrompt .= "Lav en personlig analyse på dansk baseret på personens numerologiske diamant.\n\n";
+    $systemPrompt .= "Skriv direkte til personen, fx: \"Marianne, …\"\n\n";
+    $systemPrompt .= "FORMAT: Ét samlet afsnit på 8–10 sætninger.\nIngen overskrifter. Ingen bullets. Ingen tomme linjer.\n\n";
+    $systemPrompt .= "Brug fornavnet naturligt 1–2 gange.\n\n";
+    $systemPrompt .= "GRUNDENERGIEN (top-tallet) er kernen i personligheden. Den skal fylde mest og tydeligt præge hele teksten. De øvrige energier skal ændre, nuancere eller skabe friktion – så to personer med samme grundenergi ikke beskrives ens.\n\n";
+    $systemPrompt .= "Du må ikke skrive generelle karaktertræk. Beskriv adfærdsmønstre.\n\n";
+    $systemPrompt .= "Teksten SKAL indeholde:\n";
+    $systemPrompt .= "Én konkret reaktion på modgang\n";
+    $systemPrompt .= "Én typisk konfliktadfærd i relationer\n";
+    $systemPrompt .= "Én blind vinkel personen ofte overser\n";
+    $systemPrompt .= "Én indre drivkraft som faktisk styrer deres valg\n\n";
+    $systemPrompt .= "Skriv så specifikt, at personen tænker: \"Det der er uhyggeligt præcist.\"\n\n";
+    $systemPrompt .= "Undgå brede vendinger som:\nat søge mening, have stort potentiale, finde balance, være sensitiv, være dyb, være kreativ, have mange lag, være kompleks.\n\n";
+    $systemPrompt .= "ABSOLUT FORBUD – disse ord må ikke forekomme (heller ikke i bøjet form):\n";
+    $systemPrompt .= "stærk vilje, viljestyrke, handlekraft, beslutsomhed, naturlig leder, naturlig evne, tager initiativ, går foran, gøre en forskel, positive forandringer, betydelig forskel, medfødt evne\n";
+    $systemPrompt .= "karisma, karismatisk, magnetisk, udstråling, tiltrække, charme, selvtillid\n";
+    $systemPrompt .= "skaber harmoni, dybe relationer, kærligt hjerte, nære relationer, dyb forståelse, æstetisk sans\n";
+    $systemPrompt .= "sjæl, åndelig, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, indre lys, energistrøm\n";
+    $systemPrompt .= "livsrejse, skæbne, forudbestemt, livets muligheder, dybere mening, fascinerende dybde, stort potentiale\n";
+    $systemPrompt .= "indre ro, finde balance, finde ro, kunstnerisk sans, indre konflikt\n";
+    $systemPrompt .= "Tal eller positions-labels må ikke nævnes (ikke \"9\", ikke \"14/5\", ikke \"top-tal\", osv.)\n\n";
+    $systemPrompt .= "Skriv levende og konkret. Hvis noget er en styrke, vis også hvad det koster. Udfordringer skal beskrives som genkendelige mønstre – ikke som fejl.\n\n";
+    $systemPrompt .= "Indsæt én sætning, hvor du beskriver en situation fra hverdagen (arbejde, parforhold, familie eller pres).\n\n";
+    $systemPrompt .= "Afslut med én diskret sætning, der antyder at den fulde diamant viser endnu flere nuancer.\n\n";
+    $systemPrompt .= "Før du afslutter, gennemlæs og fjern enhver formulering, der kunne passe på de fleste mennesker.\n";
 }
 
-$systemPrompt .= "\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
+$systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — brug det til at forstå tallets kerne, men kopier ALDRIG sproget fra beskrivelserne direkte ind i analysen. Oversæt til konkrete adfærdsmønstre med dine egne ord):\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
 
 $userPrompt  = "Personen hedder {$firstName}.\n\n";
 $userPrompt .= "DIAMANTDATA (kun til din orientering — tallene og labels herunder må ALDRIG citeres eller nævnes i teksten):\n";
@@ -188,4 +198,14 @@ if ($httpCode !== 200) { http_response_code(500); echo json_encode(['error' => '
 
 $data    = json_decode($response, true);
 $reading = $data['choices'][0]['message']['content'] ?? '';
-echo json_encode(['reading' => $reading, 'usage' => $data['usage'] ?? null], JSON_UNESCAPED_UNICODE);
+$debug   = !empty($body['debug']);
+$out = ['reading' => $reading, 'usage' => $data['usage'] ?? null];
+if ($debug) {
+    $out['debug'] = [
+        'systemPrompt'             => $systemPrompt,
+        'userPrompt'               => $userPrompt,
+        'relevantDisplays'         => $relevantDisplays,
+        'energyDescriptionsLength' => strlen($energyDescriptions),
+    ];
+}
+echo json_encode($out, JSON_UNESCAPED_UNICODE);

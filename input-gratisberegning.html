@@ -139,6 +139,19 @@
             <span class="hint" id="testDiamondSummary"></span>
           </div>
           <div id="testReading" style="line-height:1.7; font-size:15px;"></div>
+          <div class="mt-3">
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#debugPanel">Vis GPT-input</button>
+            <div class="collapse mt-2" id="debugPanel">
+              <div class="card card-body p-2" style="font-size:12px;">
+                <div class="mb-2"><strong>Relevante displays sendt:</strong> <span id="debugDisplays" class="text-muted"></span></div>
+                <div class="mb-2"><strong>Energibeskrivelser hentet:</strong> <span id="debugEnergyLen" class="text-muted"></span></div>
+                <div class="mb-1"><strong>System prompt:</strong></div>
+                <pre id="debugSystem" style="white-space:pre-wrap;font-size:11px;background:#f8f9fa;padding:8px;border-radius:4px;max-height:300px;overflow-y:auto;"></pre>
+                <div class="mb-1 mt-2"><strong>User prompt:</strong></div>
+                <pre id="debugUser" style="white-space:pre-wrap;font-size:11px;background:#f8f9fa;padding:8px;border-radius:4px;max-height:200px;overflow-y:auto;"></pre>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -366,7 +379,8 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
           body: JSON.stringify({
             firstName: firstNameDisplay,
             nameData: buildTestDiamondText(result),
-            relevantDisplays: collectTestDisplays(diamond)
+            relevantDisplays: collectTestDisplays(diamond),
+            debug: true
           })
         });
         spinner.classList.add('d-none');
@@ -376,6 +390,12 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
         document.getElementById('testDiamondSummary').textContent =
           `Livslinje: ${diamond.livslinje.map(e => e.display).join(' · ')}  |  Bundtal: ${diamond.bundtal.display}`;
         document.getElementById('testReading').textContent = data.reading;
+        if (data.debug) {
+          document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn';
+          document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
+          document.getElementById('debugUser').textContent = data.debug.userPrompt;
+        }
         resBox.classList.remove('d-none');
       } catch (e) {
         spinner.classList.add('d-none');
