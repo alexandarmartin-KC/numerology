@@ -250,16 +250,23 @@ $reading = $data['choices'][0]['message']['content'] ?? '';
 $rewritten = false;
 
 // ─── Trin 2: Stil-nedkøling (kører altid) ───
-$rewritePrompt  = "Omskriv teksten nedenfor i mere jordnært dansk.\n";
-$rewritePrompt .= "Fjern abstrakte begreber, statusord og personlig-udviklingssprog.\n";
-$rewritePrompt .= "Gør sproget enklere og mere konkret.\n";
-$rewritePrompt .= "Bevar strukturen og meningen.\n";
-$rewritePrompt .= "Fjern ophøjet tone.\n";
-$rewritePrompt .= "Fjern alle tal, cifre og brøker hvis de optræder.\n";
-$rewritePrompt .= "Returner kun den omskrevne version — ingen forklaringer.\n\n";
+$rewritePrompt  = "Omskriv teksten nedenfor strengt efter disse regler.\n\n";
+$rewritePrompt .= "FORBUDTE ORD OG FRASER – disse må ikke optræde i output (erstat med konkrete handlingsbeskrivelser):\n";
+$rewritePrompt .= "stærk, stærk vilje, stærk trang, trange, trang til, initiativ, initiativer, tager styringen, sætter pris på, karisma, karismatisk, magnetisk, ";
+$rewritePrompt .= "balance, udvikling, personlighed, indre kerne, sjæl, universet, intuition, evne til, evner, styrke, respekt, beundring, inspirere, motivere, ";
+$rewritePrompt .= "leder, lederskab, ambitiøs, målrettet, succes, vision, passion, passioneret, dybe, dyb, potentiale, formål, retfærdighed, ";
+$rewritePrompt .= "kompleksitet, indsigt, forandring, længsel, energi, fremdrift, integritet, autenticitet, medfølelse, empati, selvtillid, selvværd, mod, drivkraft.\n\n";
+$rewritePrompt .= "REGLER:\n";
+$rewritePrompt .= "- Erstat forbudte ord med konkrete handlings- eller adfærdsbeskrivelser.\n";
+$rewritePrompt .= "- Undgå formuleringer som 'du har', 'du er en', 'du er kendt for', 'du søger', 'du er god til'.\n";
+$rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rosende, ikke dramatisk.\n";
+$rewritePrompt .= "- Bevar strukturen: ét samlet afsnit, 8–9 sætninger.\n";
+$rewritePrompt .= "- Fjern alle tal, cifre og brøker.\n";
+$rewritePrompt .= "- Brug fornavnet én gang naturligt, gerne i starten.\n";
+$rewritePrompt .= "- Returner kun den omskrevne version — ingen forklaringer, ingen kommentarer.\n\n";
 $rewritePrompt .= "TEKST:\n{$reading}";
 
-$r2 = callOpenAI("Du er en præcis dansk tekstredigerer. Du skriver nøgternt og konkret.", $rewritePrompt, $apiKey, 0.2);
+$r2 = callOpenAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, 0.2);
 if ($r2['httpCode'] === 200) {
     $d2 = json_decode($r2['response'], true);
     $reading = $d2['choices'][0]['message']['content'] ?? $reading;
