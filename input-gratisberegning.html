@@ -176,8 +176,15 @@
           body: JSON.stringify(payload)
         });
         flash(saveIndicator, r.ok);
+        if (!r.ok) {
+          const txt = await r.text();
+          console.error('Save fejlede:', r.status, txt);
+        }
+        return r.ok;
       } catch (e) {
         flash(saveIndicator, false);
+        console.error('Save exception:', e);
+        return false;
       }
     }
 
@@ -251,7 +258,24 @@ Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler d
       if (!confirm('Nulstil systemprompt til standard? Den nuværende tekst overskrives.')) return;
       document.getElementById('customPrompt').value = DEFAULT_PROMPT;
       document.getElementById('migrateWarning').classList.add('d-none');
-      await doSave();
+      const btn = document.getElementById('resetPromptBtn');
+      btn.textContent = 'Gemmer...';
+      btn.disabled = true;
+      const ok = await doSave();
+      if (ok) {
+        btn.textContent = '✓ Gemt!';
+        btn.classList.replace('btn-outline-danger', 'btn-success');
+        setTimeout(() => {
+          btn.textContent = 'Nulstil til standard';
+          btn.classList.replace('btn-success', 'btn-outline-danger');
+          btn.disabled = false;
+        }, 2500);
+      } else {
+        btn.textContent = 'FEJL — se konsollen (F12)';
+        btn.classList.replace('btn-outline-danger', 'btn-danger');
+        btn.disabled = false;
+        alert('Gem fejlede! Åbn browserens konsol (F12 → Console) og se fejlmeddelelsen.');
+      }
     });
 
     // ─── Test ───
