@@ -1137,7 +1137,7 @@
       const d = result.diamond;
       const inp = result.input;
       const cfg = getGratisConfig();
-      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','soejletal'];
       let text = '';
 
       text += `--- DIAMANT for ${inp.fullName} (${inp.birthDate.day}/${inp.birthDate.month}/${inp.birthDate.year}) ---\n\n`;
@@ -1238,7 +1238,7 @@
     // ─── Collect display strings from diamond (respects position config) ───
     function collectDisplays(diamond) {
       const cfg = getGratisConfig();
-      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','rygraden','soejletal'];
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','soejletal'];
       const displays = new Set();
       // Helper: same rule as diamondEngine displayValue()
       const disp = (compound, reduced) => compound < 10 ? `${compound}` : `${compound}/${reduced}`;

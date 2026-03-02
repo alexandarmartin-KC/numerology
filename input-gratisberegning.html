@@ -216,11 +216,12 @@ REGLER:
 
 FORBUDTE ORD OG VENDINGER — brug ALDRIG disse, uanset hvad:
 - Forbud mod abstrakt/spirituelt: åndelig, spirituel, sjæl, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, healing, indre lys, energistrøm, det høje selv, højere bevidsthed
-- Forbud mod generiske styrke-klichéer: stærk viljestyrke, stærk grundenergi, stærk kerneenergi, handlekraft, viljestyrke, naturlig leder, naturlig evne til at lede, naturlig evne til at motivere, uovertruffen leder, medfødt evne
-- Forbud mod generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på
-- Forbud mod generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans, skønhed og harmoni
-- Forbud mod held og skæbne: heldet med dig, held, skæbne, forudbestemt
-- Forbud mod vage mystik-vendinger: strejf af mystik, fascinerende dybde, noget der rummer, bag facaderne
+- Forbud mod generiske styrke-klichéer: stærk viljestyrke, stærk grundenergi, stærk kerneenergi, stærk indre kerne, stærk tilstedeværelse, handlekraft, viljestyrke, beslutsomhed og mod, naturlig leder, naturlig evne til at lede, naturlig evne til at motivere, naturlig evne til at kommunikere, uovertruffen leder, medfødt evne, betydelig forskel
+- Forbud mod generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på, tiltrække andres opmærksomhed, charme og selvtillid
+- Forbud mod generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans, skønhed og harmoni, dyb længsel efter
+- Forbud mod generiske konflikt-klichéer: indre konflikt, balancen mellem handling og refleksion, finde balance, finde ro og fokus, lytte til de mere blide sider, forbinde handling med refleksion
+- Forbud mod held og skæbne: heldet med dig, held, skæbne, forudbestemt, livsrejse, livets muligheder
+- Forbud mod vage mystik-vendinger: strejf af mystik, fascinerende dybde, noget der rummer, bag facaderne, store potentiale
 
 Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler der faktisk stammer fra DENNE persons unikke talkombination.`;
 
@@ -265,7 +266,6 @@ Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler d
       t += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
       t += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
       t += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
-      t += `Rygraden: ${d.rygraden.display}\n`;
       t += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
       return t;
     }
@@ -282,7 +282,6 @@ Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler d
       displays.add(diamond.aura.auraLowerRight.display);
       displays.add(diamond.body.hjertecenter.centerTal.display);
       displays.add(diamond.body.solarplexus.centerTal.display);
-      displays.add(diamond.rygraden.display);
       displays.add(disp(diamond.soejletal.compound, diamond.soejletal.reduced));
       return [...displays];
     }
@@ -332,7 +331,7 @@ Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler d
         const data = await resp.json();
         document.getElementById('testGrundenergi').textContent = 'Grundenergi ' + diamond.grundenergi.value;
         document.getElementById('testDiamondSummary').textContent =
-          `Livslinje: ${diamond.livslinje.map(e => e.display).join(' · ')}  |  Bundtal: ${diamond.bundtal.display}  |  Rygraden: ${diamond.rygraden.display}`;
+          `Livslinje: ${diamond.livslinje.map(e => e.display).join(' · ')}  |  Bundtal: ${diamond.bundtal.display}`;
         document.getElementById('testReading').textContent = data.reading;
         resBox.classList.remove('d-none');
       } catch (e) {

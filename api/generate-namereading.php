@@ -142,13 +142,14 @@ if (!empty($cfg['customPrompt'])) {
     $systemPrompt .= "- Skriv som én sammenhængende personlig fortælling — ikke position for position.\n";
     $systemPrompt .= "- Vær ærlig og balanceret. Udfordringer præsenteres som opmærksomhedspunkter — ikke dom, ikke falsk positivitet.\n";
     $systemPrompt .= "- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.\n";
-    $systemPrompt .= "\nFORBUDTE ORD OG VENDINGER — brug ALDRIG disse:\n";
+    $systemPrompt .= "FORBUDTE ORD OG VENDINGER — brug ALDRIG disse:\n";
     $systemPrompt .= "- Abstrakt/spirituelt: åndelig, spirituel, sjæl, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, healing, indre lys, energistrøm\n";
-    $systemPrompt .= "- Generiske styrke-klichéer: stærk viljestyrke, stærk grundenergi, stærk kerneenergi, handlekraft, viljestyrke, naturlig leder, naturlig evne til at lede, naturlig evne til at motivere, uovertruffen leder, medfødt evne\n";
-    $systemPrompt .= "- Generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på\n";
-    $systemPrompt .= "- Generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans\n";
-    $systemPrompt .= "- Held og skæbne: heldet med dig, held, skæbne, forudbestemt\n";
-    $systemPrompt .= "- Vage mystik-vendinger: strejf af mystik, fascinerende dybde, bag facaderne\n";
+    $systemPrompt .= "- Generiske styrke-klichéer: stærk viljestyrke, stærk grundenergi, stærk kerneenergi, stærk indre kerne, stærk tilstedeværelse, handlekraft, viljestyrke, beslutsomhed og mod, naturlig leder, naturlig evne til at lede, naturlig evne til at motivere, naturlig evne til at kommunikere, uovertruffen leder, medfødt evne, betydelig forskel\n";
+    $systemPrompt .= "- Generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på, tiltrække andres opmærksomhed, charme og selvtillid\n";
+    $systemPrompt .= "- Generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans, skønhed og harmoni, dyb længsel efter\n";
+    $systemPrompt .= "- Generiske konflikt-klichéer: indre konflikt, balancen mellem handling og refleksion, finde balance, finde ro og fokus, lytte til de mere blide sider\n";
+    $systemPrompt .= "- Held og skæbne: heldet med dig, held, skæbne, forudbestemt, livsrejse, livets muligheder\n";
+    $systemPrompt .= "- Vage vendinger: strejf af mystik, fascinerende dybde, noget der rummer, bag facaderne, store potentiale\n";
     $systemPrompt .= "\nBrug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler der faktisk stammer fra DENNE persons unikke talkombination.\n";
 }
 
