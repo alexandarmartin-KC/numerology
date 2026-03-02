@@ -105,6 +105,11 @@
         <button id="runTestBtn" class="btn btn-warning btn-sm">Kør test</button>
       </div>
       <div class="card-body">
+        <div class="d-flex gap-2 mb-3">
+          <button class="btn btn-sm btn-outline-primary preset-btn" data-name="Alexx Martin Højgård" data-date="1980-11-18">Alexx</button>
+          <button class="btn btn-sm btn-outline-primary preset-btn" data-name="Mihel Bibulovic" data-date="1980-12-06">Mihel</button>
+          <button class="btn btn-sm btn-outline-primary preset-btn" data-name="Morten Nørremølle" data-date="1979-10-06">Morten</button>
+        </div>
         <div class="row g-2 mb-3">
           <div class="col-sm-6">
             <label class="form-label hint mb-1">Fulde navn</label>
@@ -250,6 +255,13 @@ REGLER:
       displays.add(disp(diamond.soejletal.compound, diamond.soejletal.reduced));
       return [...displays];
     }
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('testName').value = btn.dataset.name;
+        document.getElementById('testDate').value = btn.dataset.date;
+      });
+    });
 
     document.getElementById('runTestBtn').addEventListener('click', async () => {
       const name = document.getElementById('testName').value.trim();
