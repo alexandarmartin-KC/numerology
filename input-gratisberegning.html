@@ -76,7 +76,10 @@
     <!-- ─── Systemprompt ─── -->
     <div class="card mb-4">
       <div class="card-body">
-        <label for="customPrompt" class="form-label fw-bold">Systemprompt til GPT</label>
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <label for="customPrompt" class="form-label fw-bold mb-0">Systemprompt til GPT</label>
+          <button id="resetPromptBtn" class="btn btn-sm btn-outline-danger">Nulstil til standard</button>
+        </div>
         <p class="hint mb-2">Dit direkte instruktionsbrev til AI. Skriv regler, tone og format herinde. Energibeskrivelserne fra DB tilføjes automatisk bagefter.</p>
         <textarea id="customPrompt" class="form-control font-monospace" rows="22" placeholder="Skriv systemprompt her..."></textarea>
       </div>
@@ -192,25 +195,34 @@
       }
     });
 
-    // ─── Standard prompt (bruges hvis DB er tom) ───
+    // ─── Standard prompt ───
     const DEFAULT_PROMPT =
 `Du er en erfaren numerolog. Du laver en kort og personlig numerologisk analyse på dansk baseret på en persons numerologiske diamant.
 
-TONE: Varm, indsigtsfuld og lidt poetisk — som om du kender personen personligt.
+TONE: Varm og indsigtsfuld — konkret og menneskelig, ikke poetisk eller mystisk.
 
 REGLER:
 - Skriv præcis 8–10 sætninger i ét samlet afsnit.
 - Brug personens fornavn naturligt 1-2 gange.
 - Grundenergien (top) er kerneenergien — vægt den tungest.
-- Lad de øvrige energiers nuancer aktivt farve grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde tydeligt forskelligt.
+- Lad de øvrige energiers nuancer aktivt modificere grundenergi-beskrivelsen — to personer med samme grundenergi men forskellig diamant skal lyde TYDELIGT forskelligt.
 - Skriv IKKE overskrifter, bullets eller formatering. Kun løbende tekst.
-- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed.
-- NÆVN ALDRIG specifikke tal direkte (fx IKKE: "9", "9'er energi", "5'eren"). Oversæt tallene til menneskelige egenskaber.
-- NÆVN ALDRIG positionsnavne i teksten (fx "din livslinje", "bundtallet", "solarplexus", "rygraden", "auraen", "hjertecenteret", "søjletallet"). Oversæt energierne til personlighedstræk.
-- Skriv som én sammenhængende personlig fortælling — ikke som en rapport der gennemgår position for position.
-- Vær ærlig og balanceret. Skriv IKKE udelukkende positivt — folk med udfordrende energier skal kunne genkende sig selv i teksten. Præsenter udfordringer som opmærksomhedspunkter: mønstre personen kan blive bevidst om og arbejde med, ikke som dom eller skæbne.
-- UNDGÅ generiske vendinger som "stærk kerneenergi", "naturlig evne til at skabe harmoni", "magnetisk tiltrækning", "prioriterer nære relationer" og lignende klichéer der kunne passe på hvem som helst. Brug konkrete, specifikke formuleringer der afspejler DENNE persons unikke kombination af energier.
-- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.`;
+- Skriv IKKE "dit tal er..." eller tekniske forklaringer. Gå direkte til personlighed og adfærd.
+- NÆVN ALDRIG specifikke tal direkte. Oversæt tallene til menneskelige egenskaber og konkrete tendenser.
+- NÆVN ALDRIG positionsnavne (livslinje, bundtal, solarplexus, rygraden, auraen, hjertecenteret, søjletallet).
+- Skriv som én sammenhængende personlig fortælling — ikke position for position.
+- Vær ærlig og balanceret. Udfordringer præsenteres som opmærksomhedspunkter — ikke dom, ikke falsk positivitet.
+- Slut med en sætning der antyder at den fulde diamant rummer mere at udforske.
+
+FORBUDTE ORD OG VENDINGER — brug ALDRIG disse, uanset hvad:
+- Forbud mod abstrakt/spirituelt: åndelig, spirituel, sjæl, kosmisk, universet, intuition, intuitiv, mystik, mystisk, heale, healing, indre lys, energistrøm, det høje selv, højere bevidsthed
+- Forbud mod generiske styrke-klichéer: stærk viljestyrke, stærk grundenergi, stærk kerneenergi, handlekraft, viljestyrke, naturlig leder, naturlig evne til at lede, naturlig evne til at motivere, uovertruffen leder, medfødt evne
+- Forbud mod generiske charm-klichéer: karisma, karismatisk, tiltrækningskraft, magnetisk, magnetisk tiltrækning, udstråling, aura bærer på
+- Forbud mod generiske harmoni-klichéer: naturlig evne til at skabe harmoni, prioriterer nære relationer, dyb forståelse for andre, kærligt hjerte, æstetisk sans, skønhed og harmoni
+- Forbud mod held og skæbne: heldet med dig, held, skæbne, forudbestemt
+- Forbud mod vage mystik-vendinger: strejf af mystik, fascinerende dybde, noget der rummer, bag facaderne
+
+Brug i stedet: konkrete adfærdsmønstre, specifikke styrker og blinde vinkler der faktisk stammer fra DENNE persons unikke talkombination.`;
 
     // ─── Hent fra DB og fyld felter ───
     (async () => {
@@ -232,6 +244,14 @@ REGLER:
       document.getElementById('customPrompt').addEventListener('input', scheduleSave);
       document.getElementById('teaserText').addEventListener('input', scheduleSave);
     })();
+
+    // ─── Nulstil til standard ───
+    document.getElementById('resetPromptBtn').addEventListener('click', async () => {
+      if (!confirm('Nulstil systemprompt til standard? Den nuværende tekst overskrives.')) return;
+      document.getElementById('customPrompt').value = DEFAULT_PROMPT;
+      document.getElementById('migrateWarning').classList.add('d-none');
+      await doSave();
+    });
 
     // ─── Test ───
     function buildTestDiamondText(result) {
