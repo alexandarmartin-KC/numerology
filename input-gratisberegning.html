@@ -98,8 +98,38 @@
       </div>
     </div>
 
+    <!-- ─── Test ─── -->
+    <div class="card mb-4 border-warning">
+      <div class="card-header bg-warning bg-opacity-10 d-flex align-items-center justify-content-between">
+        <span class="fw-bold">Test beregning</span>
+        <button id="runTestBtn" class="btn btn-warning btn-sm">Kør test</button>
+      </div>
+      <div class="card-body">
+        <div class="row g-2 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label hint mb-1">Fulde navn</label>
+            <input id="testName" type="text" class="form-control form-control-sm" value="Alexx Martin Højgård">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label hint mb-1">Fødselsdato</label>
+            <input id="testDate" type="date" class="form-control form-control-sm" value="1980-11-18">
+          </div>
+        </div>
+        <div id="testSpinner" class="text-muted hint d-none">Beregner...</div>
+        <div id="testError" class="text-danger hint d-none"></div>
+        <div id="testResult" class="d-none">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-secondary" id="testGrundenergi"></span>
+            <span class="hint" id="testDiamondSummary"></span>
+          </div>
+          <div id="testReading" style="line-height:1.7; font-size:15px;"></div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
+  <script src="/assets/js/diamondEngine.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmKMQJMSHNFGqaJnBGTQniw/mUj" crossorigin="anonymous"></script>
   <script>
     // ─── Hjælpefunktioner ───
@@ -186,6 +216,90 @@ REGLER:
       document.getElementById('customPrompt').addEventListener('input', scheduleSave);
       document.getElementById('teaserText').addEventListener('input', scheduleSave);
     })();
+
+    // ─── Test ───
+    function buildTestDiamondText(result) {
+      const d = result.diamond;
+      const inp = result.input;
+      const disp = (c, r) => c < 10 ? `${c}` : `${c}/${r}`;
+      let t = `--- DIAMANT for ${inp.fullName} (${inp.birthDate.day}/${inp.birthDate.month}/${inp.birthDate.year}) ---\n\n`;
+      t += `Grundenergi (top): ${d.grundenergi.value}\n`;
+      t += `Livslinje: ${d.livslinje.map(e => `${e.role} "${e.name}" = ${e.display}`).join(', ')}\n`;
+      t += `Bundtal: ${d.bundtal.display}\n`;
+      t += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
+      t += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
+      t += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
+      t += `Rygraden: ${d.rygraden.display}\n`;
+      t += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
+      return t;
+    }
+
+    function collectTestDisplays(diamond) {
+      const displays = new Set();
+      const disp = (c, r) => c < 10 ? `${c}` : `${c}/${r}`;
+      displays.add(diamond.grundenergi.display);
+      diamond.livslinje.forEach(e => displays.add(disp(e.compound, e.reduced)));
+      displays.add(diamond.bundtal.display);
+      displays.add(diamond.aura.auraUpperLeft.display);
+      displays.add(diamond.aura.auraUpperRight.display);
+      displays.add(diamond.aura.auraLowerLeft.display);
+      displays.add(diamond.aura.auraLowerRight.display);
+      displays.add(diamond.body.hjertecenter.centerTal.display);
+      displays.add(diamond.body.solarplexus.centerTal.display);
+      displays.add(diamond.rygraden.display);
+      displays.add(disp(diamond.soejletal.compound, diamond.soejletal.reduced));
+      return [...displays];
+    }
+
+    document.getElementById('runTestBtn').addEventListener('click', async () => {
+      const name = document.getElementById('testName').value.trim();
+      const dateVal = document.getElementById('testDate').value;
+      const spinner = document.getElementById('testSpinner');
+      const errBox  = document.getElementById('testError');
+      const resBox  = document.getElementById('testResult');
+
+      errBox.classList.add('d-none');
+      resBox.classList.add('d-none');
+
+      if (!name || !dateVal) { errBox.textContent = 'Udfyld navn og dato.'; errBox.classList.remove('d-none'); return; }
+
+      let result;
+      try { result = computeDiamond(name, dateVal); }
+      catch (e) { errBox.textContent = e.message; errBox.classList.remove('d-none'); return; }
+
+      const diamond = result.diamond;
+      const firstName = name.split(/\s+/)[0];
+      const firstNameDisplay = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
+
+      spinner.classList.remove('d-none');
+      document.getElementById('runTestBtn').disabled = true;
+
+      try {
+        const resp = await fetch('/api/generate-namereading', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: firstNameDisplay,
+            nameData: buildTestDiamondText(result),
+            relevantDisplays: collectTestDisplays(diamond)
+          })
+        });
+        spinner.classList.add('d-none');
+        if (!resp.ok) { const j = await resp.json().catch(() => ({})); errBox.textContent = 'API fejl: ' + (j.error || resp.status); errBox.classList.remove('d-none'); return; }
+        const data = await resp.json();
+        document.getElementById('testGrundenergi').textContent = 'Grundenergi ' + diamond.grundenergi.value;
+        document.getElementById('testDiamondSummary').textContent =
+          `Livslinje: ${diamond.livslinje.map(e => e.display).join(' · ')}  |  Bundtal: ${diamond.bundtal.display}  |  Rygraden: ${diamond.rygraden.display}`;
+        document.getElementById('testReading').textContent = data.reading;
+        resBox.classList.remove('d-none');
+      } catch (e) {
+        spinner.classList.add('d-none');
+        errBox.textContent = 'Netværksfejl: ' + e.message;
+        errBox.classList.remove('d-none');
+      } finally {
+        document.getElementById('runTestBtn').disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
