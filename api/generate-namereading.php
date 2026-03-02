@@ -155,8 +155,11 @@ if (!empty($cfg['customPrompt'])) {
 
 $systemPrompt .= "\nNUMEROLOGISK VIDEN:\n" . ($energyDescriptions ?: 'Ingen energibeskrivelser tilgængelige.');
 
-
-$userPrompt    = "Personen hedder {$firstName}.\n\n{$nameData}\n\nSkriv en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).";
+$userPrompt  = "Personen hedder {$firstName}.\n\n";
+$userPrompt .= "DIAMANTDATA (kun til din orientering — tallene og labels herunder må ALDRIG citeres eller nævnes i teksten):\n";
+$userPrompt .= "{$nameData}\n\n";
+$userPrompt .= "Skriv nu en kort, personlig numerologisk analyse ({$lo}–{$hi} sætninger i ét afsnit).\n";
+$userPrompt .= "HUSK: Nævn IKKE et eneste tal (ikke '9', '19/1', '14/5', ingenting). Nævn IKKE positionsnavne (ikke 'bundtal', 'hjertecenter', 'solarplexus', ingenting). Oversæt ALT til konkrete menneskelige egenskaber og adfærd.";
 
 // Brug tone-baseret temperature, fallback 0.7
 $temperature = $temperature ?? 0.7;
