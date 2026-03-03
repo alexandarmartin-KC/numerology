@@ -439,8 +439,8 @@ $rewritePrompt .= "- 'din [egenskab] gør at' → omskriv til konkret handling\n
 $rewritePrompt .= "- 'du kan opleve' → erstat med konstaterende nutid\n";
 $rewritePrompt .= "- 'du er god til', 'du er opmærksom på', 'du er bevidst om'\n\n";
 $rewritePrompt .= "REGLER:\n";
-$rewritePrompt .= "- Bevar overskrifterne Grundenergi, Livslinje, Bundtal præcis som de er.\n";
-$rewritePrompt .= "- Bevar strukturen i hvert afsnit.\n";
+$rewritePrompt .= "- Ingen overskrifter, ingen sektioner – ren flydende prosa opdelt i 3 afsnit.\n";
+$rewritePrompt .= "- Bevar strukturen og rækkefølgen i hvert afsnit.\n";
 $rewritePrompt .= "- Fjern alle tal, cifre og brøker.\n";
 $rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rosende, ikke coaching.\n";
 $rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\n";
@@ -451,6 +451,9 @@ $usage2 = null;
 if ($r2['httpCode'] === 200) {
     $d2 = json_decode($r2['response'], true);
     $reading = $r2['content'] ?? $reading;
+    // Strip headers again in case rewrite-AI added them back
+    $reading = preg_replace('/^(Grundenergi|Navnetal|Livslinje|Bundtal|G-tal[^\n]*)\s*\n/mu', '', $reading);
+    $reading = trim($reading);
     $rewritten = true;
     $usage2 = $d2['usage'] ?? null;
 }
