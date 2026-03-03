@@ -1350,8 +1350,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             firstName: firstNameDisplay,
+            birthDate: dateVal,
             nameData: buildDiamondText(result),
-            relevantDisplays: relevantDisplays
+            relevantDisplays: relevantDisplays,
+            provider: 'claude'
           })
         });
 

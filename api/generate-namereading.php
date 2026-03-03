@@ -20,6 +20,7 @@ if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_AP
 // ─── Input ───
 $body            = json_decode(file_get_contents('php://input'), true) ?? [];
 $firstName       = $body['firstName'] ?? '';
+$birthDate       = $body['birthDate'] ?? '';
 $nameData        = $body['nameData'] ?? '';
 $relevantDisplays = array_values(array_filter($body['relevantDisplays'] ?? [], fn($v) => is_string($v) && $v !== ''));
 $provider         = ($body['provider'] ?? 'openai') === 'claude' ? 'claude' : 'openai';
@@ -170,11 +171,21 @@ function containsBannedContent(string $text): bool {
 
 // ─── Byg systemprompt fra customPrompt ───
 $lo = 8; $hi = 10;
-$temperature = 0.3;
+$temperature = 0.7;
 
 if (!empty($cfg['customPrompt'])) {
-    // Erstat {NAVN} placeholder med det faktiske fornavn
-    $systemPrompt = str_replace('{NAVN}', $firstName, $cfg['customPrompt']);
+    $rawPrompt = $cfg['customPrompt'];
+    // Erstat alle kendte placeholders (både {NAVN} og {{NAVN}}-format)
+    $hasDataPlaceholder = str_contains($rawPrompt, '{{NUMEROSKOP_DATA}}');
+    $systemPrompt = str_replace(
+        ['{{NAVN}}', '{NAVN}', '{{FØDSELSDATO}}', '{{NUMEROSKOP_DATA}}'],
+        [$firstName, $firstName, $birthDate, $nameData],
+        $rawPrompt
+    );
+    // Debug: advar hvis der stadig er uerstattede placeholders
+    if (str_contains($systemPrompt, '{{')) {
+        error_log('ADVARSEL: Uerstattede placeholders i systemPrompt: ' . substr($systemPrompt, 0, 500));
+    }
 } else {
     // Fallback-prompt
     $systemPrompt  = "Du er en erfaren numerolog med psykologisk modenhed.\n";
@@ -214,21 +225,35 @@ if (!empty($cfg['customPrompt'])) {
 $maskedEnergy = maskBannedWords($energyDescriptions);
 $systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — kun til forståelse. Kopiér aldrig formuleringer herfra):\n" . ($maskedEnergy ?: 'Ingen energibeskrivelser tilgængelige.');
 
-$userPrompt  = "Personen hedder {$firstName}.\n\n";
-$userPrompt .= "DIAMANTDATA (kun til orientering — må ikke citeres):\n";
-$userPrompt .= "{$nameData}\n\n";
-$userPrompt .= "Skriv nu teksten.";
+// Hvis prompten bruger {{NUMEROSKOP_DATA}}-placeholder er data allerede injiceret i systemprompt
+if (!empty($hasDataPlaceholder)) {
+    $userPrompt = "Skriv analysen nu for {$firstName}.";
+} else {
+    $userPrompt  = "Personen hedder {$firstName}.\n\n";
+    $userPrompt .= "DIAMANTDATA (kun til orientering — må ikke citeres):\n";
+    $userPrompt .= "{$nameData}\n\n";
+    $userPrompt .= "Skriv nu analysen for {$firstName}.";
+}
 
 function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
-    $payload = json_encode([
-        'model'       => 'gpt-4o',
-        'messages'    => [
+    $model = 'gpt-4o';
+    $isReasoningModel = str_starts_with($model, 'o1') || str_starts_with($model, 'o3');
+
+    $params = [
+        'model'    => $model,
+        'messages' => [
             ['role' => 'system', 'content' => $systemPrompt],
             ['role' => 'user',   'content' => $userPrompt]
         ],
-        'temperature' => $temp,
-        'max_tokens'  => 700
-    ], JSON_UNESCAPED_UNICODE);
+    ];
+    if ($isReasoningModel) {
+        $params['max_completion_tokens'] = 2000;
+        $params['reasoning_effort']      = 'medium';
+    } else {
+        $params['temperature'] = $temp;
+        $params['max_tokens']  = 700;
+    }
+    $payload = json_encode($params, JSON_UNESCAPED_UNICODE);
 
     $ch = curl_init('https://api.openai.com/v1/chat/completions');
     curl_setopt_array($ch, [
@@ -247,8 +272,8 @@ function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, fl
 
 function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
     $payload = json_encode([
-        'model'       => 'claude-3-haiku-20240307',
-        'max_tokens'  => 700,
+        'model'       => 'claude-sonnet-4-20250514',
+        'max_tokens'  => 1024,
         'temperature' => $temp,
         'system'      => $systemPrompt,
         'messages'    => [
@@ -345,7 +370,8 @@ $intro = "Kære {$firstName}, her har du en kort numerologisk analyse af dit nav
 $reading = $intro . $reading;
 
 $debug = !empty($body['debug']);
-$out = ['reading' => $reading, 'provider' => $provider];
+$modelUsed = $provider === 'claude' ? 'claude-3-haiku-20240307' : 'gpt-4o';
+$out = ['reading' => $reading, 'provider' => $provider, 'model' => $modelUsed];
 if ($debug) {
     $totalIn  = ($provider === 'claude')
         ? (($usage1['input_tokens'] ?? 0)  + ($usage2['input_tokens'] ?? 0))
@@ -355,6 +381,7 @@ if ($debug) {
         : (($usage1['completion_tokens'] ?? 0) + ($usage2['completion_tokens'] ?? 0));
     $out['debug'] = [
         'provider'                 => $provider,
+        'model'                    => $modelUsed,
         'tokens'                   => [
             'kald1'  => $usage1,
             'kald2'  => $usage2,
