@@ -29,6 +29,10 @@ if ($provider === 'claude' && !$claudeKey) {
     http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit;
 }
 
+error_log("firstName: " . $firstName);
+error_log("birthDate: " . $birthDate);
+error_log("nameData: " . substr($nameData, 0, 100));
+
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
 }
