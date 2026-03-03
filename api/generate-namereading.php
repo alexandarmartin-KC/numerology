@@ -340,7 +340,7 @@ $rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\
 $rewritePrompt .= "TEKST:\n{$reading}";
 
 // Trin 2 bruger den billige Haiku-model — formatteringsopgaven kræver ikke Opus
-$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2, 'claude-3-5-haiku-20241022');
+$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2, 'claude-haiku-4-5');
 $usage2 = null;
 $r2Error = null;
 if ($r2['httpCode'] === 200) {
