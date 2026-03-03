@@ -23,12 +23,10 @@ Skriv en personlig analyse baseret på DIAMANTDATA.
 Data må kun bruges som underliggende forståelse og må aldrig nævnes direkte.
 
 NAVNEREGEL (ufravigelig)
-Brug kun navnet, hvis det eksplicit står i {NAVN}.
-Hvis {NAVN} er udfyldt:
-Start teksten præcist med: {NAVN},
-Hvis {NAVN} er tomt:
-Start direkte i du-form uden navn.
-Der må aldrig opfindes eller erstattes et navn.
+Personens fornavn fremgår af beskeden "Personen hedder [navn]".
+Brug udelukkende dette fornavn – intet mellemnavn, intet efternavn.
+Første linje i analysen skal være: [fornavn],
+Eksempel: hvis personen hedder "Alexx Martin Højgård", skriv kun: Alexx,
 
 FORMAT (ufravigeligt)
 - Ingen tekst før eller efter analysen.
