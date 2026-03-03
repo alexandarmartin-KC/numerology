@@ -338,6 +338,10 @@ if ($r2['httpCode'] === 200) {
     $usage2 = $d2['usage'] ?? null;
 }
 
+// ─── Tilføj personlig intro-linje øverst ───
+$intro = "Kære {$firstName}, her er en kort numerologisk analyse af dit navn.\n\n";
+$reading = $intro . $reading;
+
 $debug = !empty($body['debug']);
 $out = ['reading' => $reading, 'provider' => $provider];
 if ($debug) {
