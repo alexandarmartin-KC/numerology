@@ -300,6 +300,9 @@ if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['e
 
 $data    = json_decode($result['response'], true);
 $reading = $result['content'] ?? '';
+// Strip scratchpad-blok hvis modellen har inkluderet den i output
+$reading = preg_replace('/<scratchpad>[\s\S]*?<\/scratchpad>\s*/i', '', $reading);
+$reading = trim($reading);
 $rewritten = false;
 $usage1 = $provider === 'claude'
     ? ($data['usage'] ?? null)   // input_tokens, output_tokens
