@@ -313,47 +313,7 @@ $reading = preg_replace('/<\/analyse>\s*/i', '', $reading);
 // Strip eventuelle sektionsoverskrifter som modellen indsætter ud fra nameData-labels
 $reading = preg_replace('/^(Grundenergi|Navnetal|Livslinje|Bundtal|G-tal[^\n]*)\s*\n/mu', '', $reading);
 $reading = trim($reading);
-$rewritten = false;
-$usage1 = $provider === 'claude'
-    ? ($data['usage'] ?? null)   // input_tokens, output_tokens
-    : ($data['usage'] ?? null);  // prompt_tokens, completion_tokens, total_tokens
-
-// ─── Trin 2: Stil-nedkøling (kører altid) ───
-$rewritePrompt  = "Omskriv teksten nedenfor strengt efter disse regler.\n\n";
-$rewritePrompt .= "FORBUDTE ORD OG FRASER – disse må IKKE optræde i output. Erstat dem med konkrete adfærdsbeskrivelser:\n";
-$rewritePrompt .= "stærk, stærk vilje, trang til, tendens til, ligefremhed, initiativ, initiativer, tager styringen, tager initiativ, sætter pris på, ";
-$rewritePrompt .= "karisma, karismatisk, magnetisk, balance, udvikling, personlighed, indre kerne, sjæl, universet, intuition, ";
-$rewritePrompt .= "evne til, evner, styrke, respekt, beundring, inspirere, motivere, leder, lederskab, ambitiøs, målrettet, succes, ";
-$rewritePrompt .= "vision, passion, passioneret, potentiale, formål, retfærdighed, kompleksitet, indsigt, forandring, ";
-$rewritePrompt .= "længsel, fremdrift, integritet, autenticitet, medfølelse, empati, selvtillid, selvværd, mod, drivkraft, opmærksom.\n\n";
-$rewritePrompt .= "FORBUDTE SÆTNINGSSTRUKTURER:\n";
-$rewritePrompt .= "- 'du har [egenskab]' → beskriv i stedet hvad personen konkret gør\n";
-$rewritePrompt .= "- 'din [egenskab] gør at' → omskriv til konkret handling\n";
-$rewritePrompt .= "- 'du kan opleve' → erstat med konstaterende nutid\n";
-$rewritePrompt .= "- 'du er god til', 'du er opmærksom på', 'du er bevidst om'\n\n";
-$rewritePrompt .= "REGLER:\n";
-$rewritePrompt .= "- Ingen overskrifter, ingen sektioner – ren flydende prosa opdelt i 3 afsnit.\n";
-$rewritePrompt .= "- Bevar strukturen og rækkefølgen i hvert afsnit.\n";
-$rewritePrompt .= "- Fjern alle tal, cifre og brøker.\n";
-$rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rosende, ikke coaching.\n";
-$rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\n";
-$rewritePrompt .= "TEKST:\n{$reading}";
-
-// Trin 2 bruger den billige Haiku-model — formatteringsopgaven kræver ikke Opus
-$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2, 'claude-haiku-4-5');
-$usage2 = null;
-$r2Error = null;
-if ($r2['httpCode'] === 200) {
-    $d2 = json_decode($r2['response'], true);
-    $reading = $r2['content'] ?? $reading;
-    // Strip headers again in case rewrite-AI added them back
-    $reading = preg_replace('/^(Grundenergi|Navnetal|Livslinje|Bundtal|G-tal[^\n]*)\s*\n/mu', '', $reading);
-    $reading = trim($reading);
-    $rewritten = true;
-    $usage2 = $d2['usage'] ?? null;
-} else {
-    $r2Error = ['httpCode' => $r2['httpCode'], 'curlErr' => $r2['curlErr'], 'response' => substr($r2['response'] ?? '', 0, 500)];
-}
+$usage1 = $data['usage'] ?? null;
 
 // Ingen hardcodet intro — den nye prompt starter analysen med personens navn naturligt
 
@@ -362,17 +322,16 @@ $modelUsed = $provider === 'claude' ? 'claude-opus-4-6' : 'gpt-4o';
 $out = ['reading' => $reading, 'provider' => $provider, 'model' => $modelUsed];
 if ($debug) {
     $totalIn  = ($provider === 'claude')
-        ? (($usage1['input_tokens'] ?? 0)  + ($usage2['input_tokens'] ?? 0))
-        : (($usage1['prompt_tokens'] ?? 0) + ($usage2['prompt_tokens'] ?? 0));
+        ? ($usage1['input_tokens'] ?? 0)
+        : ($usage1['prompt_tokens'] ?? 0);
     $totalOut = ($provider === 'claude')
-        ? (($usage1['output_tokens'] ?? 0)  + ($usage2['output_tokens'] ?? 0))
-        : (($usage1['completion_tokens'] ?? 0) + ($usage2['completion_tokens'] ?? 0));
+        ? ($usage1['output_tokens'] ?? 0)
+        : ($usage1['completion_tokens'] ?? 0);
     $out['debug'] = [
         'provider'                 => $provider,
         'model'                    => $modelUsed,
         'tokens'                   => [
-            'kald1'  => $usage1,
-            'kald2'  => $usage2,
+            'kald1'       => $usage1,
             'totalInput'  => $totalIn,
             'totalOutput' => $totalOut,
             'totalSamlet' => $totalIn + $totalOut,
@@ -381,8 +340,6 @@ if ($debug) {
         'userPrompt'               => $userPrompt,
         'relevantDisplays'         => $relevantDisplays,
         'energyDescriptionsLength' => strlen($energyDescriptions),
-        'rewritten'                => $rewritten,
-        'rewriteError'             => $r2Error,
     ];
 }
 echo json_encode($out, JSON_UNESCAPED_UNICODE);

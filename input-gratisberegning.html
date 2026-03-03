@@ -482,8 +482,7 @@ Skriv analysen inden for <analyse> tags.`;
             ? ` · 🔢 ${t.totalInput} ind + ${t.totalOutput} ud = ${t.totalSamlet} tokens`
             : '';
           document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
-          const rewriteStatus = data.debug.rewritten ? ' · ✅ rewrite' : (' · ❌ ingen rewrite' + (data.debug.rewriteError ? ' (HTTP ' + data.debug.rewriteError.httpCode + ': ' + (data.debug.rewriteError.response || data.debug.rewriteError.curlErr || '?') + ')' : ''));
-          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + rewriteStatus + ' · ' + providerLabel + tokenStr;
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn · ' + providerLabel + tokenStr;
           document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
           document.getElementById('debugUser').textContent = data.debug.userPrompt;
         }
