@@ -420,7 +420,7 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
           })
         });
         spinner.classList.add('d-none');
-        if (!resp.ok) { const j = await resp.json().catch(() => ({})); errBox.textContent = 'API fejl: ' + (j.error || resp.status); errBox.classList.remove('d-none'); return; }
+        if (!resp.ok) { const j = await resp.json().catch(() => ({})); errBox.textContent = 'API fejl: ' + (j.error || resp.status) + (j.details ? ' — ' + j.details : ''); errBox.classList.remove('d-none'); return; }
         const data = await resp.json();
         document.getElementById('testGrundenergi').textContent = 'Grundenergi ' + diamond.grundenergi.value;
         document.getElementById('testDiamondSummary').textContent =
