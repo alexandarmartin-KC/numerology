@@ -43,10 +43,6 @@ if ($provider === 'claude' && !$claudeKey) {
     http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit;
 }
 
-error_log("firstName: " . $firstName);
-error_log("birthDate: " . $birthDate);
-error_log("nameData: " . substr($nameData, 0, 100));
-
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
 }
@@ -104,49 +100,8 @@ function cleanEnergyText(string $text, array $avoids, array $customAvoids, strin
     return trim($t);
 }
 
-// ─── Hent energibeskrivelser fra DB (virker for alle besøgende) ───
+// Energibeskrivelser fra DB bruges ikke med den nye prompt ({{NUMEROSKOP_DATA}} er allerede injiceret)
 $energyDescriptions = '';
-if (!empty($relevantDisplays)) {
-    try {
-        $dbE  = getDB();
-        $ph   = implode(',', array_fill(0, count($relevantDisplays), '?'));
-        $types = str_repeat('s', count($relevantDisplays));
-        $stmtE = $dbE->prepare("SELECT display, grundenergi, beskrivelse, keywords, keywords_urent_numeroskop, ubalanceret_keywords, helheds_funktion FROM diamant_energies WHERE display IN ($ph) ORDER BY id ASC");
-        if ($stmtE) {
-            $stmtE->bind_param($types, ...$relevantDisplays);
-            $stmtE->execute();
-            $resE = $stmtE->get_result();
-            $eavoids = [];
-            $ecustom = [];
-            $etone   = 'direct';
-            while ($erow = $resE->fetch_assoc()) {
-                $isCompound = str_contains($erow['display'], '/');
-
-                // Grundtal (1-9) bruger grundenergi; sammensatte tal bruger beskrivelse
-                $mainText = $isCompound
-                    ? ($erow['beskrivelse'] ?: $erow['grundenergi'])
-                    : ($erow['grundenergi'] ?: $erow['beskrivelse']);
-
-                // Keywords: positive først, ellers ubalancerede
-                $kw = $erow['keywords'] ?: $erow['keywords_urent_numeroskop'];
-
-                // Ubalanceret beskrivelse (opmærksomhedspunkt)
-                $ubalance = $erow['ubalanceret_keywords'] ?? '';
-
-                // Helhedsfunktion
-                $helhed = $erow['helheds_funktion'] ?? '';
-
-                $energyDescriptions .= "\n--- Energi {$erow['display']} ---\n";
-                if ($mainText) $energyDescriptions .= 'Beskrivelse: ' . cleanEnergyText($mainText, $eavoids, $ecustom, $etone) . "\n";
-                if ($kw)       $energyDescriptions .= 'Nøgleord: '    . cleanEnergyText($kw,       $eavoids, $ecustom, $etone) . "\n";
-                if ($ubalance && $ubalance !== $mainText)
-                               $energyDescriptions .= 'Udfordrende aspekter: ' . cleanEnergyText($ubalance, $eavoids, $ecustom, $etone) . "\n";
-                if ($helhed)   $energyDescriptions .= 'Helhedsfunktion: '  . cleanEnergyText($helhed,   $eavoids, $ecustom, $etone) . "\n";
-            }
-            $stmtE->close();
-        }
-    } catch (Throwable $e) { /* energier utilgængelige — GPT bruger egne viden */ }
-}
 
 // ─── Masker forbudte ord i energibeskrivelserne inden de sendes til GPT ───
 function maskBannedWords(string $text): string {
@@ -167,28 +122,7 @@ function maskBannedWords(string $text): string {
     return $text;
 }
 
-// ─── Validator: tjek om output indeholder forbudte ord eller tal ───
-function containsBannedContent(string $text): bool {
-    $banned = [
-        'viljestyrk','handlekraft','beslutsomhed','naturlig leder','naturlig evne',
-        'medfødt evne','går foran','gøre en forskel','karisma','magnetisk',
-        'udstråling','tiltrækk','charme','selvtillid','skaber harmoni',
-        'dybe relation','kærligt hjerte','æstetisk sans','livsrejse','skæbne',
-        'forudbestemt','dybere mening','fascinerende dybde','stort potentiale',
-        'indre ro','finde balance','finde ro','kunstnerisk','åndelig','spirituel',
-        'kosmisk','universet','intuition','mystik','healing','heale','indre lys',
-        'energistrøm','harmoni','stærk vilje',
-    ];
-    foreach ($banned as $word) {
-        if (mb_stripos($text, $word) !== false) return true;
-    }
-    // Tjek for tal/cifre i teksten (undtagen årstal der evt. er en del af sætninger)
-    if (preg_match('/\b\d+\/\d+\b/', $text)) return true;
-    return false;
-}
-
 // ─── Byg systemprompt fra customPrompt ───
-$lo = 8; $hi = 10;
 $temperature = 0.7;
 
 // Ny standardprompt — bruges hvis DB-prompten er gammel (mangler {{NUMEROSKOP_DATA}})
@@ -312,15 +246,6 @@ if (!empty($hasDataPlaceholder)) {
     $userPrompt .= "Skriv nu analysen for {$firstName}.";
 }
 
-// ─── DEBUG: Gem prompt til fil (fjern i produktion) ───
-$debugLog  = "=== " . date('Y-m-d H:i:s') . " ===\n";
-$debugLog .= "firstName: " . $firstName . "\n";
-$debugLog .= "birthDate: " . $birthDate . "\n";
-$debugLog .= "--- NAMEDATA (rå fra frontend) ---\n" . $nameData . "\n\n";
-$debugLog .= "--- SYSTEM PROMPT ---\n" . $systemPrompt . "\n\n";
-$debugLog .= "--- USER PROMPT ---\n" . $userPrompt . "\n\n";
-file_put_contents(__DIR__ . '/debug-prompt.log', $debugLog, FILE_APPEND);
-// ─────────────────────────────────────────────────────
 
 function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
     $model = 'gpt-4o';
@@ -357,9 +282,9 @@ function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, fl
     return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
 }
 
-function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
+function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp, string $model = 'claude-opus-4-6'): array {
     $payload = json_encode([
-        'model'       => 'claude-opus-4-6',
+        'model'       => $model,
         'max_tokens'  => 1024,
         'temperature' => $temp,
         'system'      => $systemPrompt,
@@ -387,9 +312,9 @@ function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, fl
     return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
 }
 
-function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, string $claudeKey, string $provider, float $temp): array {
+function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, string $claudeKey, string $provider, float $temp, string $claudeModel = 'claude-opus-4-6'): array {
     if ($provider === 'claude') {
-        $r = callClaude($systemPrompt, $userPrompt, $claudeKey, $temp);
+        $r = callClaude($systemPrompt, $userPrompt, $claudeKey, $temp, $claudeModel);
         if ($r['httpCode'] === 200) {
             $d = json_decode($r['response'], true);
             $r['content'] = $d['content'][0]['text'] ?? '';
@@ -446,7 +371,8 @@ $rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rose
 $rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\n";
 $rewritePrompt .= "TEKST:\n{$reading}";
 
-$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2);
+// Trin 2 bruger den billige Haiku-model — formatteringsopgaven kræver ikke Opus
+$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2, 'claude-3-5-haiku-20241022');
 $usage2 = null;
 if ($r2['httpCode'] === 200) {
     $d2 = json_decode($r2['response'], true);
@@ -461,7 +387,7 @@ if ($r2['httpCode'] === 200) {
 // Ingen hardcodet intro — den nye prompt starter analysen med personens navn naturligt
 
 $debug = !empty($body['debug']);
-$modelUsed = $provider === 'claude' ? 'claude-3-haiku-20240307' : 'gpt-4o';
+$modelUsed = $provider === 'claude' ? 'claude-opus-4-6' : 'gpt-4o';
 $out = ['reading' => $reading, 'provider' => $provider, 'model' => $modelUsed];
 if ($debug) {
     $totalIn  = ($provider === 'claude')
