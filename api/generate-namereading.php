@@ -240,9 +240,13 @@ if (!empty($cfg['customPrompt'])) {
     $systemPrompt .= "Sikr at teksten kunne læses højt uden at virke højtidelig.\n";
 }
 
-$maskedEnergy = maskBannedWords($energyDescriptions);
-$systemPrompt .= "\nNedenstående er udelukkende rådata til din fortolkning. Lad dig IKKE påvirke af labelnavne eller struktur i dataet.\n";
-$systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — kun til forståelse. Kopiér aldrig formuleringer herfra):\n" . ($maskedEnergy ?: 'Ingen energibeskrivelser tilgængelige.');
+// Tilføj kun energividen-blokken hvis prompten IKKE allerede indeholder data via {{NUMEROSKOP_DATA}}.
+// Når den nye holistiske prompt bruges, er $nameData allerede injiceret — ekstra viden forvirrer Claude.
+if (empty($hasDataPlaceholder)) {
+    $maskedEnergy = maskBannedWords($energyDescriptions);
+    $systemPrompt .= "\nNedenstående er udelukkende rådata til din fortolkning. Lad dig IKKE påvirke af labelnavne eller struktur i dataet.\n";
+    $systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — kun til forståelse. Kopiér aldrig formuleringer herfra):\n" . ($maskedEnergy ?: 'Ingen energibeskrivelser tilgængelige.');
+}
 
 // Hvis prompten bruger {{NUMEROSKOP_DATA}}-placeholder er data allerede injiceret i systemprompt
 if (!empty($hasDataPlaceholder)) {
