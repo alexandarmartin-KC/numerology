@@ -482,7 +482,8 @@ Skriv analysen inden for <analyse> tags.`;
             ? ` · 🔢 ${t.totalInput} ind + ${t.totalOutput} ud = ${t.totalSamlet} tokens`
             : '';
           document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
-          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite') + ' · ' + providerLabel + tokenStr;
+          const rewriteStatus = data.debug.rewritten ? ' · ✅ rewrite' : (' · ❌ ingen rewrite' + (data.debug.rewriteError ? ' (HTTP ' + data.debug.rewriteError.httpCode + ': ' + (data.debug.rewriteError.response || data.debug.rewriteError.curlErr || '?') + ')' : ''));
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + rewriteStatus + ' · ' + providerLabel + tokenStr;
           document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
           document.getElementById('debugUser').textContent = data.debug.userPrompt;
         }

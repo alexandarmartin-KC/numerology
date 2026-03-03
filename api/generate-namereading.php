@@ -342,6 +342,7 @@ $rewritePrompt .= "TEKST:\n{$reading}";
 // Trin 2 bruger den billige Haiku-model — formatteringsopgaven kræver ikke Opus
 $r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2, 'claude-3-5-haiku-20241022');
 $usage2 = null;
+$r2Error = null;
 if ($r2['httpCode'] === 200) {
     $d2 = json_decode($r2['response'], true);
     $reading = $r2['content'] ?? $reading;
@@ -350,6 +351,8 @@ if ($r2['httpCode'] === 200) {
     $reading = trim($reading);
     $rewritten = true;
     $usage2 = $d2['usage'] ?? null;
+} else {
+    $r2Error = ['httpCode' => $r2['httpCode'], 'curlErr' => $r2['curlErr'], 'response' => substr($r2['response'] ?? '', 0, 500)];
 }
 
 // Ingen hardcodet intro — den nye prompt starter analysen med personens navn naturligt
@@ -379,6 +382,7 @@ if ($debug) {
         'relevantDisplays'         => $relevantDisplays,
         'energyDescriptionsLength' => strlen($energyDescriptions),
         'rewritten'                => $rewritten,
+        'rewriteError'             => $r2Error,
     ];
 }
 echo json_encode($out, JSON_UNESCAPED_UNICODE);
