@@ -359,6 +359,8 @@ $reading = preg_replace('/<scratchpad>[\s\S]*?<\/scratchpad>\s*/i', '', $reading
 // Strip <analyse> tags hvis modellen har inkluderet dem
 $reading = preg_replace('/<analyse>\s*/i', '', $reading);
 $reading = preg_replace('/<\/analyse>\s*/i', '', $reading);
+// Strip eventuelle sektionsoverskrifter som modellen indsætter ud fra nameData-labels
+$reading = preg_replace('/^(Grundenergi|Navnetal|Livslinje|Bundtal|G-tal[^\n]*)\s*\n/mu', '', $reading);
 $reading = trim($reading);
 $rewritten = false;
 $usage1 = $provider === 'claude'
