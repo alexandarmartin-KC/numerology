@@ -428,8 +428,12 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
         document.getElementById('testReading').innerHTML = formatReading(data.reading);
         if (data.debug) {
           const providerLabel = data.debug.provider === 'claude' ? '✅ Claude' : '✅ GPT-4o';
+          const t = data.debug.tokens || {};
+          const tokenStr = t.totalSamlet
+            ? ` · 🔢 ${t.totalInput} ind + ${t.totalOutput} ud = ${t.totalSamlet} tokens`
+            : '';
           document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
-          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite') + ' · ' + providerLabel;
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite') + ' · ' + providerLabel + tokenStr;
           document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
           document.getElementById('debugUser').textContent = data.debug.userPrompt;
         }

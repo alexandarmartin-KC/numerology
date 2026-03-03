@@ -301,6 +301,9 @@ if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['e
 $data    = json_decode($result['response'], true);
 $reading = $result['content'] ?? '';
 $rewritten = false;
+$usage1 = $provider === 'claude'
+    ? ($data['usage'] ?? null)   // input_tokens, output_tokens
+    : ($data['usage'] ?? null);  // prompt_tokens, completion_tokens, total_tokens
 
 // ─── Trin 2: Stil-nedkøling (kører altid) ───
 $rewritePrompt  = "Omskriv teksten nedenfor strengt efter disse regler.\n\n";
@@ -324,16 +327,32 @@ $rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\
 $rewritePrompt .= "TEKST:\n{$reading}";
 
 $r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2);
+$usage2 = null;
 if ($r2['httpCode'] === 200) {
+    $d2 = json_decode($r2['response'], true);
     $reading = $r2['content'] ?? $reading;
     $rewritten = true;
+    $usage2 = $d2['usage'] ?? null;
 }
 
 $debug = !empty($body['debug']);
 $out = ['reading' => $reading, 'provider' => $provider];
 if ($debug) {
+    $totalIn  = ($provider === 'claude')
+        ? (($usage1['input_tokens'] ?? 0)  + ($usage2['input_tokens'] ?? 0))
+        : (($usage1['prompt_tokens'] ?? 0) + ($usage2['prompt_tokens'] ?? 0));
+    $totalOut = ($provider === 'claude')
+        ? (($usage1['output_tokens'] ?? 0)  + ($usage2['output_tokens'] ?? 0))
+        : (($usage1['completion_tokens'] ?? 0) + ($usage2['completion_tokens'] ?? 0));
     $out['debug'] = [
         'provider'                 => $provider,
+        'tokens'                   => [
+            'kald1'  => $usage1,
+            'kald2'  => $usage2,
+            'totalInput'  => $totalIn,
+            'totalOutput' => $totalOut,
+            'totalSamlet' => $totalIn + $totalOut,
+        ],
         'systemPrompt'             => $systemPrompt,
         'userPrompt'               => $userPrompt,
         'relevantDisplays'         => $relevantDisplays,
