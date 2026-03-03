@@ -25,6 +25,20 @@ $nameData        = $body['nameData'] ?? '';
 $relevantDisplays = array_values(array_filter($body['relevantDisplays'] ?? [], fn($v) => is_string($v) && $v !== ''));
 $provider         = ($body['provider'] ?? 'openai') === 'claude' ? 'claude' : 'openai';
 
+// ─── Normaliser nameData: håndtér gammelt format fra ældre index.html ───
+// Træk fødselsdato ud af header hvis birthDate er tom (gammelt format: "--- DIAMANT for Navn (DD/MM/YYYY) ---")
+if (empty($birthDate) && preg_match('/\((\d{1,2})\/(\d{1,2})\/(\d{4})\)/', $nameData, $m)) {
+    $birthDate = sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+}
+// Erstat gamle labels med neutrale og tilføj <rådata>-wrap hvis mangler
+if (!str_contains($nameData, '<rådata>')) {
+    $nameData = preg_replace('/^---.*---\s*/mu', '', $nameData); // fjern header-linje
+    $nameData = preg_replace('/^Grundenergi \(top\):/mu', 'G-tal (top):', $nameData);
+    $nameData = preg_replace('/^Livslinje:/mu',           'Navnetal:',    $nameData);
+    $nameData = preg_replace('/^Bundtal:/mu',             'B-tal:',       $nameData);
+    $nameData = "<rådata>\n" . trim($nameData) . "\n</rådata>";
+}
+
 if ($provider === 'claude' && !$claudeKey) {
     http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit;
 }
