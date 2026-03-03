@@ -356,6 +356,9 @@ $data    = json_decode($result['response'], true);
 $reading = $result['content'] ?? '';
 // Strip scratchpad-blok hvis modellen har inkluderet den i output
 $reading = preg_replace('/<scratchpad>[\s\S]*?<\/scratchpad>\s*/i', '', $reading);
+// Strip <analyse> tags hvis modellen har inkluderet dem
+$reading = preg_replace('/<analyse>\s*/i', '', $reading);
+$reading = preg_replace('/<\/analyse>\s*/i', '', $reading);
 $reading = trim($reading);
 $rewritten = false;
 $usage1 = $provider === 'claude'
@@ -392,11 +395,7 @@ if ($r2['httpCode'] === 200) {
     $usage2 = $d2['usage'] ?? null;
 }
 
-// ─── Tilføj personlig intro-linje øverst ───
-// Strip modellens navn-linje øverst (fx "Alexx,") da intro allerede indeholder navnet
-$reading = preg_replace('/^\s*\S+,\s*\n+/u', '', $reading);
-$intro = "Kære {$firstName}, her har du en kort numerologisk analyse af dit navn.\n\n";
-$reading = $intro . $reading;
+// Ingen hardcodet intro — den nye prompt starter analysen med personens navn naturligt
 
 $debug = !empty($body['debug']);
 $modelUsed = $provider === 'claude' ? 'claude-3-haiku-20240307' : 'gpt-4o';
