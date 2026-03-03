@@ -251,19 +251,23 @@ $rewritten = false;
 
 // ─── Trin 2: Stil-nedkøling (kører altid) ───
 $rewritePrompt  = "Omskriv teksten nedenfor strengt efter disse regler.\n\n";
-$rewritePrompt .= "FORBUDTE ORD OG FRASER – disse må ikke optræde i output (erstat med konkrete handlingsbeskrivelser):\n";
-$rewritePrompt .= "stærk, stærk vilje, stærk trang, trange, trang til, initiativ, initiativer, tager styringen, sætter pris på, karisma, karismatisk, magnetisk, ";
-$rewritePrompt .= "balance, udvikling, personlighed, indre kerne, sjæl, universet, intuition, evne til, evner, styrke, respekt, beundring, inspirere, motivere, ";
-$rewritePrompt .= "leder, lederskab, ambitiøs, målrettet, succes, vision, passion, passioneret, dybe, dyb, potentiale, formål, retfærdighed, ";
-$rewritePrompt .= "kompleksitet, indsigt, forandring, længsel, energi, fremdrift, integritet, autenticitet, medfølelse, empati, selvtillid, selvværd, mod, drivkraft.\n\n";
+$rewritePrompt .= "FORBUDTE ORD OG FRASER – disse må IKKE optræde i output. Erstat dem med konkrete adfærdsbeskrivelser:\n";
+$rewritePrompt .= "stærk, stærk vilje, trang til, tendens til, ligefremhed, initiativ, initiativer, tager styringen, tager initiativ, sætter pris på, ";
+$rewritePrompt .= "karisma, karismatisk, magnetisk, balance, udvikling, personlighed, indre kerne, sjæl, universet, intuition, ";
+$rewritePrompt .= "evne til, evner, styrke, respekt, beundring, inspirere, motivere, leder, lederskab, ambitiøs, målrettet, succes, ";
+$rewritePrompt .= "vision, passion, passioneret, potentiale, formål, retfærdighed, kompleksitet, indsigt, forandring, ";
+$rewritePrompt .= "længsel, fremdrift, integritet, autenticitet, medfølelse, empati, selvtillid, selvværd, mod, drivkraft, opmærksom.\n\n";
+$rewritePrompt .= "FORBUDTE SÆTNINGSSTRUKTURER:\n";
+$rewritePrompt .= "- 'du har [egenskab]' → beskriv i stedet hvad personen konkret gør\n";
+$rewritePrompt .= "- 'din [egenskab] gør at' → omskriv til konkret handling\n";
+$rewritePrompt .= "- 'du kan opleve' → erstat med konstaterende nutid\n";
+$rewritePrompt .= "- 'du er god til', 'du er opmærksom på', 'du er bevidst om'\n\n";
 $rewritePrompt .= "REGLER:\n";
-$rewritePrompt .= "- Erstat forbudte ord med konkrete handlings- eller adfærdsbeskrivelser.\n";
-$rewritePrompt .= "- Undgå formuleringer som 'du har', 'du er en', 'du er kendt for', 'du søger', 'du er god til'.\n";
-$rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rosende, ikke dramatisk.\n";
-$rewritePrompt .= "- Bevar strukturen: ét samlet afsnit, 8–9 sætninger.\n";
+$rewritePrompt .= "- Bevar overskrifterne Grundenergi, Livslinje, Bundtal præcis som de er.\n";
+$rewritePrompt .= "- Bevar strukturen i hvert afsnit.\n";
 $rewritePrompt .= "- Fjern alle tal, cifre og brøker.\n";
-$rewritePrompt .= "- Brug fornavnet én gang naturligt, gerne i starten.\n";
-$rewritePrompt .= "- Returner kun den omskrevne version — ingen forklaringer, ingen kommentarer.\n\n";
+$rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rosende, ikke coaching.\n";
+$rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\n";
 $rewritePrompt .= "TEKST:\n{$reading}";
 
 $r2 = callOpenAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, 0.2);

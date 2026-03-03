@@ -1137,7 +1137,12 @@
     function formatReading(text) {
       if (!text) return '';
       const sectionHeaders = ['Grundenergi', 'Livslinje', 'Bundtal'];
-      const escaped = text
+      // Insert newline before any inline section header so they're always on their own line
+      let normalized = text;
+      sectionHeaders.forEach(h => {
+        normalized = normalized.replace(new RegExp('([^\n])(' + h + ')', 'g'), '$1\n$2');
+      });
+      const escaped = normalized
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const lines = escaped.split(/\n/);
       let html = '';
