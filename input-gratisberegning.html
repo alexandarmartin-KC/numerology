@@ -113,7 +113,15 @@
     <div class="card mb-4 border-warning">
       <div class="card-header bg-warning bg-opacity-10 d-flex align-items-center justify-content-between">
         <span class="fw-bold">Test beregning</span>
-        <button id="runTestBtn" class="btn btn-warning btn-sm">Kør test</button>
+        <div class="d-flex align-items-center gap-3">
+          <div class="btn-group btn-group-sm" role="group" aria-label="AI udbyder">
+            <input type="radio" class="btn-check" name="aiProvider" id="providerGPT" value="openai" checked autocomplete="off">
+            <label class="btn btn-outline-secondary" for="providerGPT">GPT-4o</label>
+            <input type="radio" class="btn-check" name="aiProvider" id="providerClaude" value="claude" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="providerClaude">Claude</label>
+          </div>
+          <button id="runTestBtn" class="btn btn-warning btn-sm">Kør test</button>
+        </div>
       </div>
       <div class="card-body">
         <div class="d-flex gap-2 mb-3">
@@ -342,6 +350,32 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
       return [...displays];
     }
 
+    function formatReading(text) {
+      if (!text) return '';
+      const sectionHeaders = ['Grundenergi', 'Livslinje', 'Bundtal'];
+      let normalized = text;
+      sectionHeaders.forEach(h => {
+        normalized = normalized.replace(new RegExp('([^\n])(' + h + ')', 'g'), '$1\n$2');
+      });
+      const escaped = normalized.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const lines = escaped.split(/\n/);
+      let html = '', inP = false;
+      for (const raw of lines) {
+        const t = raw.replace(/^##\s*/, '').trim();
+        if (sectionHeaders.includes(t)) {
+          if (inP) { html += '</p>'; inP = false; }
+          html += `<h3 style="font-size:0.95rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin:1.4rem 0 0.3rem">${t}</h3>`;
+        } else if (t === '') {
+          if (inP) { html += '</p>'; inP = false; }
+        } else {
+          if (!inP) { html += '<p style="margin:0 0 0.5rem">'; inP = true; } else html += ' ';
+          html += t;
+        }
+      }
+      if (inP) html += '</p>';
+      return html;
+    }
+
     document.querySelectorAll('.preset-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.getElementById('testName').value = btn.dataset.name;
@@ -373,6 +407,7 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
       document.getElementById('runTestBtn').disabled = true;
 
       try {
+        const provider = document.querySelector('input[name="aiProvider"]:checked')?.value || 'openai';
         const resp = await fetch('/api/generate-namereading', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -380,6 +415,7 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
             firstName: firstNameDisplay,
             nameData: buildTestDiamondText(result),
             relevantDisplays: collectTestDisplays(diamond),
+            provider: provider,
             debug: true
           })
         });
@@ -389,10 +425,11 @@ SLUT med én sætning der antyder at den fulde diamant rummer mere.`;
         document.getElementById('testGrundenergi').textContent = 'Grundenergi ' + diamond.grundenergi.value;
         document.getElementById('testDiamondSummary').textContent =
           `Livslinje: ${diamond.livslinje.map(e => e.display).join(' · ')}  |  Bundtal: ${diamond.bundtal.display}`;
-        document.getElementById('testReading').textContent = data.reading;
+        document.getElementById('testReading').innerHTML = formatReading(data.reading);
         if (data.debug) {
+          const providerLabel = data.debug.provider === 'claude' ? '✅ Claude' : '✅ GPT-4o';
           document.getElementById('debugDisplays').textContent = (data.debug.relevantDisplays || []).join(', ') || '(ingen)';
-          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite');
+          document.getElementById('debugEnergyLen').textContent = data.debug.energyDescriptionsLength + ' tegn' + (data.debug.rewritten ? ' · ⚠️ rewrite-kald udløst' : ' · ingen rewrite') + ' · ' + providerLabel;
           document.getElementById('debugSystem').textContent = data.debug.systemPrompt;
           document.getElementById('debugUser').textContent = data.debug.userPrompt;
         }

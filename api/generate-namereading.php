@@ -11,9 +11,10 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
-// ─── API-nøgle ───
+// ─── API-nøgler og udbyder ───
 // db.php har allerede inkluderet .env.php, så $_OPENAI_API_KEY er sat
-$apiKey = getenv('OPENAI_API_KEY') ?: ($_OPENAI_API_KEY ?? '');
+$apiKey     = getenv('OPENAI_API_KEY')    ?: ($_OPENAI_API_KEY    ?? '');
+$claudeKey  = getenv('ANTHROPIC_API_KEY') ?: ($_ANTHROPIC_API_KEY ?? '');
 if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
 
 // ─── Input ───
@@ -21,6 +22,11 @@ $body            = json_decode(file_get_contents('php://input'), true) ?? [];
 $firstName       = $body['firstName'] ?? '';
 $nameData        = $body['nameData'] ?? '';
 $relevantDisplays = array_values(array_filter($body['relevantDisplays'] ?? [], fn($v) => is_string($v) && $v !== ''));
+$provider         = ($body['provider'] ?? 'openai') === 'claude' ? 'claude' : 'openai';
+
+if ($provider === 'claude' && !$claudeKey) {
+    http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit;
+}
 
 if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
@@ -239,13 +245,61 @@ function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, fl
     return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
 }
 
+function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
+    $payload = json_encode([
+        'model'       => 'claude-3-5-sonnet-20241022',
+        'max_tokens'  => 700,
+        'temperature' => $temp,
+        'system'      => $systemPrompt,
+        'messages'    => [
+            ['role' => 'user', 'content' => $userPrompt]
+        ]
+    ], JSON_UNESCAPED_UNICODE);
+
+    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $payload,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'x-api-key: ' . $apiKey,
+            'anthropic-version: 2023-06-01'
+        ],
+        CURLOPT_TIMEOUT        => 60
+    ]);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr  = curl_error($ch);
+    curl_close($ch);
+    return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
+}
+
+function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, string $claudeKey, string $provider, float $temp): array {
+    if ($provider === 'claude') {
+        $r = callClaude($systemPrompt, $userPrompt, $claudeKey, $temp);
+        if ($r['httpCode'] === 200) {
+            $d = json_decode($r['response'], true);
+            $r['content'] = $d['content'][0]['text'] ?? '';
+        }
+    } else {
+        $r = callOpenAI($systemPrompt, $userPrompt, $openaiKey, $temp);
+        if ($r['httpCode'] === 200) {
+            $d = json_decode($r['response'], true);
+            $r['content'] = $d['choices'][0]['message']['content'] ?? '';
+            $r['usage']   = $d['usage'] ?? null;
+        }
+    }
+    return $r;
+}
+
 // ─── Første kald ───
-$result = callOpenAI($systemPrompt, $userPrompt, $apiKey, $temperature);
+$result = callAI($systemPrompt, $userPrompt, $apiKey, $claudeKey, $provider, $temperature);
 if ($result['curlErr']) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $result['curlErr']]); exit; }
-if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['error' => 'OpenAI API fejl', 'details' => $result['response']]); exit; }
+if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['error' => ($provider === 'claude' ? 'Claude' : 'OpenAI') . ' API fejl', 'details' => $result['response']]); exit; }
 
 $data    = json_decode($result['response'], true);
-$reading = $data['choices'][0]['message']['content'] ?? '';
+$reading = $result['content'] ?? '';
 $rewritten = false;
 
 // ─── Trin 2: Stil-nedkøling (kører altid) ───
@@ -269,18 +323,17 @@ $rewritePrompt .= "- Sproget skal være jordnært og konstaterende – ikke rose
 $rewritePrompt .= "- Returner kun den omskrevne tekst — ingen forklaringer.\n\n";
 $rewritePrompt .= "TEKST:\n{$reading}";
 
-$r2 = callOpenAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, 0.2);
+$r2 = callAI("Du er en præcis dansk tekstredigerer. Du omskriver på dansk og returnerer kun den færdige tekst.", $rewritePrompt, $apiKey, $claudeKey, $provider, 0.2);
 if ($r2['httpCode'] === 200) {
-    $d2 = json_decode($r2['response'], true);
-    $reading = $d2['choices'][0]['message']['content'] ?? $reading;
+    $reading = $r2['content'] ?? $reading;
     $rewritten = true;
-    $data['usage']['rewrite'] = $d2['usage'] ?? null;
 }
 
 $debug = !empty($body['debug']);
-$out = ['reading' => $reading, 'usage' => $data['usage'] ?? null];
+$out = ['reading' => $reading, 'provider' => $provider];
 if ($debug) {
     $out['debug'] = [
+        'provider'                 => $provider,
         'systemPrompt'             => $systemPrompt,
         'userPrompt'               => $userPrompt,
         'relevantDisplays'         => $relevantDisplays,
