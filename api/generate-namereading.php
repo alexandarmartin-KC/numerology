@@ -247,7 +247,7 @@ function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, fl
 
 function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
     $payload = json_encode([
-        'model'       => 'claude-3-5-haiku-20241022',
+        'model'       => 'claude-3-sonnet-20240229',
         'max_tokens'  => 700,
         'temperature' => $temp,
         'system'      => $systemPrompt,
