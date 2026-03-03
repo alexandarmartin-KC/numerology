@@ -339,6 +339,8 @@ if ($r2['httpCode'] === 200) {
 }
 
 // ─── Tilføj personlig intro-linje øverst ───
+// Strip modellens navn-linje øverst (fx "Alexx,") da intro allerede indeholder navnet
+$reading = preg_replace('/^\s*\S+,\s*\n+/u', '', $reading);
 $intro = "Kære {$firstName}, her er en kort numerologisk analyse af dit navn.\n\n";
 $reading = $intro . $reading;
 
