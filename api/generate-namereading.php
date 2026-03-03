@@ -167,7 +167,8 @@ $lo = 8; $hi = 10;
 $temperature = 0.3;
 
 if (!empty($cfg['customPrompt'])) {
-    $systemPrompt = $cfg['customPrompt'];
+    // Erstat {NAVN} placeholder med det faktiske fornavn
+    $systemPrompt = str_replace('{NAVN}', $firstName, $cfg['customPrompt']);
 } else {
     // Fallback-prompt
     $systemPrompt  = "Du er en erfaren numerolog med psykologisk modenhed.\n";
