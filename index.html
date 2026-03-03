@@ -1180,25 +1180,25 @@
       const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','soejletal'];
       let text = '';
 
-      text += `--- DIAMANT for ${inp.fullName} (${inp.birthDate.day}/${inp.birthDate.month}/${inp.birthDate.year}) ---\n\n`;
-
+      let inner = '';
       if (pos.includes('grundenergi'))
-        text += `Grundenergi (top): ${d.grundenergi.value}\n`;
+        inner += `G-tal (top): ${d.grundenergi.value}\n`;
       if (pos.includes('livslinje'))
-        text += `Livslinje: ${d.livslinje.map(e => `${e.role} "${e.name}" = ${e.display}`).join(', ')}\n`;
+        inner += `Navnetal: ${d.livslinje.map(e => `${e.role} "${e.name}" = ${e.display}`).join(', ')}\n`;
       if (pos.includes('bundtal'))
-        text += `Bundtal: ${d.bundtal.display}\n`;
+        inner += `B-tal: ${d.bundtal.display}\n`;
       if (pos.includes('aura'))
-        text += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
+        inner += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
       if (pos.includes('hjertecenter'))
-        text += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
+        inner += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
       if (pos.includes('solarplexus'))
-        text += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
+        inner += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
       if (pos.includes('rygraden'))
-        text += `Rygraden: ${d.rygraden.display}\n`;
+        inner += `Rygraden: ${d.rygraden.display}\n`;
       if (pos.includes('soejletal'))
-        text += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
+        inner += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
 
+      text += `<rådata>\n${inner}</rådata>\n`;
       return text;
     }
 
