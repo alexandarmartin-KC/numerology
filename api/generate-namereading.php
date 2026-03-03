@@ -236,6 +236,13 @@ if (!empty($hasDataPlaceholder)) {
     $userPrompt .= "Skriv nu analysen for {$firstName}.";
 }
 
+// ─── DEBUG: Gem prompt til fil (fjern i produktion) ───
+$debugLog  = "=== " . date('Y-m-d H:i:s') . " ===\n";
+$debugLog .= "--- SYSTEM PROMPT ---\n" . $systemPrompt . "\n\n";
+$debugLog .= "--- USER PROMPT ---\n" . $userPrompt . "\n\n";
+file_put_contents(__DIR__ . '/debug-prompt.log', $debugLog, FILE_APPEND);
+// ─────────────────────────────────────────────────────
+
 function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, float $temp): array {
     $model = 'gpt-4o';
     $isReasoningModel = str_starts_with($model, 'o1') || str_starts_with($model, 'o3');
