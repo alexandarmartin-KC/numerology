@@ -125,7 +125,7 @@ function maskBannedWords(string $text): string {
 // ─── Byg systemprompt fra customPrompt ───
 $temperature = 0.7;
 
-// Ny standardprompt — bruges hvis DB-prompten er gammel (mangler {{NUMEROSKOP_DATA}})
+// Ny standardprompt — 100% statisk (ingen brugerdata) så den kan prompt-caches
 $NEW_DEFAULT_PROMPT = <<<'PROMPT'
 Du er en professionel numerolog, der leverer præcise og indsigtsfulde personlighedsanalyser baseret på numerologiske energier.
 
@@ -138,27 +138,13 @@ FORMAT – MÅ IKKE AFVIGES
 - Afslut med et kort tredje afsnit på 2-3 linjer der opsummerer personligheden i en enkelt, præcis karakteristik
 - Undgå abstrakte eller "fluffy" formuleringer – vær konkret og jordnær i sproget
 - INGEN overskrifter, INGEN punkter, INGEN sektioner
-- Brug klientens navn ({{NAVN}}) naturligt 2-3 gange i teksten
+- Brug klientens navn naturligt 2-3 gange i teksten
 - Skriv ALDRIG "Personen", "Vedkommende" eller lignende – kun navnet
 - Nævn ALDRIG "fornavn-energi", "efternavn-energi", "bundtal" eller andre tal-positioner direkte i teksten
 - Skriv udelukkende på dansk
 -----------------------------------------
 
-Du modtager følgende information om klienten:
-
-<navn>
-{{NAVN}}
-</navn>
-
-<fødselsdato>
-{{FØDSELSDATO}}
-</fødselsdato>
-
-<numeroskop_data>
-Nedenfor følger rådata til din analyse. Brug tallene som inspiration, men skriv IKKE om dem separat – smelt dem sammen til én holistisk, flydende tekst.
-
-{{NUMEROSKOP_DATA}}
-</numeroskop_data>
+Du modtager klientens navn, fødselsdato og numeroskop-data i brugerens besked.
 
 Vigtigt: Du bruger kun tallene Grundenergi – fornavn – mellemnavn – efternavn – bundtal.
 
@@ -189,61 +175,33 @@ Der ligger en stærk vilje og handlekraft i dig, der kan flytte bjerge, når du 
 Morten, din største gave er den måde, du samler mennesker og skaber harmoni på – din største udfordring er at huske, at du fortjener den samme omsorg, som du så rundhåndet giver til alle andre.
 </eksempel2>
 
-Skriv nu en personlig analyse for {{NAVN}}, skræddersyet til de specifikke energier i deres numeroskop.
-
 HUSK FØR DU SKRIVER:
 - Flydende prosa – ingen overskrifter eller sektioner
 - 9-11 linjer fordelt på 3 afsnit
-- Brug {{NAVN}} 2-3 gange
+- Brug klientens navn 2-3 gange
 - Aldrig "Personen", "Vedkommende" eller tredjeperson
 - Aldrig tal-positioner nævnt direkte
 
 Skriv analysen inden for <analyse> tags.
 PROMPT;
 
-if (!empty($cfg['customPrompt'])) {
-    // Hvis DB-prompten er gammel (ingen {{NUMEROSKOP_DATA}}), brug den nye standardprompt i stedet
-    $rawPrompt = str_contains($cfg['customPrompt'], '{{NUMEROSKOP_DATA}}')
-        ? $cfg['customPrompt']
-        : $NEW_DEFAULT_PROMPT;
-    // Erstat alle kendte placeholders (både {NAVN} og {{NAVN}}-format)
-    $hasDataPlaceholder = str_contains($rawPrompt, '{{NUMEROSKOP_DATA}}');
+if (!empty($cfg['customPrompt']) && str_contains($cfg['customPrompt'], '{{NUMEROSKOP_DATA}}')) {
+    // DB-prompt er ny format med placeholders — indsæt data og brug som system prompt (ikke cachet)
     $systemPrompt = str_replace(
         ['{{NAVN}}', '{NAVN}', '{{FØDSELSDATO}}', '{{NUMEROSKOP_DATA}}'],
         [$firstName, $firstName, $birthDate, $nameData],
-        $rawPrompt
+        $cfg['customPrompt']
     );
-    // Debug: advar hvis der stadig er uerstattede placeholders
-    if (str_contains($systemPrompt, '{{')) {
-        error_log('ADVARSEL: Uerstattede placeholders i systemPrompt: ' . substr($systemPrompt, 0, 500));
-    }
-} else {
-    // Fallback: ingen DB-prompt — brug ny standardprompt
-    $rawPrompt = $NEW_DEFAULT_PROMPT;
-    $hasDataPlaceholder = true;
-    $systemPrompt = str_replace(
-        ['{{NAVN}}', '{NAVN}', '{{FØDSELSDATO}}', '{{NUMEROSKOP_DATA}}'],
-        [$firstName, $firstName, $birthDate, $nameData],
-        $rawPrompt
-    );
-}
-
-// Tilføj kun energividen-blokken hvis prompten IKKE allerede indeholder data via {{NUMEROSKOP_DATA}}.
-// Når den nye holistiske prompt bruges, er $nameData allerede injiceret — ekstra viden forvirrer Claude.
-if (empty($hasDataPlaceholder)) {
-    $maskedEnergy = maskBannedWords($energyDescriptions);
-    $systemPrompt .= "\nNedenstående er udelukkende rådata til din fortolkning. Lad dig IKKE påvirke af labelnavne eller struktur i dataet.\n";
-    $systemPrompt .= "\nNUMEROLOGISK VIDEN (råmateriale — kun til forståelse. Kopiér aldrig formuleringer herfra):\n" . ($maskedEnergy ?: 'Ingen energibeskrivelser tilgængelige.');
-}
-
-// Hvis prompten bruger {{NUMEROSKOP_DATA}}-placeholder er data allerede injiceret i systemprompt
-if (!empty($hasDataPlaceholder)) {
     $userPrompt = "Skriv analysen nu for {$firstName}.";
+    $useCache = false;
 } else {
-    $userPrompt  = "Personen hedder {$firstName}.\n\n";
-    $userPrompt .= "DIAMANTDATA (kun til orientering — må ikke citeres):\n";
-    $userPrompt .= "{$nameData}\n\n";
-    $userPrompt .= "Skriv nu analysen for {$firstName}.";
+    // Brug statisk prompt (cachevenlig) — brugerdata går i user-messagen
+    $systemPrompt = $NEW_DEFAULT_PROMPT;
+    $userPrompt  = "<navn>\n{$firstName}\n</navn>\n\n";
+    $userPrompt .= "<fødselsdato>\n{$birthDate}\n</fødselsdato>\n\n";
+    $userPrompt .= "<numeroskop_data>\nNedenfor følger rådata til din analyse. Brug tallene som inspiration, men skriv IKKE om dem separat – smelt dem sammen til én holistisk, flydende tekst.\n\n{$nameData}\n</numeroskop_data>\n\n";
+    $userPrompt .= "Skriv analysen nu for {$firstName}.";
+    $useCache = true;
 }
 
 
@@ -282,27 +240,37 @@ function callOpenAI(string $systemPrompt, string $userPrompt, string $apiKey, fl
     return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
 }
 
-function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp, string $model = 'claude-opus-4-6'): array {
+function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, float $temp, string $model = 'claude-opus-4-6', bool $cache = false): array {
+    // Med prompt caching: marker system-prompten som cachebar (kræver min. 1024 tokens)
+    $systemBlock = $cache
+        ? [['type' => 'text', 'text' => $systemPrompt, 'cache_control' => ['type' => 'ephemeral']]]
+        : $systemPrompt;
+
     $payload = json_encode([
         'model'       => $model,
         'max_tokens'  => 1024,
         'temperature' => $temp,
-        'system'      => $systemPrompt,
+        'system'      => $systemBlock,
         'messages'    => [
             ['role' => 'user', 'content' => $userPrompt]
         ]
     ], JSON_UNESCAPED_UNICODE);
+
+    $headers = [
+        'Content-Type: application/json',
+        'x-api-key: ' . $apiKey,
+        'anthropic-version: 2023-06-01',
+    ];
+    if ($cache) {
+        $headers[] = 'anthropic-beta: prompt-caching-2024-07-31';
+    }
 
     $ch = curl_init('https://api.anthropic.com/v1/messages');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => $payload,
-        CURLOPT_HTTPHEADER     => [
-            'Content-Type: application/json',
-            'x-api-key: ' . $apiKey,
-            'anthropic-version: 2023-06-01'
-        ],
+        CURLOPT_HTTPHEADER     => $headers,
         CURLOPT_TIMEOUT        => 60
     ]);
     $response = curl_exec($ch);
@@ -312,9 +280,9 @@ function callClaude(string $systemPrompt, string $userPrompt, string $apiKey, fl
     return ['response' => $response, 'httpCode' => $httpCode, 'curlErr' => $curlErr];
 }
 
-function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, string $claudeKey, string $provider, float $temp, string $claudeModel = 'claude-opus-4-6'): array {
+function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, string $claudeKey, string $provider, float $temp, string $claudeModel = 'claude-opus-4-6', bool $cache = false): array {
     if ($provider === 'claude') {
-        $r = callClaude($systemPrompt, $userPrompt, $claudeKey, $temp, $claudeModel);
+        $r = callClaude($systemPrompt, $userPrompt, $claudeKey, $temp, $claudeModel, $cache);
         if ($r['httpCode'] === 200) {
             $d = json_decode($r['response'], true);
             $r['content'] = $d['content'][0]['text'] ?? '';
@@ -330,8 +298,8 @@ function callAI(string $systemPrompt, string $userPrompt, string $openaiKey, str
     return $r;
 }
 
-// ─── Første kald ───
-$result = callAI($systemPrompt, $userPrompt, $apiKey, $claudeKey, $provider, $temperature);
+// ─── Første kald (med prompt caching når statisk prompt bruges) ───
+$result = callAI($systemPrompt, $userPrompt, $apiKey, $claudeKey, $provider, $temperature, 'claude-opus-4-6', $useCache ?? false);
 if ($result['curlErr']) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $result['curlErr']]); exit; }
 if ($result['httpCode'] !== 200) { http_response_code(500); echo json_encode(['error' => ($provider === 'claude' ? 'Claude' : 'OpenAI') . ' API fejl', 'details' => $result['response']]); exit; }
 
