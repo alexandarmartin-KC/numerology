@@ -63,13 +63,30 @@ function computeDiamond(fullName, birthDateISO) {
     throw new Error("Mindst 2 navnedele (fornavn + efternavn) kræves.");
   }
 
-  /* ---------- 2. Name energies ---------- */
+  /* ---------- 2. Top (birth day) — needed for livslinje minimum rule ---------- */
+  const day = parseInt(birthDateISO.split("-")[2], 10);
+  const top = digitReduce(day);
 
+  /* ---------- 3. Name energies ---------- */
+
+  /**
+   * Livslinje minimum rule: a name compound must be ≥ 10.
+   *   Step 1 – add grundenergi (top).
+   *   Step 2 – if still < 10, add another 9 (= ophøjet form: top+9).
+   * Example: compound=4, top=3 → 4+3=7 (still <10) → 4+12=16/7
+   * Example: compound=4, top=6 → 4+6=10/1 (done)
+   */
   function nameEnergy(part) {
     const letters = part.split("");
     const values  = letters.map(ch => LETTER_VALUES[ch] || 0);
-    const compound = values.reduce((a, b) => a + b, 0);
-    const reduced  = digitReduce(compound);
+    let compound  = values.reduce((a, b) => a + b, 0);
+    if (compound < 10) {
+      compound += top;
+      if (compound < 10) {
+        compound += 9; // ophøjet form: top+9 in total
+      }
+    }
+    const reduced = digitReduce(compound);
     return {
       part,
       letters,
@@ -84,10 +101,6 @@ function computeDiamond(fullName, birthDateISO) {
   const first    = energies[0];
   const last     = energies[energies.length - 1];
   const middles  = energies.slice(1, -1);
-
-  /* ---------- 3. Top (birth day) ---------- */
-  const day = parseInt(birthDateISO.split("-")[2], 10);
-  const top = digitReduce(day);
 
   /* ---------- 4. Bottom ---------- */
   const bottomCompound = energies.reduce((s, e) => s + e.reduced, 0);
