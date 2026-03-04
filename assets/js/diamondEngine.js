@@ -44,7 +44,11 @@ function computeDiamond(fullName, birthDateISO) {
   norm = norm.replace(/[-\u2011\u2013\u2014]/g, " "); // 2) hyphen + en-dash + em-dash + nb-hyphen → space
   norm = norm.replace(/['\u2018\u2019\u02BC\u00B4`]/g, " "); // 3) all apostrophe/quote variants → space (O'Connor → O Connor)
 
-  // 3) Remove diacritics but preserve Æ Ø Å
+  // 4) Strip titles/honorifics (whole words only, with or without trailing period)
+  //    e.g. "Jason O Neal Jr." → "Jason O Neal"
+  norm = norm.replace(/\b(JR|SR|HR|FRU|FRK|MISS|MR|MRS|MS|DR|PROF)\.?\b/g, " ");
+
+  // 5) Remove diacritics but preserve Æ Ø Å
   norm = norm
     .replace(/Æ/g, "\x01")
     .replace(/Ø/g, "\x02")
