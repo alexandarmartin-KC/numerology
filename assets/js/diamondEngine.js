@@ -41,8 +41,8 @@ function computeDiamond(fullName, birthDateISO) {
 
   /* ---------- 1. Name normalisation ---------- */
   let norm = fullName.trim().toUpperCase();        // 1) trim + uppercase
-  norm = norm.replace(/-/g, " ");                  // 2) hyphen → space
-  norm = norm.replace(/['\u2019\u02BC\u00B4`]/g, " "); // 3) apostrophe variants → space (O'Connor → O Connor)
+  norm = norm.replace(/[-\u2011\u2013\u2014]/g, " "); // 2) hyphen + en-dash + em-dash + nb-hyphen → space
+  norm = norm.replace(/['\u2018\u2019\u02BC\u00B4`]/g, " "); // 3) all apostrophe/quote variants → space (O'Connor → O Connor)
 
   // 3) Remove diacritics but preserve Æ Ø Å
   norm = norm
