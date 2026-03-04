@@ -336,18 +336,37 @@
     .result-reading h3:first-child { margin-top: 0; }
     .result-reading p { margin: 0 0 0.6rem; }
 
-    /* ─── SPINNER (inline) ─── */
+    /* ─── CANVAS LOADER ─── */
     .loading-spinner {
-      display: none; text-align: center; padding: 3rem 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+      padding: 2.5rem 0;
     }
-    .loading-spinner.visible { display: block; }
-    .loading-spinner .spinner-border {
-      width: 2.5rem; height: 2.5rem;
-      border-color: var(--clr-gold);
-      border-right-color: transparent;
+    .loading-spinner.visible { display: flex; }
+    .loader-canvas {
+      display: block;
+      width: min(220px, 70vw);
+      height: min(220px, 70vw);
     }
-    .loading-spinner p {
-      color: var(--clr-muted); margin-top: 0.75rem; font-size: 0.9rem;
+    .loader-label {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.52rem, 2.5vw, 0.65rem);
+      letter-spacing: 0.32em;
+      color: var(--clr-gold);
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+    .loader-label .dots span {
+      animation: ldBlink 1.4s infinite;
+      opacity: 0;
+    }
+    .loader-label .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-label .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ldBlink {
+      0%, 100% { opacity: 0; }
+      50%       { opacity: 1; }
     }
 
     /* ─── TEASER ─── */
@@ -851,8 +870,8 @@
   <section class="section-result" id="resultSection">
     <!-- Spinner -->
     <div class="loading-spinner" id="loadSpinner">
-      <div class="spinner-border" role="status"></div>
-      <p>Analyserer dit navn…</p>
+      <canvas class="loader-canvas" id="loaderCanvas"></canvas>
+      <div class="loader-label">Beregner dit navn<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
     </div>
     <!-- Result -->
     <div class="result-box" id="resultBox">
@@ -1534,5 +1553,70 @@
       &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
     </div>
   </footer>
+
+<script>
+/* ─── Canvas particle loader ─── */
+(function () {
+  const canvas = document.getElementById('loaderCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    const size = Math.min(220, window.innerWidth * 0.7);
+    canvas.width = size;
+    canvas.height = size;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = Array.from({ length: 120 }, () => ({
+    orbitFrac:   (30 + Math.random() * 100) / 280,
+    angle:       Math.random() * Math.PI * 2,
+    speed:       (0.004 + Math.random() * 0.008) * (Math.random() < 0.5 ? 1 : -1),
+    wobble:      Math.random() * Math.PI * 2,
+    wobbleSpeed: 0.01 + Math.random() * 0.02,
+    wobbleFrac:  (8 + Math.random() * 18) / 280,
+    sizeFrac:    (0.8 + Math.random() * 1.6) / 280,
+    hue:         36 + (Math.random() - 0.5) * 16,
+    brightness:  55 + Math.random() * 25,
+    alpha:       0.35 + Math.random() * 0.55,
+  }));
+
+  const spinner = document.getElementById('loadSpinner');
+
+  function draw() {
+    requestAnimationFrame(draw);
+    if (!spinner || !spinner.classList.contains('visible')) return;
+
+    const W = canvas.width, H = canvas.height;
+    const CX = W / 2, CY = H / 2;
+    ctx.clearRect(0, 0, W, H);
+
+    particles.forEach(p => {
+      p.angle  += p.speed;
+      p.wobble += p.wobbleSpeed;
+      const orbit     = p.orbitFrac  * W;
+      const wobbleAmt = p.wobbleFrac * W;
+      const size      = p.sizeFrac   * W;
+      const r = orbit + Math.sin(p.wobble) * wobbleAmt;
+      const x = CX + Math.cos(p.angle) * r;
+      const y = CY + Math.sin(p.angle) * r * 0.55;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, size * 3);
+      g.addColorStop(0, `hsla(${p.hue},85%,${p.brightness + 15}%,${p.alpha})`);
+      g.addColorStop(1, `hsla(${p.hue},80%,${p.brightness}%,0)`);
+      ctx.beginPath();
+      ctx.arc(x, y, size * 3, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue},100%,92%,${p.alpha})`;
+      ctx.fill();
+    });
+  }
+  draw();
+}());
+</script>
+
 </body>
 </html>
