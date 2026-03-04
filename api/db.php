@@ -79,6 +79,10 @@ function checkGratisRateLimit(int $maxCalls = 4): array {
 
     // Tæl kald inden for de seneste 24 timer
     $stmt = $db->prepare("SELECT COUNT(*) AS cnt, MIN(created_at) AS oldest FROM gratis_rate_limits WHERE ip = ? AND created_at > (NOW() - INTERVAL 24 HOUR)");
+    if (!$stmt) {
+        // Tabel eksisterer endnu ikke — tillad kaldet (fail open)
+        return ['allowed' => true, 'remaining' => $maxCalls - 1, 'resetIn' => 0];
+    }
     $stmt->bind_param('s', $ip);
     $stmt->execute();
     $row  = $stmt->get_result()->fetch_assoc();
