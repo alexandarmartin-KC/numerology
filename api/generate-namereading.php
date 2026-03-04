@@ -47,6 +47,23 @@ if (!$firstName || !$nameData) {
     http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
 }
 
+// ─── Rate limiting: max 4 gratis analyser pr. IP pr. 24 timer ───
+$rateLimit = checkGratisRateLimit(4);
+if (!$rateLimit['allowed']) {
+    $hours   = (int)ceil($rateLimit['resetIn'] / 3600);
+    $minutes = (int)ceil($rateLimit['resetIn'] / 60);
+    $waitMsg = $rateLimit['resetIn'] > 3600
+        ? "om ca. {$hours} timer"
+        : "om ca. {$minutes} minutter";
+    http_response_code(429);
+    echo json_encode([
+        'error'     => "Du har brugt dine 4 gratis analyser i dag. Prøv igen {$waitMsg}.",
+        'resetIn'   => $rateLimit['resetIn'],
+        'rateLimit' => true
+    ]);
+    exit;
+}
+
 // ─── Hent gratis-konfiguration direkte fra DB ───
 $cfg = [];
 try {
@@ -319,7 +336,7 @@ $usage1 = $data['usage'] ?? null;
 
 $debug = !empty($body['debug']);
 $modelUsed = $provider === 'claude' ? 'claude-opus-4-6' : 'gpt-4o';
-$out = ['reading' => $reading, 'provider' => $provider, 'model' => $modelUsed];
+$out = ['reading' => $reading, 'provider' => $provider, 'model' => $modelUsed, 'remaining' => $rateLimit['remaining']];
 if ($debug) {
     $totalIn  = ($provider === 'claude')
         ? ($usage1['input_tokens'] ?? 0)

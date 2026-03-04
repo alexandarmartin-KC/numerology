@@ -300,6 +300,15 @@
       animation: result-in 0.8s ease forwards;
     }
     .result-box.visible { display: block; }
+    .gratis-counter {
+      display: none;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--clr-muted);
+      margin-top: 0.6rem;
+      opacity: 0.8;
+    }
+    .gratis-counter.visible { display: block; }
     @keyframes result-in {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -850,6 +859,7 @@
       <div class="result-name-number" id="resultNumber"></div>
       <div class="result-reading" id="resultText"></div>
     </div>
+    <p class="gratis-counter" id="gratis-counter"></p>
   </section>
 
   <!-- ═══════════════════════════════════════════
@@ -1363,12 +1373,20 @@
         });
 
         if (!resp.ok) {
-          let errType = 'ukendt'; let errDetails = '';
-          try { const j = await resp.json(); errType = j.error || errType; errDetails = j.details || ''; } catch(_) {}
+          let errType = 'ukendt'; let errDetails = ''; let isRateLimit = false;
+          try { const j = await resp.json(); errType = j.error || errType; errDetails = j.details || ''; isRateLimit = !!j.rateLimit; } catch(_) {}
           console.error('Beregner fejl:', resp.status, errType, errDetails);
-          throw new Error('Der opstod en fejl. Prøv igen.');
+          throw new Error(isRateLimit ? errType : 'Der opstod en fejl. Prøv igen.');
         }
         const data = await resp.json();
+
+        // Vis forsøgstæller
+        const used = 4 - (data.remaining ?? 0);
+        const counterEl = document.getElementById('gratis-counter');
+        if (counterEl) {
+          counterEl.textContent = `Analyse ${used} af 4 – du har ${data.remaining ?? 0} gratis ${(data.remaining ?? 0) === 1 ? 'analyse' : 'analyser'} tilbage i dag`;
+          counterEl.classList.add('visible');
+        }
 
         // Show grundenergi (top) as the headline number
         resultNumber.textContent = diamond.grundenergi.value;

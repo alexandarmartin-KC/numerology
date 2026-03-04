@@ -107,6 +107,17 @@ if ($check && $check->num_rows > 0) {
     $results["gratis_beregning.customPrompt"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
 }
 
+// ─── gratis_rate_limits: rate limiting tabel ───
+$ok = $db->query("
+    CREATE TABLE IF NOT EXISTS gratis_rate_limits (
+        id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        ip         VARCHAR(45)     NOT NULL,
+        created_at DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_ip_created (ip, created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$results['gratis_rate_limits.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
 // ─── Vis nuværende kolonner ───
 $colRes = $db->query("SHOW COLUMNS FROM diamant_energies");
 $allCols = [];

@@ -53,6 +53,52 @@ function getBody() {
  * Sæt ADMIN_API_KEY som miljøvariabel (serverens env eller .env.php).
  * Kald denne funktion i starten af POST-handlere i admin-endpoints.
  */
+/**
+ * Returner klientens reelle IP (håndtér CDN/proxy X-Forwarded-For).
+ */
+function getClientIp(): string {
+    $fwd = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+    if ($fwd) {
+        // Tag første IP i listen (klientens — ikke proxyens)
+        return trim(explode(',', $fwd)[0]);
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+}
+
+/**
+ * Tjek og registrer et gratis-kald for den given IP.
+ * Max $maxCalls kald pr. 24-timers vindue.
+ * Returnerer ['allowed' => bool, 'remaining' => int, 'resetIn' => int (sekunder)].
+ */
+function checkGratisRateLimit(int $maxCalls = 4): array {
+    $db = getDB();
+    $ip = getClientIp();
+
+    // Ryd op: slet poster ældre end 25 timer
+    $db->query("DELETE FROM gratis_rate_limits WHERE created_at < (NOW() - INTERVAL 25 HOUR)");
+
+    // Tæl kald inden for de seneste 24 timer
+    $stmt = $db->prepare("SELECT COUNT(*) AS cnt, MIN(created_at) AS oldest FROM gratis_rate_limits WHERE ip = ? AND created_at > (NOW() - INTERVAL 24 HOUR)");
+    $stmt->bind_param('s', $ip);
+    $stmt->execute();
+    $row  = $stmt->get_result()->fetch_assoc();
+    $cnt  = (int)($row['cnt'] ?? 0);
+
+    if ($cnt >= $maxCalls) {
+        // Beregn sekunder til reset (24 timer efter ældste kald)
+        $oldest  = strtotime($row['oldest']);
+        $resetIn = max(0, ($oldest + 86400) - time());
+        return ['allowed' => false, 'remaining' => 0, 'resetIn' => $resetIn];
+    }
+
+    // Registrer dette kald
+    $stmt2 = $db->prepare("INSERT INTO gratis_rate_limits (ip) VALUES (?)");
+    $stmt2->bind_param('s', $ip);
+    $stmt2->execute();
+
+    return ['allowed' => true, 'remaining' => $maxCalls - $cnt - 1, 'resetIn' => 0];
+}
+
 function requireAdminKey(): void {
     $envKey = CFG_ADMIN_KEY;
     if (!$envKey) return; // Ingen nøgle konfigureret → tillad (backward-compat)
