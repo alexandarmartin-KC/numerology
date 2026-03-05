@@ -67,7 +67,7 @@
             </div>
             <div class="col-md-3">
               <label for="birthDate" class="form-label mb-1">Fødselsdato</label>
-              <input id="birthDate" name="birthDate" type="date" class="form-control" required>
+              <input id="birthDate" name="birthDate" type="text" placeholder="dd/mm/åååå" class="form-control" required>
             </div>
             <div class="col-md-4 d-flex gap-2">
               <div>
@@ -105,6 +105,13 @@
   <script src="assets/js/diamondEngine.js"></script>
   <script src="assets/js/diamondRenderer.js"></script>
   <script src="assets/js/diamant.js"></script>
+  <script>
+    const _bd = document.getElementById('birthDate');
+    if (_bd) {
+      _bd.addEventListener('focus', () => { _bd.type = 'date'; });
+      _bd.addEventListener('blur',  () => { if (!_bd.value) _bd.type = 'text'; });
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

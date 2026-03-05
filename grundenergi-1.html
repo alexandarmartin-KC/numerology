@@ -743,7 +743,7 @@
       <p class="calc-sub">Indtast dit navn og din fødselsdato — og få en personlig numerologisk analyse helt gratis.</p>
       <div class="calc-form">
         <input type="text" id="calcName" placeholder="Dit fulde navn…" autocomplete="name">
-        <input type="date" id="calcDate" aria-label="Fødselsdato">
+        <input type="text" id="calcDate" placeholder="dd/mm/åååå" aria-label="Fødselsdato">
         <button onclick="calcGrundenergi()" class="btn-gold">Beregn gratis</button>
       </div>
       <div class="calc-result" id="calcResult">
@@ -886,6 +886,12 @@
       link.href = 'grundenergi-' + num + '.html';
       link.textContent = 'Læs om Grundenergi ' + num + ' →';
       document.getElementById('calcResult').classList.add('show');
+    }
+
+    const _cd = document.getElementById('calcDate');
+    if (_cd) {
+      _cd.addEventListener('focus', () => { _cd.type = 'date'; });
+      _cd.addEventListener('blur',  () => { if (!_cd.value) _cd.type = 'text'; });
     }
   </script>
   <style>
