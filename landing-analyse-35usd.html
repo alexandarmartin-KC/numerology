@@ -350,7 +350,7 @@
         </div>
         <div class="hero-field">
           <label for="birthDate">Fødselsdag</label>
-          <input id="birthDate" name="birthDate" type="date">
+          <input id="birthDate" name="birthDate" type="text" placeholder="dd/mm/åååå">
           <div class="hero-help">Indtast din fødselsdag, som den er noteret på dine offentlige dokumenter.</div>
         </div>
         <div class="hero-field">
@@ -459,7 +459,7 @@
           </div>
           <div class="hero-field">
             <label for="birthDate2">Fødselsdag</label>
-            <input id="birthDate2" name="birthDate" type="date">
+            <input id="birthDate2" name="birthDate" type="text" placeholder="dd/mm/åååå">
             <div class="hero-help">Indtast din fødselsdag, som den er noteret på dine offentlige dokumenter.</div>
           </div>
           <div class="hero-field">
@@ -669,6 +669,14 @@
       });
     });
   })();
+
+  // dd/mm/åååå placeholder trick
+  ['birthDate', 'birthDate2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('focus', function() { el.type = 'date'; });
+    el.addEventListener('blur',  function() { if (!el.value) el.type = 'text'; });
+  });
   </script>
   <style>
     .site-footer {
