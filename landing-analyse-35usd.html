@@ -677,6 +677,26 @@
     el.addEventListener('focus', function() { el.type = 'date'; });
     el.addEventListener('blur',  function() { if (!el.value) el.type = 'text'; });
   });
+
+  // Forudfyld navn + fødselsdato fra gratis beregner
+  (function() {
+    var saved;
+    try { saved = JSON.parse(localStorage.getItem('gratisUserData') || 'null'); } catch(_) {}
+    if (!saved) return;
+    ['fullName', 'fullName2'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && !el.value) el.value = saved.name || '';
+    });
+    if (saved.birthDate) {
+      ['birthDate', 'birthDate2'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && !el.value) {
+          el.type = 'date';
+          el.value = saved.birthDate;
+        }
+      });
+    }
+  }());
   </script>
   <style>
     .site-footer {
