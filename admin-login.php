@@ -9,7 +9,7 @@
  */
 session_start();
 
-define('ADMIN_PASSWORD_HASH', '$2y$10$1p6cz7qNKu.aPlWNCIA9ge7Ikm/u/pLyzZCmD1Qu.gak78E0De3ZG');
+define('ADMIN_PASSWORD_HASH', '$2y$10$L9KbSmnP.Wva/8MalfWMHuT9DZiUYbNF9jgJeEkZdG1SyUm588f8m');
 
 // Already logged in → redirect
 if (!empty($_SESSION['admin_auth'])) {
