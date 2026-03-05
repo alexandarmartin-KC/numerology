@@ -6,6 +6,9 @@
     Options -Indexes
 </IfModule>
 
-# Fallback: redirect root to index.html
+# Admin page protection — route input-*.html through PHP auth gate
 RewriteEngine On
+RewriteRule ^(input-[a-z0-9-]+\.html)$ /admin-gate.php?p=$1 [L,QSA,NC]
+
+# Fallback: redirect root to index.html
 RewriteRule ^$ /index.html [L]
