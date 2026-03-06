@@ -22,12 +22,23 @@ $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $diamond   = $body['diamond'] ?? null;
 $aar       = $body['aarstalsraekker'] ?? [];
 $k         = $body['knowledge'] ?? [];
+$language  = in_array($body['language'] ?? '', ['da','en','de','sv','no']) ? $body['language'] : 'da';
 
 if (!$diamond || !$k) { http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit; }
 
+// ─── Language config ───
+$langConfig = [
+    'da' => ['intro' => 'Du er en erfaren numerolog. Du skriver en personlig numerologisk rapport på dansk.', 'rule' => '- Skriv udelukkende på dansk.'],
+    'en' => ['intro' => 'You are an experienced numerologist. You write a personal numerological reading in English.', 'rule' => '- Write exclusively in English.'],
+    'de' => ['intro' => 'Du bist ein erfahrener Numerologe. Du schreibst einen persönlichen numerologischen Bericht auf Deutsch.', 'rule' => '- Schreibe ausschließlich auf Deutsch.'],
+    'sv' => ['intro' => 'Du är en erfaren numerolog. Du skriver en personlig numerologisk rapport på svenska.', 'rule' => '- Skriv uteslutande på svenska.'],
+    'no' => ['intro' => 'Du er en erfaren numerolog. Du skriver en personlig numerologisk rapport på norsk.', 'rule' => '- Skriv utelukkende på norsk.'],
+];
+$lang = $langConfig[$language];
+
 // ─── Build system prompt ───
-function buildSystemPrompt(array $k): string {
-    $p = "Du er en erfaren numerolog. Du skriver en personlig numerologisk rapport på dansk.\n\nVIGTIGE REGLER:\n- Du må KUN bruge den viden der er givet nedenfor. Opfind IKKE ny numerologisk viden.\n- Specielle regler skal fortolkes isoleret ud fra deres egen beskrivelse — bland IKKE energibeskrivelser ind i fortolkningen af specielle regler.\n- Livslinjen er IKKE en bevægelse eller et sekventielt forløb. Fornavn, mellemnavne og efternavn bidrager hver med deres energi, men alle energier er til stede samtidig. Fortolk dem IKKE som en rejse fra fornavn til efternavn.\n- Skriv i et varmt, personligt, men professionelt sprog.\n";
+function buildSystemPrompt(array $k, array $lang): string {
+    $p = "{$lang['intro']}\n\nVIGTIGE REGLER:\n{$lang['rule']}\n- Du må KUN bruge den viden der er givet nedenfor. Opfind IKKE ny numerologisk viden.\n- Specielle regler skal fortolkes isoleret ud fra deres egen beskrivelse — bland IKKE energibeskrivelser ind i fortolkningen af specielle regler.\n- Livslinjen er IKKE en bevægelse eller et sekventielt forløb. Fornavn, mellemnavne og efternavn bidrager hver med deres energi, men alle energier er til stede samtidig. Fortolk dem IKKE som en rejse fra fornavn til efternavn.\n- Skriv i et varmt, personligt, men professionelt sprog.\n";
 
     if (!empty($k['energiesWithImages'])) {
         $p .= "\nBILLEDER:\nFølgende grundtal-energier har et tilknyttet billede: " . implode(', ', $k['energiesWithImages']) . ".\n";
@@ -158,7 +169,7 @@ function buildUserPrompt(array $diamond, array $aar, array $k): string {
     return $p;
 }
 
-$systemPrompt = buildSystemPrompt($k);
+$systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
 $payload = json_encode([
