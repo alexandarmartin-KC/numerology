@@ -74,6 +74,12 @@ function checkGratisRateLimit(int $maxCalls = 4): array {
     $db = getDB();
     $ip = getClientIp();
 
+    // Whitelisted IPs — no rate limiting
+    $whitelist = ['192.168.0.13'];
+    if (in_array($ip, $whitelist, true)) {
+        return ['allowed' => true, 'remaining' => $maxCalls, 'resetIn' => 0];
+    }
+
     // Ryd op: slet poster ældre end 25 timer
     $db->query("DELETE FROM gratis_rate_limits WHERE created_at < (NOW() - INTERVAL 25 HOUR)");
 
