@@ -30,6 +30,7 @@
       --clr-text:      #e8e4da;
       --clr-muted:     #7c7c8a;
       --clr-border:    rgba(201,168,76,0.15);
+      --clr-border-bright: rgba(201,168,76,0.4);
       --font-heading:  'Cormorant Garamond', Georgia, serif;
       --font-body:     'Inter', system-ui, sans-serif;
     }
@@ -487,6 +488,55 @@
       border-bottom: 1px solid rgba(201,168,76,0.06);
     }
     .pricing-features li:last-child { border-bottom: none; }
+    /* ── ORDER MODAL ── */
+    .order-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,11,18,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .order-overlay.active { opacity: 1; pointer-events: all; }
+    .order-box {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border-bright);
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 440px; width: 100%;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .order-overlay.active .order-box { transform: translateY(0); }
+    .order-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: var(--clr-muted);
+      font-size: 20px; cursor: pointer; padding: 4px; line-height: 1;
+    }
+    .order-close:hover { color: var(--clr-text); }
+    .order-plan-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--clr-gold); margin-bottom: 6px; }
+    .order-plan-name { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
+    .order-plan-price { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 700; color: var(--clr-gold-light); margin-bottom: 2rem; }
+    .order-fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.75rem; }
+    .order-field { display: flex; flex-direction: column; }
+    .order-field-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--clr-muted); margin-bottom: 6px; font-weight: 500; }
+    .order-fields input {
+      width: 100%; padding: 0.9rem 1.2rem;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border); border-radius: 50px;
+      color: var(--clr-text);
+      font-family: var(--font-body); font-size: 1rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .order-fields input::placeholder { color: var(--clr-muted); }
+    .order-fields input:focus { border-color: var(--clr-gold); }
+    .order-fields input[type="date"] { color-scheme: dark; text-align: left; -webkit-appearance: none; appearance: none; }
+    .btn-note { text-align: center; font-size: 0.75rem; color: var(--clr-muted); margin-top: 0.75rem; font-weight: 300; }
+    @media (max-width: 576px) { .order-box { padding: 36px 24px; } }
+
     .pricing-card-body .btn-gold,
     .pricing-card-body .btn-outline-gold {
       width: 100%; text-align: center;
@@ -923,7 +973,7 @@
             </ul>
             <p class="pricing-description">This report gives you a clear picture of your inner structure and the patterns that influence your choices and relationships.</p>
             <p class="pricing-tagline">A strong foundation for personal understanding.</p>
-            <a href="landing-analyse-35usd.html" class="btn-outline-gold">Start with insight</a>
+            <button type="button" class="btn-outline-gold" onclick="openModal('foundation')">Start with insight</button>
           </div>
         </div>
         <!-- RETNING -->
@@ -944,7 +994,7 @@
             </ul>
             <p class="pricing-description">This analysis gives you an overview of your upcoming energy cycles, so you can make larger decisions with greater clarity.</p>
             <p class="pricing-tagline">From insight to strategic direction.</p>
-            <a href="landing-analyse-35usd.html" class="btn-gold">Plan with awareness</a>
+            <button type="button" class="btn-gold" onclick="openModal('direction')">Plan with awareness</button>
           </div>
         </div>
         <!-- AKTIVERING -->
@@ -965,7 +1015,7 @@
             </ul>
             <p class="pricing-description">This package is for those who not only want to understand their structure and timing – but actively work to strengthen their position.</p>
             <p class="pricing-tagline">Here we move from analysis to adjustment.</p>
-            <a href="landing-analyse-35usd.html" class="btn-gold">Take active control</a>
+            <button type="button" class="btn-gold" onclick="openModal('activation')">Take active control</button>
           </div>
         </div>
       </div>
@@ -1636,6 +1686,102 @@
   }
   draw();
 }());
+</script>
+
+<!-- ── ORDER MODAL ── -->
+<div class="order-overlay" id="orderModal">
+  <div class="order-box">
+    <button class="order-close" id="orderClose" aria-label="Close">✕</button>
+    <p class="order-plan-label">Your report</p>
+    <div class="order-plan-name" id="orderPlanName"></div>
+    <div class="order-plan-price" id="orderPlanPrice"></div>
+    <div class="order-fields">
+      <div class="order-field">
+        <div class="order-field-label">Full name</div>
+        <input type="text" id="orderName" name="fullName" placeholder="As on your official documents" autocomplete="name">
+      </div>
+      <div class="order-field">
+        <div class="order-field-label">Date of birth</div>
+        <input type="text" id="orderBirth" name="birthDate" placeholder="dd/mm/yyyy">
+      </div>
+      <div class="order-field">
+        <div class="order-field-label">Email</div>
+        <input type="email" id="orderEmail" name="email" placeholder="Your report will be sent here" autocomplete="email">
+      </div>
+    </div>
+    <button type="button" class="btn-gold" id="orderPay">Continue to payment</button>
+    <p class="btn-note">Secure payment · Instant delivery · No subscription</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const planConfig = {
+    foundation: { label: 'Foundation Report', usd: '$35', eur: '€30' },
+    direction:  { label: 'Direction Report',  usd: '$75', eur: '€65' },
+    activation: { label: 'Activation Report', usd: '$149', eur: '€125' },
+  };
+  const modal        = document.getElementById('orderModal');
+  const orderClose   = document.getElementById('orderClose');
+  const orderPlanName  = document.getElementById('orderPlanName');
+  const orderPlanPrice = document.getElementById('orderPlanPrice');
+  const orderName    = document.getElementById('orderName');
+  const orderBirth   = document.getElementById('orderBirth');
+  const orderEmail   = document.getElementById('orderEmail');
+  const orderPay     = document.getElementById('orderPay');
+  let activePlan     = 'foundation';
+  let activeCurrency = 'eur';
+  try {
+    const saved = JSON.parse(localStorage.getItem('gratisUserData') || 'null');
+    if (saved) {
+      if (saved.name)      orderName.value  = saved.name;
+      if (saved.birthDate) { orderBirth.value = saved.birthDate; orderBirth.type = 'date'; }
+    }
+  } catch (_) {}
+  fetch('/api/detect-currency').then(r => r.json()).then(d => { if (d.currency) activeCurrency = d.currency; }).catch(() => {});
+  orderBirth.addEventListener('focus', () => { orderBirth.type = 'date'; });
+  orderBirth.addEventListener('blur',  () => { if (!orderBirth.value) orderBirth.type = 'text'; });
+  function openModal(plan) {
+    activePlan = plan;
+    const p = planConfig[plan];
+    orderPlanName.textContent  = p.label;
+    orderPlanPrice.textContent = activeCurrency === 'usd' ? p.usd : p.eur;
+    modal.classList.add('active');
+    setTimeout(() => orderEmail.focus(), 300);
+  }
+  window.openModal = openModal;
+  function closeModal() {
+    modal.classList.remove('active');
+    orderPay.disabled = false;
+    orderPay.textContent = 'Continue to payment';
+  }
+  orderClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  orderPay.addEventListener('click', async () => {
+    const fullName  = orderName.value.trim();
+    const birthDate = orderBirth.value;
+    const email     = orderEmail.value.trim();
+    if (!fullName)              { orderName.focus();  return; }
+    if (!birthDate)             { orderBirth.focus(); return; }
+    if (!email || !email.includes('@')) { orderEmail.focus(); return; }
+    orderPay.disabled = true;
+    orderPay.textContent = 'Please wait…';
+    try {
+      const res  = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, birthDate, email, currency: activeCurrency, plan: activePlan }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      window.location.href = data.url;
+    } catch (err) {
+      alert(err.message);
+      orderPay.disabled = false;
+      orderPay.textContent = 'Continue to payment';
+    }
+  });
+})();
 </script>
 
 </body>
