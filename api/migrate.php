@@ -107,6 +107,22 @@ if ($check && $check->num_rows > 0) {
     $results["gratis_beregning.customPrompt"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
 }
 
+// ─── content_generated: indholdsgenerator ───
+$ok = $db->query("
+    CREATE TABLE IF NOT EXISTS content_generated (
+        id           INT AUTO_INCREMENT PRIMARY KEY,
+        title        VARCHAR(255)  NOT NULL,
+        type         ENUM('artikel','nyhedsbrev','social') NOT NULL DEFAULT 'artikel',
+        topic        VARCHAR(255)  DEFAULT NULL,
+        keywords     TEXT          DEFAULT NULL,
+        body         LONGTEXT      DEFAULT NULL,
+        image_url    VARCHAR(500)  DEFAULT NULL,
+        data_source  ENUM('db','general') DEFAULT 'db',
+        created_at   DATETIME      DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$results['content_generated.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
 // ─── gratis_rate_limits: rate limiting tabel ───
 $ok = $db->query("
     CREATE TABLE IF NOT EXISTS gratis_rate_limits (
@@ -133,5 +149,10 @@ $colRes = $db->query("SHOW COLUMNS FROM meta_data");
 $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
 $results['meta_data_kolonner'] = $allCols;
+
+$colRes = $db->query("SHOW COLUMNS FROM content_generated");
+$allCols = [];
+while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
+$results['content_generated_kolonner'] = $allCols;
 
 echo json_encode(['ok' => true, 'migrations' => $results], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
