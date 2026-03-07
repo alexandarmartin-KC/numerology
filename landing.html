@@ -355,7 +355,12 @@ section { position: relative; z-index: 1; }
 }
 .order-fields input::placeholder { color: var(--clr-muted); }
 .order-fields input:focus { border-color: var(--clr-gold); }
-.order-fields input[type="date"] { color-scheme: dark; text-align: left; padding-left: 1.2rem; }
+.order-fields input[type="date"] {
+  color-scheme: dark;
+  text-align: left;
+  -webkit-appearance: none;
+  appearance: none;
+}
 
 /* ── ANIMATIONS ── */
 @keyframes fade-up {
