@@ -492,7 +492,6 @@ tr:hover td { background: #fafafa; }
   </div>
   <nav class="sidebar-nav">
     <div class="sidebar-section">Opret</div>
-    <a href="#" class="active" id="nav-generate" onclick="showTab('generate',this);return false">✍️ Generer indhold</a>
     <a href="#" id="nav-ideas"    onclick="showTab('ideas',this);return false">💡 Emneforslag</a>
     <div class="sidebar-section">Administrer</div>
     <a href="#" id="nav-saved"    onclick="showTab('saved',this);return false">📁 Gemt indhold</a>
