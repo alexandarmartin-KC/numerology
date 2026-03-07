@@ -218,6 +218,72 @@ if ($action) {
         exit;
     }
 
+    // ─ Google Trends USA (RSS, ingen API-nøgle) ─
+    if ($action === 'get_trends') {
+        $rssUrl  = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
+        $ch      = curl_init($rssUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; numerology-admin/1.0)',
+            CURLOPT_FOLLOWLOCATION => true,
+        ]);
+        $xml  = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if (!$xml || $code !== 200) {
+            echo json_encode(['success' => false, 'error' => 'Kunne ikke hente Trends-feed (HTTP ' . $code . ')']);
+            exit;
+        }
+        // Suppres libxml warnings for namespaced elements
+        libxml_use_internal_errors(true);
+        $doc = simplexml_load_string($xml);
+        if (!$doc) { echo json_encode(['success' => false, 'error' => 'XML-parsing fejlede']); exit; }
+        $items = [];
+        foreach ($doc->channel->item as $item) {
+            $title = (string)$item->title;
+            // ht:approx_traffic lives in the ht namespace
+            $ht = $item->children('ht', true);
+            $traffic = isset($ht->approx_traffic) ? (string)$ht->approx_traffic : '';
+            if ($title) $items[] = ['title' => $title, 'traffic' => $traffic];
+            if (count($items) >= 20) break;
+        }
+        echo json_encode(['success' => true, 'items' => $items]);
+        exit;
+    }
+
+    // ─ Google Trends USA (RSS, ingen API-nøgle) ─
+    if ($action === 'get_trends') {
+        $rssUrl = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
+        $ch = curl_init($rssUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; numerology-admin/1.0)',
+            CURLOPT_FOLLOWLOCATION => true,
+        ]);
+        $xml  = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if (!$xml || $code !== 200) {
+            echo json_encode(['success' => false, 'error' => 'Kunne ikke hente Trends-feed (HTTP ' . $code . ')']);
+            exit;
+        }
+        libxml_use_internal_errors(true);
+        $doc = simplexml_load_string($xml);
+        if (!$doc) { echo json_encode(['success' => false, 'error' => 'XML-parsing fejlede']); exit; }
+        $items = [];
+        foreach ($doc->channel->item as $item) {
+            $title = (string)$item->title;
+            $ht = $item->children('ht', true);
+            $traffic = isset($ht->approx_traffic) ? (string)$ht->approx_traffic : '';
+            if ($title) $items[] = ['title' => $title, 'traffic' => $traffic];
+            if (count($items) >= 20) break;
+        }
+        echo json_encode(['success' => true, 'items' => $items]);
+        exit;
+    }
+
     // ─ Hent gemt indhold ─
     if ($action === 'get_saved') {
         $res   = $db->query("SELECT id, title, type, topic, created_at FROM content_generated ORDER BY created_at DESC LIMIT 50");
@@ -509,6 +575,15 @@ tr:hover td { background: #fafafa; }
       <button class="btn btn-gold" onclick="loadIdeas()" <?= $hasClaude ? '' : 'disabled' ?>>Generer forslag</button>
       <div id="idea-results" style="margin-top:16px"></div>
     </div>
+
+    <div class="card">
+      <div class="card-title" style="justify-content:space-between">
+        <span>🇺🇸 Trending i USA lige nu</span>
+        <button class="btn btn-ghost btn-sm" id="btn-trends" onclick="loadTrends()">↻ Opdatér</button>
+      </div>
+      <p style="font-size:12px;color:#aaa;margin-bottom:12px">Klik på et trend for at bruge det som emneinspiration — genererer et numerologi-vinklet indholdsforslag.</p>
+      <div id="trends-list"><span class="spin spin-dark"></span></div>
+    </div>
   </div>
 
   <!-- ══ GEMT INDHOLD ══════════════════════════════════════════════ -->
@@ -533,6 +608,7 @@ function showTab(name, el) {
     document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
     if (el) el.classList.add('active');
     if (name === 'saved') loadSaved();
+    if (name === 'ideas' && document.getElementById('trends-list').querySelector('.spin-dark')) loadTrends();
 }
 
 // ── Status ────────────────────────────────────────────────────────────────────
@@ -709,7 +785,41 @@ function copyContent() {
     if (!body) return;
     navigator.clipboard.writeText(body).then(() => setStatus('Kopieret til udklipsholder!', 'ok'));
 }
-
+// ── Google Trends USA ───────────────────────────────────────────────────────────────
+async function loadTrends() {
+    const box = document.getElementById('trends-list');
+    const btn = document.getElementById('btn-trends');
+    box.innerHTML = '<span class="spin spin-dark"></span>';
+    if (btn) btn.disabled = true;
+    try {
+        const data = await fetch(window.location.pathname + '?action=get_trends').then(r => r.json());
+        if (!data.success) {
+            box.innerHTML = '<p style="color:#dc2626;font-size:12px">Fejl: ' + escHtml(data.error || 'Ukendt') + '</p>';
+            return;
+        }
+        const wrap = document.createElement('div');
+        wrap.className = 'chip-wrap';
+        (data.items || []).forEach(item => {
+            const c = document.createElement('div');
+            c.className = 'chip';
+            c.innerHTML = escHtml(item.title) + (item.traffic ? ' <small>' + escHtml(item.traffic) + ' søgn.</small>' : '');
+            c.title = 'Brug som emne med numerologi-vinkel';
+            c.onclick = () => {
+                document.getElementById('topic').value    = item.title + ' numerology';
+                document.getElementById('keywords').value = item.title.toLowerCase() + ', numerology, spiritual meaning';
+                document.querySelector('input[name=dsrc][value="general"]').checked = true;
+                document.querySelector('input[name=lang][value="en"]').checked = true;
+                showTab('generate', document.getElementById('nav-generate'));
+                setStatus('Trend valgt — tryk ⋆ Generer for at skrive om "' + item.title + '"', 'info');
+            };
+            wrap.appendChild(c);
+        });
+        box.innerHTML = '';
+        box.appendChild(wrap);
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
 // ── Emneforslag-tab ───────────────────────────────────────────────────────────
 async function loadIdeas() {
     const seed = document.getElementById('idea-seed').value || 'numerologi';
