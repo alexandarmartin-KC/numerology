@@ -117,24 +117,20 @@ body {
 }
 
 .scroll-chevrons {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
   margin-top: 20px;
 }
-.scroll-chevrons span {
+.scroll-chevrons svg {
   display: block;
-  width: 80px; height: 20px;
-  border-right: 2px solid var(--clr-gold);
-  border-bottom: 2px solid var(--clr-gold);
-  transform: rotate(45deg);
   opacity: 0;
   animation: chevronFade 1.8s ease-in-out infinite;
 }
-.scroll-chevrons span:nth-child(1) { animation-delay: 0s; }
-.scroll-chevrons span:nth-child(2) { animation-delay: 0.25s; }
+.scroll-chevrons svg:nth-child(1) { animation-delay: 0s; }
+.scroll-chevrons svg:nth-child(2) { animation-delay: 0.25s; }
 @keyframes chevronFade {
-  0%   { opacity: 0; transform: rotate(45deg) translate(-4px, -4px); }
-  50%  { opacity: 0.7; }
-  100% { opacity: 0; transform: rotate(45deg) translate(4px, 4px); }
+  0%   { opacity: 0; transform: translateY(-4px); }
+  50%  { opacity: 0.65; }
+  100% { opacity: 0; transform: translateY(4px); }
 }
 
 /* ── DIVIDER ── */
@@ -401,8 +397,8 @@ section { position: relative; z-index: 1; }
     Your free reading revealed the surface of your numbers. Your full report goes deeper — into the patterns that shape your decisions, your relationships, and what's coming next.
   </p>
   <div class="scroll-chevrons">
-    <span></span>
-    <span></span>
+    <svg width="72" height="22" viewBox="0 0 72 22" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="2,2 36,20 70,2" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg width="72" height="22" viewBox="0 0 72 22" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="2,2 36,20 70,2" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
 </section>
 
