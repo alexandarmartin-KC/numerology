@@ -146,21 +146,34 @@ if ($action) {
         $topic = mb_substr($topic, 0, 300);
 
         $dbCtx = getDbContext($db);
-        $sourceRule = $dataSource === 'db'
-            ? "Du MÅ KUN bruge den numerologiske viden fra vidensbasen nedenfor. Tilføj IKKE viden fra andre kilder."
-            : "Brug vidensbasen som primær kilde — du må supplere med generel numerologisk viden.";
 
-        $langNote = $language === 'en' ? "Write exclusively in English." : "Skriv udelukkende på dansk.";
-
-        $typeInstr = match($type) {
-            'artikel'    => "Skriv en komplet SEO-artikel (800-1200 ord). Inkluder: H1-overskrift, metabeskrivelse (maks 160 tegn), indledning, 3-4 H2-sektioner og konklusion. Brug HTML-tags (h1, h2, p, strong). Placer søgeordet naturligt.",
-            'nyhedsbrev' => "Skriv et engagerende nyhedsbrev (400-600 ord). Inkluder: Emnelinjen, preview-tekst, varm hilsen, 2-3 sektioner med indsigt og en tydelig call-to-action.",
-            'social'     => "Skriv 3 sociale medie-varianter:\n1. LinkedIn (200 ord, professionel tone)\n2. Instagram caption (150 ord + 10 hashtags)\n3. Facebook-opslag (100 ord, uformel tone)\nAdskil med ---",
-            default      => "Skriv engagerende indhold om emnet.",
-        };
-
-        $system = "{$langNote}\n{$sourceRule}\n\n{$dbCtx}";
-        $user   = "Emne: {$topic}\nSøgeord: {$keywords}\n\nOpgave: {$typeInstr}";
+        if ($language === 'en') {
+            $langNote   = "You MUST write exclusively in English. Do not use any Danish words.";
+            $sourceRule = $dataSource === 'db'
+                ? "You MUST only use the numerological knowledge from the knowledge base below. Do NOT add knowledge from other sources."
+                : "Use the knowledge base as the primary source — you may supplement with general numerological knowledge.";
+            $typeInstr = match($type) {
+                'artikel'    => "Write a complete SEO article (800-1200 words). Include: H1 headline, meta description (max 160 chars), introduction, 3-4 H2 sections and conclusion. Use HTML tags (h1, h2, p, strong). Place the keyword naturally.",
+                'nyhedsbrev' => "Write an engaging newsletter (400-600 words). Include: subject line, preview text, warm greeting, 2-3 insight sections and a clear call-to-action.",
+                'social'     => "Write 3 social media variants:\n1. LinkedIn (200 words, professional tone)\n2. Instagram caption (150 words + 10 hashtags)\n3. Facebook post (100 words, casual tone)\nSeparate with ---",
+                default      => "Write engaging content about the topic.",
+            };
+            $system = "{$langNote}\n{$sourceRule}\n\n{$dbCtx}";
+            $user   = "Topic: {$topic}\nKeywords: {$keywords}\n\nTask: {$typeInstr}";
+        } else {
+            $langNote   = "Du SKAL skrive udelukkende på dansk. Brug ikke engelske ord.";
+            $sourceRule = $dataSource === 'db'
+                ? "Du MÅ KUN bruge den numerologiske viden fra vidensbasen nedenfor. Tilføj IKKE viden fra andre kilder."
+                : "Brug vidensbasen som primær kilde — du må supplere med generel numerologisk viden.";
+            $typeInstr = match($type) {
+                'artikel'    => "Skriv en komplet SEO-artikel (800-1200 ord). Inkluder: H1-overskrift, metabeskrivelse (maks 160 tegn), indledning, 3-4 H2-sektioner og konklusion. Brug HTML-tags (h1, h2, p, strong). Placer søgeordet naturligt.",
+                'nyhedsbrev' => "Skriv et engagerende nyhedsbrev (400-600 ord). Inkluder: Emnelinjen, preview-tekst, varm hilsen, 2-3 sektioner med indsigt og en tydelig call-to-action.",
+                'social'     => "Skriv 3 sociale medie-varianter:\n1. LinkedIn (200 ord, professionel tone)\n2. Instagram caption (150 ord + 10 hashtags)\n3. Facebook-opslag (100 ord, uformel tone)\nAdskil med ---",
+                default      => "Skriv engagerende indhold om emnet.",
+            };
+            $system = "{$langNote}\n{$sourceRule}\n\n{$dbCtx}";
+            $user   = "Emne: {$topic}\nSøgeord: {$keywords}\n\nOpgave: {$typeInstr}";
+        }
         $text   = callClaude($system, $user, $claudeKey, 2500);
         echo json_encode(['success' => true, 'content' => $text]);
         exit;
