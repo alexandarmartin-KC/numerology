@@ -1422,6 +1422,9 @@
         loadSpinner.classList.remove('visible');
         resultBox.classList.add('visible');
 
+        calcBtn.textContent = 'Get My Complete Analysis';
+        calcBtn.onclick = () => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+
         setTimeout(() => { teaserSection.classList.add('visible'); }, 1200);
 
       } catch (err) {
