@@ -1400,7 +1400,9 @@
           let errType = 'ukendt'; let errDetails = ''; let isRateLimit = false;
           try { const j = await resp.json(); errType = j.error || errType; errDetails = j.details || ''; isRateLimit = !!j.rateLimit; } catch(_) {}
           console.error('Beregner fejl:', resp.status, errType, errDetails);
-          throw new Error(isRateLimit ? errType : 'An error occurred. Please try again.');
+          const e = new Error(isRateLimit ? errType : 'An error occurred. Please try again.');
+          e.isRateLimit = isRateLimit;
+          throw e;
         }
         const data = await resp.json();
 
@@ -1429,9 +1431,14 @@
 
       } catch (err) {
         loadSpinner.classList.remove('visible');
-        resultText.textContent = 'An error occurred. Please try again.';
+        if (err.isRateLimit) {
+          resultNumber.textContent = '';
+          resultText.innerHTML = `<p style="margin:0 0 1.2rem;">You've used all 4 free readings for today. Come back tomorrow — or discover your full numerological profile right now.</p><a href="#pricing" class="btn-gold" style="display:inline-block;text-decoration:none;">See full analysis</a>`;
+        } else {
+          resultText.textContent = 'An error occurred. Please try again.';
+          resultNumber.textContent = '?';
+        }
         resultBox.classList.add('visible');
-        resultNumber.textContent = '?';
       }
     }
 
