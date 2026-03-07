@@ -132,6 +132,7 @@
       50% { opacity: 0.6; transform: translate(-50%, -50%) rotate(45deg) scale(1.05); }
     }
     .hero > * { position: relative; z-index: 1; }
+    .hero > .hero-diamond { position: absolute; z-index: 0; }
     .hero h1 { max-width: 560px; margin-left: auto; margin-right: auto; }
     .hero p {
       max-width: 520px;
@@ -388,10 +389,11 @@
   </header>
 
   <main>
-    <section class="hero container">
+    <section class="hero">
       <div class="hero-diamond"></div>
       <div class="hero-diamond"></div>
       <div class="hero-diamond"></div>
+      <div class="container">
       <h1>Get a <span style="color:var(--clr-gold-light)">personal</span> numerological reading based on your <span style="color:var(--clr-gold-light)">full name</span></h1>
       <p>A structured and detailed report generated via a specially developed numerological analysis model. Delivered digitally immediately after ordering.</p>
 
@@ -415,6 +417,7 @@
 
       <button class="cta-btn" type="button" data-checkout="hero">Get my reading – $35</button>
       <div class="trust-line">Digital delivery · One-time purchase · No subscription</div>
+      </div>
     </section>
 
     <section class="section">
