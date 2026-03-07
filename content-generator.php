@@ -328,11 +328,18 @@ textarea { resize: vertical; min-height: 90px; }
 .chip:hover, .chip.active { background: #1a1a2e; color: #c9a84c; border-color: #1a1a2e; }
 .chip small { color: inherit; opacity: .7; font-size: 10px; }
 
-/* Preview */
-#preview-box { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px; padding: 20px; min-height: 150px; line-height: 1.8; font-size: 14px; white-space: pre-wrap; }
-#preview-box h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 12px; white-space: normal; }
-#preview-box h2 { font-size: 16px; color: #1a1a2e; margin: 16px 0 8px; white-space: normal; }
-#preview-box p  { margin-bottom: 10px; white-space: normal; }
+/* Editor / Preview */
+.view-toggle { display: flex; gap: 6px; margin-bottom: 12px; }
+.view-toggle button { padding: 5px 12px; border: 1px solid #e0e0e0; border-radius: 5px; background: #f5f5f5; color: #777; font-size: 11px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.view-toggle button.active { background: #1a1a2e; color: #c9a84c; border-color: #1a1a2e; }
+#editor-box { width: 100%; min-height: 320px; padding: 16px; border: 1px solid #e8e8e8; border-radius: 6px; background: #fafafa; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; resize: vertical; color: #1a1a2e; }
+#editor-box:focus { outline: none; border-color: #c9a84c; background: white; }
+#preview-box { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px; padding: 20px; min-height: 150px; line-height: 1.8; font-size: 14px; display: none; }
+#preview-box h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 12px; }
+#preview-box h2 { font-size: 16px; color: #1a1a2e; margin: 16px 0 8px; }
+#preview-box h3 { font-size: 14px; color: #1a1a2e; margin: 12px 0 6px; }
+#preview-box p  { margin-bottom: 10px; }
+#preview-box strong { font-weight: 700; }
 
 /* Image */
 .img-slot { border: 1px dashed #ddd; border-radius: 6px; padding: 12px; min-height: 70px; display: flex; align-items: center; gap: 10px; background: #fafafa; margin-bottom: 8px; }
@@ -473,9 +480,14 @@ tr:hover td { background: #fafafa; }
       </div>
     </div>
 
-    <!-- Preview -->
+    <!-- Preview / Editor -->
     <div class="card" id="preview-card" style="display:none">
-      <div class="card-title">👁 Forhåndsvisning</div>
+      <div class="card-title">✏️ Rediger indhold</div>
+      <div class="view-toggle">
+        <button id="btn-view-edit" class="active" onclick="switchView('edit')">✏️ Redigér</button>
+        <button id="btn-view-render" onclick="switchView('render')">👁 Vis formateret</button>
+      </div>
+      <textarea id="editor-box" placeholder="Genereret tekst vises her — du kan redigere direkte..."></textarea>
       <div id="preview-box"></div>
       <div class="btn-group">
         <button class="btn btn-gold"  onclick="saveContent()">💾 Gem i database</button>
@@ -593,16 +605,7 @@ async function generateContent() {
         });
         if (!data.success) { setStatus(data.error || 'Generering fejlede.', 'err'); return; }
         generatedText = data.content;
-        // Render: konverter simple markdown-lignende tags til HTML
-        document.getElementById('preview-box').innerHTML = generatedText
-            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-            .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
-            .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
-            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br>');
-        document.getElementById('preview-card').style.display = 'block';
-        document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth' });
+        loadIntoEditor(generatedText);
         setStatus('Indhold genereret!', 'ok');
     } finally {
         btn.innerHTML = '⚡ Generer';
@@ -646,11 +649,47 @@ function setImgSlot(url) {
     document.getElementById('img-slot').innerHTML = `<img src="${url}" alt=""> <span style="font-size:11px;color:#888">Billede valgt</span>`;
 }
 
+// ── View-skift (edit ↔ render) ────────────────────────────────────────────────
+function switchView(mode) {
+    const editor  = document.getElementById('editor-box');
+    const preview = document.getElementById('preview-box');
+    const btnEdit = document.getElementById('btn-view-edit');
+    const btnRend = document.getElementById('btn-view-render');
+    if (mode === 'render') {
+        const text = editor.value;
+        preview.innerHTML = text
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+            .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
+            .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+        editor.style.display  = 'none';
+        preview.style.display = 'block';
+        btnEdit.classList.remove('active');
+        btnRend.classList.add('active');
+    } else {
+        editor.style.display  = 'block';
+        preview.style.display = 'none';
+        btnRend.classList.remove('active');
+        btnEdit.classList.add('active');
+    }
+}
+
+// ── Indlæs tekst i editoren ────────────────────────────────────────────────────
+function loadIntoEditor(text) {
+    document.getElementById('editor-box').value = text;
+    switchView('edit');
+    document.getElementById('preview-card').style.display = 'block';
+    document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth' });
+}
+
 // ── Gem ───────────────────────────────────────────────────────────────────────
 async function saveContent() {
-    if (!generatedText) { setStatus('Intet indhold at gemme.', 'err'); return; }
+    const body = document.getElementById('editor-box').value.trim();
+    if (!body) { setStatus('Intet indhold at gemme.', 'err'); return; }
     const topic = document.getElementById('topic').value;
-    const firstLine = generatedText.split('\n')[0].replace(/^#+\s*/, '').trim();
+    const firstLine = body.split('\n')[0].replace(/^#+\s*/, '').trim();
     const data = await post({
         action:      'save',
         title:       firstLine || topic,
@@ -658,7 +697,7 @@ async function saveContent() {
         keywords:    document.getElementById('keywords').value,
         type:        document.querySelector('input[name=ctype]:checked').value,
         data_source: document.querySelector('input[name=dsrc]:checked').value,
-        body:        generatedText,
+        body,
         image_url:   document.getElementById('img-url').value,
     });
     if (data.success) setStatus('Gemt! (ID: ' + data.id + ')', 'ok');
@@ -666,8 +705,9 @@ async function saveContent() {
 }
 
 function copyContent() {
-    if (!generatedText) return;
-    navigator.clipboard.writeText(generatedText).then(() => setStatus('Kopieret til udklipsholder!', 'ok'));
+    const body = document.getElementById('editor-box').value.trim();
+    if (!body) return;
+    navigator.clipboard.writeText(body).then(() => setStatus('Kopieret til udklipsholder!', 'ok'));
 }
 
 // ── Emneforslag-tab ───────────────────────────────────────────────────────────
@@ -733,17 +773,9 @@ async function viewItem(id) {
     document.getElementById('topic').value    = item.topic || '';
     document.getElementById('keywords').value = item.keywords || '';
     generatedText = item.body || '';
-    document.getElementById('preview-box').innerHTML = generatedText
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
-        .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>');
     if (item.image_url) setImgSlot(item.image_url);
-    document.getElementById('preview-card').style.display = 'block';
     showTab('generate', document.getElementById('nav-generate'));
-    document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth' });
+    loadIntoEditor(generatedText);
 }
 
 async function deleteItem(id, btn) {
