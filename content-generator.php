@@ -89,26 +89,45 @@ function generateDalle(string $prompt, string $apiKey): array {
 }
 
 // ── DB kontekst fra dine egne tabeller ───────────────────────────────────────
-function getDbContext(mysqli $db): string {
-    $ctx  = "NUMEROLOGISK VIDENSBASE:\n\n";
-    // Brug de korrekte kolonnenavne: id, keywords, grundenergi, beskrivelse
-    $res  = $db->query("SELECT id, keywords, grundenergi, beskrivelse FROM diamant_energies ORDER BY id ASC LIMIT 9");
-    if ($res) {
-        while ($row = $res->fetch_assoc()) {
-            $ctx .= "Tal {$row['id']}:\n";
-            if (!empty($row['keywords']))    $ctx .= "  Nøgleord: {$row['keywords']}\n";
-            if (!empty($row['grundenergi'])) $ctx .= "  Grundenergi: {$row['grundenergi']}\n";
-            if (!empty($row['beskrivelse'])) $ctx .= "  Beskrivelse: {$row['beskrivelse']}\n";
-            $ctx .= "\n";
+function getDbContext(mysqli $db, string $language = 'da'): string {
+    if ($language === 'en') {
+        $ctx = "NUMEROLOGY KNOWLEDGE BASE:\n\n";
+        $res = $db->query("SELECT id, keywords, grundenergi, beskrivelse FROM diamant_energies ORDER BY id ASC LIMIT 9");
+        if ($res) {
+            while ($row = $res->fetch_assoc()) {
+                $ctx .= "Number {$row['id']}:\n";
+                if (!empty($row['keywords']))    $ctx .= "  Keywords: {$row['keywords']}\n";
+                if (!empty($row['grundenergi'])) $ctx .= "  Core energy: {$row['grundenergi']}\n";
+                if (!empty($row['beskrivelse'])) $ctx .= "  Description: {$row['beskrivelse']}\n";
+                $ctx .= "\n";
+            }
         }
-    }
-    // Hent generel viden
-    $gen = $db->query("SELECT aboutNumerology, defRent, defUrent FROM generelt WHERE id = 1");
-    if ($gen && $gen->num_rows) {
-        $g = $gen->fetch_assoc();
-        if (!empty($g['aboutNumerology'])) $ctx .= "## Om numerologi\n{$g['aboutNumerology']}\n\n";
-        if (!empty($g['defRent']))         $ctx .= "## Rent numeroskop\n{$g['defRent']}\n\n";
-        if (!empty($g['defUrent']))        $ctx .= "## Urent numeroskop\n{$g['defUrent']}\n\n";
+        $gen = $db->query("SELECT aboutNumerology, defRent, defUrent FROM generelt WHERE id = 1");
+        if ($gen && $gen->num_rows) {
+            $g = $gen->fetch_assoc();
+            if (!empty($g['aboutNumerology'])) $ctx .= "## About numerology\n{$g['aboutNumerology']}\n\n";
+            if (!empty($g['defRent']))         $ctx .= "## Pure numeroscope\n{$g['defRent']}\n\n";
+            if (!empty($g['defUrent']))        $ctx .= "## Impure numeroscope\n{$g['defUrent']}\n\n";
+        }
+    } else {
+        $ctx = "NUMEROLOGISK VIDENSBASE:\n\n";
+        $res = $db->query("SELECT id, keywords, grundenergi, beskrivelse FROM diamant_energies ORDER BY id ASC LIMIT 9");
+        if ($res) {
+            while ($row = $res->fetch_assoc()) {
+                $ctx .= "Tal {$row['id']}:\n";
+                if (!empty($row['keywords']))    $ctx .= "  Nøgleord: {$row['keywords']}\n";
+                if (!empty($row['grundenergi'])) $ctx .= "  Grundenergi: {$row['grundenergi']}\n";
+                if (!empty($row['beskrivelse'])) $ctx .= "  Beskrivelse: {$row['beskrivelse']}\n";
+                $ctx .= "\n";
+            }
+        }
+        $gen = $db->query("SELECT aboutNumerology, defRent, defUrent FROM generelt WHERE id = 1");
+        if ($gen && $gen->num_rows) {
+            $g = $gen->fetch_assoc();
+            if (!empty($g['aboutNumerology'])) $ctx .= "## Om numerologi\n{$g['aboutNumerology']}\n\n";
+            if (!empty($g['defRent']))         $ctx .= "## Rent numeroskop\n{$g['defRent']}\n\n";
+            if (!empty($g['defUrent']))        $ctx .= "## Urent numeroskop\n{$g['defUrent']}\n\n";
+        }
     }
     return $ctx;
 }
@@ -123,13 +142,18 @@ if ($action) {
     // ─ Emneforslag ─
     if ($action === 'get_suggestions') {
         if (!$claudeKey) { echo json_encode(['success' => false, 'error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
-        $topic  = trim($_POST['topic'] ?? 'numerologi');
-        $topic  = mb_substr($topic, 0, 200);
-        $system = "Du er en indholdsstrateg specialiseret i numerologi. Generer emneforslag på dansk.";
-        $user   = "Generer 8 konkrete indholdforslag til emnet: \"{$topic}\".\n\nSvar KUN med et JSON-array (ingen markdown):\n[{\"title\": \"...\", \"keywords\": \"...\", \"type\": \"artikel|nyhedsbrev|social\"}]";
-        $raw    = callClaude($system, $user, $claudeKey, 600);
-        $raw    = preg_replace('/```json|```/', '', $raw);
-        $items  = json_decode(trim($raw), true) ?? [];
+        $topic    = mb_substr(trim($_POST['topic'] ?? 'numerologi'), 0, 200);
+        $language = ($_POST['language'] ?? 'da') === 'en' ? 'en' : 'da';
+        if ($language === 'en') {
+            $system = "You are a content strategist specialized in numerology. Generate topic suggestions in English only.";
+            $user   = "Generate 8 specific content ideas for the topic: \"{$topic}\".\n\nRespond ONLY with a JSON array (no markdown):\n[{\"title\": \"...\", \"keywords\": \"...\", \"type\": \"artikel|nyhedsbrev|social\"}]";
+        } else {
+            $system = "Du er en indholdsstrateg specialiseret i numerologi. Generer emneforslag på dansk.";
+            $user   = "Generer 8 konkrete indholdforslag til emnet: \"{$topic}\".\n\nSvar KUN med et JSON-array (ingen markdown):\n[{\"title\": \"...\", \"keywords\": \"...\", \"type\": \"artikel|nyhedsbrev|social\"}]";
+        }
+        $raw   = callClaude($system, $user, $claudeKey, 600);
+        $raw   = preg_replace('/```json|```/', '', $raw);
+        $items = json_decode(trim($raw), true) ?? [];
         echo json_encode(['success' => true, 'suggestions' => $items]);
         exit;
     }
@@ -145,7 +169,7 @@ if ($action) {
         if (empty($topic)) { echo json_encode(['success' => false, 'error' => 'Intet emne angivet']); exit; }
         $topic = mb_substr($topic, 0, 300);
 
-        $dbCtx = getDbContext($db);
+        $dbCtx = getDbContext($db, $language);
 
         if ($language === 'en') {
             $langNote   = "You MUST write exclusively in English. Do not use any Danish words.";
@@ -647,9 +671,10 @@ async function post(data, isFile = false) {
 
 // ── Emneforslag ───────────────────────────────────────────────────────────────
 async function getSuggestions() {
-    const topic = document.getElementById('topic').value || 'numerologi';
+    const topic    = document.getElementById('topic').value || 'numerologi';
+    const language = document.querySelector('input[name=lang]:checked').value;
     setStatus('Henter forslag...', 'info');
-    const data = await post({ action: 'get_suggestions', topic });
+    const data = await post({ action: 'get_suggestions', topic, language });
     if (!data.success) { setStatus(data.error || 'Fejl', 'err'); return; }
     const wrap = document.createElement('div');
     wrap.className = 'chip-wrap';
@@ -835,10 +860,11 @@ async function loadTrends() {
 }
 // ── Emneforslag-tab ───────────────────────────────────────────────────────────
 async function loadIdeas() {
-    const seed = document.getElementById('idea-seed').value || 'numerologi';
-    const box  = document.getElementById('idea-results');
+    const seed     = document.getElementById('idea-seed').value || 'numerologi';
+    const language = document.querySelector('input[name=lang]:checked').value;
+    const box      = document.getElementById('idea-results');
     box.innerHTML = '<span class="spin spin-dark"></span> Genererer...';
-    const data = await post({ action: 'get_suggestions', topic: seed });
+    const data = await post({ action: 'get_suggestions', topic: seed, language });
     if (!data.success) { box.innerHTML = '<p style="color:#dc2626">Fejl: ' + (data.error || 'Ukendt') + '</p>'; return; }
     const wrap = document.createElement('div');
     wrap.className = 'chip-wrap';
