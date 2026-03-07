@@ -157,11 +157,12 @@ section { position: relative; z-index: 1; }
 }
 
 /* ── FEATURED PLAN ── */
-.featured-section { padding: 48px 24px; max-width: 960px; margin: 0 auto; }
+.featured-section { padding: 48px 24px; max-width: 960px; width: 100%; margin: 0 auto; box-sizing: border-box; }
 .featured-card {
   position: relative; background: var(--clr-surface);
   border: 1px solid var(--clr-border-bright); border-radius: 8px; overflow: hidden;
   display: grid; grid-template-columns: 1fr 1fr;
+  width: 100%;
   opacity: 0; animation: fade-up 0.9s ease forwards 0.2s;
 }
 .featured-card::before {
@@ -369,10 +370,10 @@ section { position: relative; z-index: 1; }
 
 /* ── MOBILE ── */
 @media (max-width: 768px) {
-  .featured-section { padding: 40px 16px; }
+  .featured-section { padding: 32px 12px; }
   .featured-card { grid-template-columns: 1fr; }
-  .featured-left { border-right: none; border-bottom: 1px solid var(--clr-border); padding: 32px 20px; }
-  .featured-right { padding: 32px 20px; }
+  .featured-left { border-right: none; border-bottom: 1px solid var(--clr-border); padding: 28px 16px; }
+  .featured-right { padding: 28px 16px; }
   .plans-grid { grid-template-columns: 1fr; }
   .trust-inner { gap: 32px; }
   .featured-badge { top: 16px; right: 16px; }
@@ -381,6 +382,8 @@ section { position: relative; z-index: 1; }
   .plan-card { padding: 32px 20px; }
   .section-title { font-size: 1.8rem; }
   .hero-title { font-size: 2.4rem; }
+  .compare-section { padding: 48px 12px; overflow-x: auto; }
+  .footer-cta { padding: 80px 16px; }
 }
 </style>
 </head>
