@@ -504,8 +504,8 @@
       background: var(--clr-surface);
       border: 1px solid var(--clr-border-bright);
       border-radius: 12px;
-      padding: 48px 40px;
-      max-width: 440px; width: 100%;
+      padding: 36px 28px;
+      max-width: 400px; width: 100%;
       position: relative;
       transform: translateY(20px);
       transition: transform 0.3s ease;
@@ -535,7 +535,8 @@
     .order-fields input:focus { border-color: var(--clr-gold); }
     .order-fields input[type="date"] { color-scheme: dark; text-align: left; -webkit-appearance: none; appearance: none; }
     .btn-note { text-align: center; font-size: 0.75rem; color: var(--clr-muted); margin-top: 0.75rem; font-weight: 300; }
-    @media (max-width: 576px) { .order-box { padding: 36px 24px; } }
+    .order-box .btn-gold { width: 100%; display: flex; align-items: center; justify-content: center; }
+    @media (max-width: 576px) { .order-box { padding: 28px 20px; } }
 
     .pricing-card-body .btn-gold,
     .pricing-card-body .btn-outline-gold {
