@@ -24,19 +24,28 @@ $fullName  = trim($body['fullName'] ?? '');
 $birthDate = trim($body['birthDate'] ?? '');
 $email     = trim($body['email'] ?? '');
 $currency  = ($body['currency'] ?? 'eur') === 'usd' ? 'usd' : 'eur';
+$plan      = $body['plan'] ?? 'foundation';
+
+$planConfig = [
+    'foundation' => ['name' => 'Foundation Report', 'usd' => 3500,  'eur' => 3000],
+    'direction'  => ['name' => 'Direction Report',  'usd' => 7500,  'eur' => 6500],
+    'activation' => ['name' => 'Activation Report', 'usd' => 14900, 'eur' => 12500],
+];
+if (!isset($planConfig[$plan])) $plan = 'foundation';
+$planName   = $planConfig[$plan]['name'];
+$unitAmount = $planConfig[$plan][$currency];
 
 if (!$fullName)  { http_response_code(400); echo json_encode(['error' => 'Fuldt navn er påkrævet.']); exit; }
 if (!$birthDate) { http_response_code(400); echo json_encode(['error' => 'Fødselsdag er påkrævet.']); exit; }
 if (!$email)     { http_response_code(400); echo json_encode(['error' => 'E-mail er påkrævet.']); exit; }
-
-$unitAmount = ($currency === 'usd') ? 3500 : 3000; // øre/cent
 
 // ─── Mock mode (ingen Stripe-nøgle) ───
 if (!$secretKey) {
     $mockUrl = $baseUrl . '/mock-checkout.html?name=' . urlencode($fullName)
              . '&birth=' . urlencode($birthDate)
              . '&email=' . urlencode($email)
-             . '&currency=' . $currency;
+             . '&currency=' . $currency
+             . '&plan=' . urlencode($plan);
     echo json_encode(['url' => $mockUrl]);
     exit;
 }
@@ -49,13 +58,13 @@ $params = http_build_query([
     'customer_email'                                     => $email,
     'line_items[0][price_data][currency]'                => $currency,
     'line_items[0][price_data][unit_amount]'             => $unitAmount,
-    'line_items[0][price_data][product_data][name]'      => 'Personlig numerologisk analyse',
+    'line_items[0][price_data][product_data][name]'      => $planName,
     'line_items[0][price_data][product_data][description]' => "Analyse for: {$fullName} ({$birthDate})",
     'line_items[0][quantity]'                            => 1,
     'metadata[fullName]'                                 => $fullName,
     'metadata[birthDate]'                                => $birthDate,
     'success_url'                                        => $baseUrl . '/tak.html?session_id={CHECKOUT_SESSION_ID}',
-    'cancel_url'                                         => $baseUrl . '/landing-analyse-35usd.html',
+    'cancel_url'                                         => $baseUrl . '/landing.html',
 ]);
 
 $ch = curl_init('https://api.stripe.com/v1/checkout/sessions');

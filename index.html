@@ -1425,7 +1425,7 @@
         resultBox.classList.add('visible');
 
         calcBtn.textContent = 'Get My Complete Analysis';
-        calcBtn.onclick = () => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+        calcBtn.onclick = () => { window.location.href = 'landing.html'; };
 
         setTimeout(() => { teaserSection.classList.add('visible'); }, 1200);
 
@@ -1433,7 +1433,7 @@
         loadSpinner.classList.remove('visible');
         if (err.isRateLimit) {
           resultNumber.style.display = 'none';
-          resultText.innerHTML = `<p style="margin:0 0 1.2rem;">You've explored 4 different readings today. Ready to go deeper?<br>Your full report covers everything your free readings hinted at — and much more.</p><div style="text-align:center;"><a href="#pricing" class="btn-gold" style="display:inline-block;text-decoration:none;">Get My Full Report — $35</a></div>`;
+          resultText.innerHTML = `<p style="margin:0 0 1.2rem;">You've explored 4 different readings today. Ready to go deeper?<br>Your full report covers everything your free readings hinted at — and much more.</p><div style="text-align:center;"><a href="landing.html" class="btn-gold" style="display:inline-block;text-decoration:none;">Get My Full Report — $35</a></div>`;
         } else {
           resultText.textContent = 'An error occurred. Please try again.';
           resultNumber.textContent = '?';

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Reading Is Ready – Strategic Numerology</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-dim: #8a6020;
+  --gold-light: #e8c97a;
+  --bg: #080b14;
+  --bg2: #0d1020;
+  --bg3: #111528;
+  --text: #e8e0d0;
+  --text-dim: #7a7060;
+  --text-muted: #4a4840;
+  --border: rgba(201,168,76,0.15);
+  --border-bright: rgba(201,168,76,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 60px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 28px;
+  opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 7vw, 80px); font-weight: 300; line-height: 1.1;
+  margin-bottom: 16px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+}
+.hero-title em { font-style: italic; color: var(--gold); }
+.hero-subtitle {
+  font-size: 14px; font-weight: 300; color: var(--text-dim);
+  max-width: 520px; line-height: 1.8; margin-bottom: 56px;
+  opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
+}
+
+/* ── SCROLL HINT ── */
+.scroll-hint {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--text-muted); font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  opacity: 0; animation: fadeUp 0.8s ease forwards 1.2s;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 0 auto;
+}
+
+/* ── SECTION ── */
+section { position: relative; z-index: 1; }
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); text-align: center; margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 52px); font-weight: 300;
+  text-align: center; line-height: 1.2; margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 13px; color: var(--text-dim); text-align: center;
+  max-width: 480px; margin: 0 auto 60px; line-height: 1.8; font-weight: 300;
+}
+
+/* ── FEATURED PLAN ── */
+.featured-section { padding: 48px 24px; max-width: 960px; margin: 0 auto; }
+.featured-card {
+  position: relative; background: var(--bg2);
+  border: 1px solid var(--border-bright); border-radius: 4px; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 1fr;
+  opacity: 0; animation: fadeUp 0.9s ease forwards 0.2s;
+}
+.featured-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.featured-badge {
+  position: absolute; top: 24px; right: 24px;
+  background: var(--gold); color: var(--bg);
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px;
+}
+.featured-left { padding: 56px 48px 56px 56px; border-right: 1px solid var(--border); }
+.plan-name { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 6px; }
+.plan-tagline { font-size: 12px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; font-weight: 500; }
+.plan-price {
+  font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300;
+  color: var(--gold-light); line-height: 1; margin-bottom: 6px;
+}
+.plan-price sup { font-size: 28px; vertical-align: top; margin-top: 12px; display: inline-block; }
+.plan-pages { font-size: 11px; color: var(--text-dim); margin-bottom: 40px; letter-spacing: 1px; }
+.plan-desc {
+  font-size: 13px; color: var(--text-dim); line-height: 1.8;
+  font-weight: 300; font-style: italic;
+  border-left: 2px solid var(--gold-dim); padding-left: 16px;
+}
+.featured-right { padding: 56px 56px 56px 48px; display: flex; flex-direction: column; }
+.feature-list { list-style: none; flex: 1; margin-bottom: 40px; }
+.feature-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 300; line-height: 1.5;
+}
+.feature-list li:last-child { border-bottom: none; }
+.feature-list li::before { content: '✦'; color: var(--gold); font-size: 10px; margin-top: 2px; flex-shrink: 0; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: block; width: 100%; padding: 18px 32px;
+  background: var(--gold); color: var(--bg);
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; text-align: center;
+  text-decoration: none; border: none; border-radius: 2px; cursor: pointer;
+  transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.btn-primary::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.3s; }
+.btn-primary:hover::after { background: rgba(255,255,255,0.08); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,168,76,0.3); }
+.btn-note { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 12px; font-weight: 300; }
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  padding: 40px 24px;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.trust-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+.trust-item { text-align: center; }
+.trust-number { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--gold); line-height: 1; margin-bottom: 4px; }
+.trust-label { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
+
+/* ── OTHER PLANS ── */
+.plans-section { padding: 80px 24px 100px; max-width: 960px; margin: 0 auto; }
+.plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.plan-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+  padding: 40px; transition: border-color 0.3s;
+  opacity: 0; animation: fadeUp 0.8s ease forwards;
+}
+.plan-card:hover { border-color: var(--border-bright); }
+.plan-card:nth-child(1) { animation-delay: 0.1s; }
+.plan-card:nth-child(2) { animation-delay: 0.25s; }
+.plan-card .plan-name { font-size: 26px; margin-bottom: 4px; }
+.plan-card .plan-tagline { margin-bottom: 20px; font-size: 10px; }
+.plan-card .plan-price { font-size: 44px; margin-bottom: 4px; }
+.plan-card .plan-price sup { font-size: 20px; margin-top: 8px; }
+.plan-card .plan-pages { margin-bottom: 24px; }
+.plan-card .feature-list li { font-size: 12px; padding: 9px 0; }
+.btn-outline {
+  display: block; width: 100%; padding: 15px 24px;
+  background: transparent; color: var(--gold);
+  font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; text-align: center;
+  text-decoration: none; border: 1px solid var(--border-bright); border-radius: 2px;
+  cursor: pointer; transition: all 0.3s; margin-top: 28px;
+}
+.btn-outline:hover { background: rgba(201,168,76,0.06); border-color: var(--gold); }
+
+/* ── COMPARE TABLE ── */
+.compare-section { padding: 80px 24px 100px; max-width: 800px; margin: 0 auto; }
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th {
+  padding: 16px 20px; text-align: center;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); border-bottom: 1px solid var(--border-bright);
+}
+.compare-table th:first-child { text-align: left; color: var(--text-dim); }
+.compare-table td {
+  padding: 14px 20px; font-size: 12px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border); text-align: center; font-weight: 300;
+}
+.compare-table td:first-child { text-align: left; color: var(--text); }
+.compare-table tr:last-child td { border-bottom: none; font-weight: 600; color: var(--text); font-size: 13px; }
+.check { color: var(--gold); font-size: 14px; }
+.dash { color: var(--text-muted); }
+
+/* ── GUARANTEE ── */
+.guarantee { padding: 60px 24px; text-align: center; max-width: 580px; margin: 0 auto; }
+.guarantee-icon { font-size: 40px; margin-bottom: 20px; opacity: 0.8; }
+.guarantee h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 12px; }
+.guarantee p { font-size: 13px; color: var(--text-dim); line-height: 1.8; font-weight: 300; }
+
+/* ── FOOTER CTA ── */
+.footer-cta {
+  padding: 100px 24px; text-align: center;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.footer-cta::before {
+  content: ''; position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.05), transparent 70%);
+}
+.footer-cta h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 300; margin-bottom: 16px; }
+.footer-cta h2 em { font-style: italic; color: var(--gold); }
+.footer-cta p { font-size: 13px; color: var(--text-dim); margin-bottom: 40px; font-weight: 300; }
+.footer-cta .btn-primary { display: inline-block; width: auto; min-width: 280px; }
+
+/* ── ORDER MODAL ── */
+.order-overlay {
+  position: fixed; inset: 0;
+  background: rgba(8,11,20,0.88);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.order-overlay.active { opacity: 1; pointer-events: all; }
+.order-box {
+  background: var(--bg2);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  padding: 48px 40px;
+  max-width: 440px; width: 100%;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+.order-overlay.active .order-box { transform: translateY(0); }
+.order-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 20px; cursor: pointer; padding: 4px; line-height: 1;
+}
+.order-close:hover { color: var(--text-dim); }
+.order-plan-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 6px;
+}
+.order-plan-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 300; margin-bottom: 4px;
+}
+.order-plan-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px; font-weight: 300;
+  color: var(--gold-light); margin-bottom: 32px;
+}
+.order-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.order-fields input {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 2px;
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 300;
+  outline: none; transition: border-color 0.2s;
+}
+.order-fields input::placeholder { color: var(--text-muted); }
+.order-fields input:focus { border-color: var(--gold-dim); }
+.order-field-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; font-weight: 500; }
+.order-field { display: flex; flex-direction: column; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .featured-card { grid-template-columns: 1fr; }
+  .featured-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 28px; }
+  .featured-right { padding: 40px 28px; }
+  .plans-grid { grid-template-columns: 1fr; }
+  .trust-inner { gap: 32px; }
+  .featured-badge { top: 16px; right: 16px; }
+  .order-box { padding: 36px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="hero-eyebrow">Your free reading is complete</p>
+  <h1 class="hero-title">
+    Ready to see<br>
+    <em>the full picture?</em>
+  </h1>
+  <p class="hero-subtitle">
+    Your free reading revealed the surface of your numbers. Your full report goes deeper — into the patterns that shape your decisions, your relationships, and what's coming next.
+  </p>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Explore</span>
+  </div>
+</section>
+
+<!-- ── TRUST BAR ── -->
+<div class="trust-bar reveal">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-number">12,000+</div>
+      <div class="trust-label">Readings Delivered</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-number">Instant</div>
+      <div class="trust-label">PDF Delivered by Email</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-number">50+</div>
+      <div class="trust-label">Years of Research</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEATURED PLAN: FOUNDATION ── -->
+<section class="featured-section" id="foundation">
+  <div class="featured-card">
+    <span class="featured-badge">Best Start</span>
+    <div class="featured-left">
+      <div class="plan-name">Foundation</div>
+      <div class="plan-tagline">Understand your core structure</div>
+      <div class="plan-price"><sup>$</sup>35</div>
+      <div class="plan-pages">12–15 page personal report</div>
+      <p class="plan-desc">
+        "This report gives you a clear picture of your inner structure and the patterns that influence your choices and relationships."
+      </p>
+    </div>
+    <div class="featured-right">
+      <ul class="feature-list">
+        <li>Full analysis of your Core Energy number</li>
+        <li>Complete Diamond calculation with all positions</li>
+        <li>Your natural strengths and competencies</li>
+        <li>Your challenges and recurring development patterns</li>
+        <li>How your name shapes your personality and path</li>
+      </ul>
+      <button type="button" class="btn-primary" data-plan="foundation">
+        Get My Foundation Report — $35
+      </button>
+      <p class="btn-note">Delivered instantly to your inbox as a PDF</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── OTHER PLANS ── -->
+<section class="plans-section">
+  <div class="section-label reveal">Go deeper</div>
+  <h2 class="section-title reveal">Two more levels of insight</h2>
+  <p class="section-sub reveal">For those who want more than self-understanding — strategic timing and active optimization.</p>
+  <div class="plans-grid">
+    <!-- Direction -->
+    <div class="plan-card">
+      <div class="plan-name">Direction</div>
+      <div class="plan-tagline">See when you are at your strongest</div>
+      <div class="plan-price"><sup>$</sup>75</div>
+      <div class="plan-pages">20–25 page personal report</div>
+      <ul class="feature-list">
+        <li>Everything in Foundation</li>
+        <li>Personal Yearly Cycles mapped out</li>
+        <li>Analysis of your next 9+ years</li>
+        <li>Periods of momentum and progress</li>
+        <li>Periods to consolidate and adjust</li>
+        <li>Strategic decision windows</li>
+      </ul>
+      <button type="button" class="btn-outline" data-plan="direction">Plan With Awareness — $75</button>
+    </div>
+    <!-- Activation -->
+    <div class="plan-card">
+      <div class="plan-name">Activation</div>
+      <div class="plan-tagline">Optimise your potential</div>
+      <div class="plan-price"><sup>$</sup>149</div>
+      <div class="plan-pages">30–35 page personal report</div>
+      <ul class="feature-list">
+        <li>Everything in Direction</li>
+        <li>Analysis of name variations</li>
+        <li>Calculation of your optimal name</li>
+        <li>Current vs. alternative name comparison</li>
+        <li>Impact on career, visibility and influence</li>
+        <li>Concrete actionable recommendations</li>
+      </ul>
+      <button type="button" class="btn-outline" data-plan="activation">Take Active Control — $149</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARE TABLE ── -->
+<section class="compare-section">
+  <div class="section-label reveal">Compare</div>
+  <h2 class="section-title reveal">What's included</h2>
+  <div class="divider" style="margin-bottom:48px"></div>
+  <table class="compare-table reveal">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Foundation</th>
+        <th>Direction</th>
+        <th>Activation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Core Energy Analysis</td><td><span class="check">✦</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Full Diamond Calculation</td><td><span class="check">✦</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Strengths & Development Areas</td><td><span class="check">✦</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Personal Yearly Cycles</td><td><span class="dash">—</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>9+ Year Analysis</td><td><span class="dash">—</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Strategic Decision Windows</td><td><span class="dash">—</span></td><td><span class="check">✦</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Name Variation Analysis</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Optimal Name Calculation</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Concrete Recommendations</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td><td><span class="check">✦</span></td></tr>
+      <tr><td>Pages</td><td>12–15</td><td>20–25</td><td>30–35</td></tr>
+      <tr><td>Price</td><td>$35</td><td>$75</td><td>$149</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── GUARANTEE ── -->
+<div class="guarantee reveal">
+  <div class="divider" style="margin-bottom: 48px;"></div>
+  <div class="guarantee-icon">◈</div>
+  <h3>Your report is yours alone</h3>
+  <p>Every analysis is generated specifically for you — not a template, not a generic reading. Your numbers, your name, your path. If you're not satisfied, we'll make it right.</p>
+</div>
+
+<!-- ── FOOTER CTA ── -->
+<section class="footer-cta">
+  <h2>Your numbers are<br><em>waiting to be read</em></h2>
+  <p>Start with the Foundation report. Understand yourself fully — then decide how deep you want to go.</p>
+  <button type="button" class="btn-primary" data-plan="foundation" style="margin: 0 auto;">
+    Get My Foundation Report — $35
+  </button>
+  <p style="margin-top:16px; font-size:11px; color: var(--text-muted)">
+    Foundation · Direction · Activation — all available above
+  </p>
+</section>
+
+<!-- ── ORDER MODAL ── -->
+<div class="order-overlay" id="orderModal">
+  <div class="order-box">
+    <button class="order-close" id="orderClose" aria-label="Close">✕</button>
+    <p class="order-plan-label">Your report</p>
+    <div class="order-plan-name" id="orderPlanName"></div>
+    <div class="order-plan-price" id="orderPlanPrice"></div>
+    <div class="order-fields">
+      <div class="order-field">
+        <div class="order-field-label">Full name</div>
+        <input type="text" id="orderName" name="fullName" placeholder="As on your official documents" autocomplete="name">
+      </div>
+      <div class="order-field">
+        <div class="order-field-label">Date of birth</div>
+        <input type="text" id="orderBirth" name="birthDate" placeholder="dd/mm/yyyy">
+      </div>
+      <div class="order-field">
+        <div class="order-field-label">Email</div>
+        <input type="email" id="orderEmail" name="email" placeholder="Your report will be sent here" autocomplete="email">
+      </div>
+    </div>
+    <button type="button" class="btn-primary" id="orderPay">Continue to payment</button>
+    <p class="btn-note">Secure payment · Instant delivery · No subscription</p>
+  </div>
+</div>
+
+<script>
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// ── Checkout ──
+(function () {
+  const planConfig = {
+    foundation: { label: 'Foundation Report', usd: '$35', eur: '€30' },
+    direction:  { label: 'Direction Report',  usd: '$75', eur: '€65' },
+    activation: { label: 'Activation Report', usd: '$149', eur: '€125' },
+  };
+
+  const modal        = document.getElementById('orderModal');
+  const orderClose   = document.getElementById('orderClose');
+  const orderPlanName  = document.getElementById('orderPlanName');
+  const orderPlanPrice = document.getElementById('orderPlanPrice');
+  const orderName    = document.getElementById('orderName');
+  const orderBirth   = document.getElementById('orderBirth');
+  const orderEmail   = document.getElementById('orderEmail');
+  const orderPay     = document.getElementById('orderPay');
+
+  let activePlan     = 'foundation';
+  let activeCurrency = 'eur';
+
+  // Pre-fill name + birthDate from free calculator
+  try {
+    const saved = JSON.parse(localStorage.getItem('gratisUserData') || 'null');
+    if (saved) {
+      if (saved.name)      orderName.value  = saved.name;
+      if (saved.birthDate) { orderBirth.value = saved.birthDate; orderBirth.type = 'date'; }
+    }
+  } catch (_) {}
+
+  // Geo-detect currency
+  fetch('/api/detect-currency')
+    .then(r => r.json())
+    .then(d => { if (d.currency) activeCurrency = d.currency; })
+    .catch(() => {});
+
+  // Date input behaviour
+  orderBirth.addEventListener('focus', () => { orderBirth.type = 'date'; });
+  orderBirth.addEventListener('blur',  () => { if (!orderBirth.value) orderBirth.type = 'text'; });
+
+  function openModal(plan) {
+    activePlan = plan;
+    const p = planConfig[plan];
+    orderPlanName.textContent  = p.label;
+    orderPlanPrice.textContent = activeCurrency === 'usd' ? p.usd : p.eur;
+    modal.classList.add('active');
+    setTimeout(() => orderEmail.focus(), 300);
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    orderPay.disabled = false;
+    orderPay.textContent = 'Continue to payment';
+  }
+
+  orderClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  // All plan buttons
+  document.querySelectorAll('[data-plan]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.plan));
+  });
+
+  // Pay
+  orderPay.addEventListener('click', async () => {
+    const fullName  = orderName.value.trim();
+    const birthDate = orderBirth.value;
+    const email     = orderEmail.value.trim();
+
+    if (!fullName)              { orderName.focus();  return; }
+    if (!birthDate)             { orderBirth.focus(); return; }
+    if (!email || !email.includes('@')) { orderEmail.focus(); return; }
+
+    orderPay.disabled = true;
+    orderPay.textContent = 'Please wait\u2026';
+
+    try {
+      const res  = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, birthDate, email, currency: activeCurrency, plan: activePlan }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      window.location.href = data.url;
+    } catch (err) {
+      alert(err.message);
+      orderPay.disabled = false;
+      orderPay.textContent = 'Continue to payment';
+    }
+  });
+})();
+</script>
+</body>
+</html>
