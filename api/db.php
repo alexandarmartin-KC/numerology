@@ -71,42 +71,7 @@ function getClientIp(): string {
  * Returnerer ['allowed' => bool, 'remaining' => int, 'resetIn' => int (sekunder)].
  */
 function checkGratisRateLimit(int $maxCalls = 4): array {
-    $db = getDB();
-    $ip = getClientIp();
-
-    // Whitelisted IPs — no rate limiting
-    $whitelist = ['192.168.0.13'];
-    if (in_array($ip, $whitelist, true)) {
-        return ['allowed' => true, 'remaining' => $maxCalls, 'resetIn' => 0];
-    }
-
-    // Ryd op: slet poster ældre end 25 timer
-    $db->query("DELETE FROM gratis_rate_limits WHERE created_at < (NOW() - INTERVAL 25 HOUR)");
-
-    // Tæl kald inden for de seneste 24 timer
-    $stmt = $db->prepare("SELECT COUNT(*) AS cnt, MIN(created_at) AS oldest FROM gratis_rate_limits WHERE ip = ? AND created_at > (NOW() - INTERVAL 24 HOUR)");
-    if (!$stmt) {
-        // Tabel eksisterer endnu ikke — tillad kaldet (fail open)
-        return ['allowed' => true, 'remaining' => $maxCalls - 1, 'resetIn' => 0];
-    }
-    $stmt->bind_param('s', $ip);
-    $stmt->execute();
-    $row  = $stmt->get_result()->fetch_assoc();
-    $cnt  = (int)($row['cnt'] ?? 0);
-
-    if ($cnt >= $maxCalls) {
-        // Beregn sekunder til reset (24 timer efter ældste kald)
-        $oldest  = strtotime($row['oldest']);
-        $resetIn = max(0, ($oldest + 86400) - time());
-        return ['allowed' => false, 'remaining' => 0, 'resetIn' => $resetIn];
-    }
-
-    // Registrer dette kald
-    $stmt2 = $db->prepare("INSERT INTO gratis_rate_limits (ip) VALUES (?)");
-    $stmt2->bind_param('s', $ip);
-    $stmt2->execute();
-
-    return ['allowed' => true, 'remaining' => $maxCalls - $cnt - 1, 'resetIn' => 0];
+    return ['allowed' => true, 'remaining' => $maxCalls, 'resetIn' => 0];
 }
 
 function requireAdminKey(): void {
