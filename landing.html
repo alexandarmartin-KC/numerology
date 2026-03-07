@@ -370,10 +370,10 @@ section { position: relative; z-index: 1; }
 
 /* ── MOBILE ── */
 @media (max-width: 768px) {
-  .featured-section { padding: 32px 12px; }
-  .featured-card { grid-template-columns: 1fr; }
+  .featured-section { padding: 32px 12px; max-width: 100%; }
+  .featured-card { grid-template-columns: 1fr; max-width: 100%; overflow: hidden; }
   .featured-left { border-right: none; border-bottom: 1px solid var(--clr-border); padding: 28px 16px; }
-  .featured-right { padding: 28px 16px; }
+  .featured-right { padding: 28px 16px; overflow: hidden; }
   .plans-grid { grid-template-columns: 1fr; }
   .trust-inner { gap: 32px; }
   .featured-badge { top: 16px; right: 16px; }
