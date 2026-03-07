@@ -182,32 +182,6 @@
       text-align: center;
     }
 
-    /* Currency toggle */
-    .currency-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 0;
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: 999px;
-      padding: 3px;
-      margin-top: 0.6rem;
-    }
-    .currency-toggle button {
-      padding: 0.4rem 1rem;
-      border: none;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      background: transparent;
-      color: var(--clr-muted);
-      transition: all 0.2s;
-    }
-    .currency-toggle button.active {
-      background: rgba(201,168,76,0.15);
-      color: var(--clr-gold-light);
-    }
 
     .card {
       background: var(--clr-surface);
@@ -402,11 +376,7 @@
         </div>
       </form>
 
-      <button class="cta-btn" type="button" data-checkout="hero">Get my reading – <span class="price-text">€30</span></button>
-      <div class="currency-toggle">
-        <button type="button" data-currency="eur" class="active">EUR €</button>
-        <button type="button" data-currency="usd">USD $</button>
-      </div>
+      <button class="cta-btn" type="button" data-checkout="hero">Get my reading – $35</button>
       <div class="trust-line">Digital delivery · One-time purchase · No subscription</div>
     </section>
 
@@ -511,11 +481,7 @@
           </div>
         </form>
 
-        <button class="cta-btn" type="button" data-checkout="footer">Order your reading – <span class="price-text">€30</span></button>
-        <div class="currency-toggle">
-          <button type="button" data-currency="eur" class="active">EUR €</button>
-          <button type="button" data-currency="usd">USD $</button>
-        </div>
+        <button class="cta-btn" type="button" data-checkout="footer">Order your reading – $35</button>
         <div class="trust-line">Digital delivery · One-time purchase · No subscription</div>
       </div>
     </section>
@@ -568,34 +534,6 @@
 
     let pendingData = null;
     let pendingBtn = null;
-
-    // ── Currency state ──
-    let activeCurrency = 'eur';
-    const priceMap = { eur: '€30', usd: '$35' };
-
-    function setCurrency(cur) {
-      activeCurrency = cur;
-      // Update all price texts
-      document.querySelectorAll('.price-text').forEach(el => {
-        el.textContent = priceMap[cur];
-      });
-      // Update toggle buttons
-      document.querySelectorAll('.currency-toggle button').forEach(b => {
-        b.classList.toggle('active', b.dataset.currency === cur);
-      });
-    }
-
-    // Currency toggle clicks
-    document.querySelectorAll('.currency-toggle button').forEach(b => {
-      b.addEventListener('click', () => setCurrency(b.dataset.currency));
-    });
-
-    // Geo-detect default currency
-    fetch('/api/detect-currency')
-      .then(r => r.json())
-      .then(d => { if (d.currency) setCurrency(d.currency); })
-      .catch(() => {}); // fallback: EUR
-
     // Format date to DD-MM-YYYY for display
     function formatDate(dateStr) {
       const [y, m, d] = dateStr.split('-');
@@ -703,7 +641,7 @@
         confirmName.textContent = fullName;
         confirmBirth.textContent = formatDate(birthDate);
         confirmEmail.textContent = email;
-        pendingData = { fullName, birthDate, email, currency: activeCurrency };
+        pendingData = { fullName, birthDate, email, currency: 'usd' };
         pendingBtn = btn;
         btnConfirm.disabled = false;
         btnConfirm.textContent = 'Confirm & pay';
