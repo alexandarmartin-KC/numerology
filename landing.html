@@ -392,7 +392,7 @@ section { position: relative; z-index: 1; }
         <li>Your challenges and recurring development patterns</li>
         <li>How your name shapes your personality and path</li>
       </ul>
-      <button type="button" class="btn-gold" data-plan="foundation">
+      <button type="button" class="btn-gold" data-plan="foundation" onclick="openModal('foundation')">
         Get My Foundation Report — $35
       </button>
       <p class="btn-note">Delivered instantly to your inbox as a PDF</p>
@@ -420,7 +420,7 @@ section { position: relative; z-index: 1; }
         <li>Periods to consolidate and adjust</li>
         <li>Strategic decision windows</li>
       </ul>
-      <button type="button" class="btn-outline-gold" data-plan="direction">Plan With Awareness — $75</button>
+      <button type="button" class="btn-outline-gold" data-plan="direction" onclick="openModal('direction')">Plan With Awareness — $75</button>
     </div>
     <!-- Activation -->
     <div class="plan-card">
@@ -436,7 +436,7 @@ section { position: relative; z-index: 1; }
         <li>Impact on career, visibility and influence</li>
         <li>Concrete actionable recommendations</li>
       </ul>
-      <button type="button" class="btn-outline-gold" data-plan="activation">Take Active Control — $149</button>
+      <button type="button" class="btn-outline-gold" data-plan="activation" onclick="openModal('activation')">Take Active Control — $149</button>
     </div>
   </div>
 </section>
@@ -483,7 +483,7 @@ section { position: relative; z-index: 1; }
 <section class="footer-cta">
   <h2>Your numbers are<br><em>waiting to be read</em></h2>
   <p>Start with the Foundation report. Understand yourself fully — then decide how deep you want to go.</p>
-  <button type="button" class="btn-gold" data-plan="foundation" style="margin: 0 auto; width: auto; min-width: 280px;">
+  <button type="button" class="btn-gold" data-plan="foundation" onclick="openModal('foundation')" style="margin: 0 auto; width: auto; min-width: 280px;">
     Get My Foundation Report — $35
   </button>
   <p style="margin-top:16px; font-size:11px; color: var(--clr-muted)">
@@ -577,6 +577,7 @@ reveals.forEach(el => observer.observe(el));
     modal.classList.add('active');
     setTimeout(() => orderEmail.focus(), 300);
   }
+  window.openModal = openModal;
 
   function closeModal() {
     modal.classList.remove('active');

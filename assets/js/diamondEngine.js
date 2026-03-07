@@ -60,7 +60,7 @@ function computeDiamond(fullName, birthDateISO) {
 
   // 5) Validate
   if (parts.length < 2) {
-    throw new Error("Mindst 2 navnedele (fornavn + efternavn) kræves.");
+    throw new Error("Please enter your full name (first and last name).");
   }
 
   /* ---------- 2. Top (birth day) — needed for livslinje minimum rule ---------- */
