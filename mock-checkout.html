@@ -236,9 +236,9 @@
   <div class="mock-banner">⚠ MOCK CHECKOUT — dette er en test-visning, ingen reel betaling</div>
 
   <div class="summary">
-    <a class="back" href="landing-analyse-35usd.html">← Tilbage</a>
-    <div class="product-name">Personlig numerologisk analyse</div>
-    <div class="price" id="totalPrice">€30,00</div>
+    <a class="back" id="backLink" href="landing-analyse-35usd.html">← Tilbage</a>
+    <div class="product-name" id="productName">Foundation Report</div>
+    <div class="price" id="totalPrice">$35.00</div>
 
     <div class="detail">
       <div class="detail-row">
@@ -341,9 +341,19 @@
     const name = params.get('name') || '—';
     const birth = params.get('birth') || '—';
     const email = params.get('email') || '';
-    const currency = params.get('currency') || 'eur';
-    const priceLabel = currency === 'usd' ? '$35.00' : '€30,00';
+    const currency = params.get('currency') || 'usd';
+    const plan = params.get('plan') || 'foundation';
 
+    const planConfig = {
+      foundation: { name: 'Foundation Report', usd: '$35.00', eur: '€30,00', back: 'landing-analyse-35usd.html' },
+      direction:  { name: 'Direction Report',  usd: '$75.00', eur: '€65,00', back: 'landing-direction-75usd.html' },
+      activation: { name: 'Activation Report', usd: '$149.00', eur: '€129,00', back: 'landing-activation-149usd.html' },
+    };
+    const cfg = planConfig[plan] || planConfig.foundation;
+    const priceLabel = currency === 'usd' ? cfg.usd : cfg.eur;
+
+    document.getElementById('productName').textContent = cfg.name;
+    document.getElementById('backLink').href = cfg.back;
     document.getElementById('customerName').textContent = name;
     document.getElementById('customerBirth').textContent = birth;
     document.getElementById('customerEmail').textContent = email || '—';
