@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $res = $db->query('
             SELECT id, display, label, reduced,
                    keywords, keywords_urent_numeroskop,
+                   summary,
                    grundenergi, beskrivelse,
                    ubalanceret_keywords AS ubalance_i_urent_numeroskop,
                    helheds_funktion, planet, kendte, kilde,
@@ -49,14 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt_upd = $db->prepare('UPDATE diamant_energies SET
             label=?, reduced=?, keywords=?, keywords_urent_numeroskop=?,
+            summary=?,
             grundenergi=?, ubalanceret_keywords=?, beskrivelse=?,
             planet=?, kendte=?, kilde=?, helheds_funktion=?, billede_url=?
             WHERE display=?');
         $stmt_ins = $db->prepare('INSERT INTO diamant_energies
             (display, label, reduced, keywords, keywords_urent_numeroskop,
+             summary,
              grundenergi, ubalanceret_keywords, beskrivelse,
              planet, kendte, kilde, helheds_funktion, billede_url)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
 
         if (!$stmt_upd || !$stmt_ins) {
             jsonOut(['error' => 'Prepare fejl: ' . $db->error], 500);
@@ -71,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $reduced      = ef($e, 'reduced', '0');
             $keywords     = ef($e, 'keywords');
             $kw_urent     = ef($e, 'keywords_urent_numeroskop');
+            $summary      = ef($e, 'summary');
             $grundenergi  = ef($e, 'grundenergi');
             $ubalanceret  = ef($e, 'ubalance_i_urent_numeroskop', ef($e, 'ubalanceret_keywords'));
             $beskrivelse  = ef($e, 'beskrivelse');
@@ -84,14 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $exists = $r && $r->num_rows > 0;
             if ($r) $r->free(); // Frigør result for at undgå "commands out of sync"
             if ($exists) {
-                $stmt_upd->bind_param('sssssssssssss',
+                $stmt_upd->bind_param('ssssssssssssss',
                     $label, $reduced, $keywords, $kw_urent,
+                    $summary,
                     $grundenergi, $ubalanceret, $beskrivelse,
                     $planet, $kendte, $kilde, $helheds, $billede, $display);
                 if (!$stmt_upd->execute()) $errors[] = "UPD $display: " . $stmt_upd->error;
             } else {
-                $stmt_ins->bind_param('sssssssssssss',
+                $stmt_ins->bind_param('sssssssssssssss',
                     $display, $label, $reduced, $keywords, $kw_urent,
+                    $summary,
                     $grundenergi, $ubalanceret, $beskrivelse,
                     $planet, $kendte, $kilde, $helheds, $billede);
                 if (!$stmt_ins->execute()) $errors[] = "INS $display: " . $stmt_ins->error;

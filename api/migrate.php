@@ -29,6 +29,7 @@ $results['gratis_beregning.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 
 // ─── diamant_energies: tilføj manglende kolonner ───
 $cols = [
     'keywords_urent_numeroskop' => "ALTER TABLE diamant_energies ADD COLUMN keywords_urent_numeroskop TEXT DEFAULT NULL AFTER keywords",
+    'summary'            => "ALTER TABLE diamant_energies ADD COLUMN summary TEXT DEFAULT NULL AFTER keywords_urent_numeroskop",
     'kilde'              => "ALTER TABLE diamant_energies ADD COLUMN kilde TEXT DEFAULT NULL AFTER kendte",
     'helheds_funktion'   => "ALTER TABLE diamant_energies ADD COLUMN helheds_funktion TEXT DEFAULT NULL AFTER kilde",
     'label_col'          => "ALTER TABLE diamant_energies ADD COLUMN label VARCHAR(100) DEFAULT '' AFTER display",
