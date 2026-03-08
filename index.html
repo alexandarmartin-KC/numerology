@@ -1507,6 +1507,16 @@
     birthInput.addEventListener('keydown', e => { if (e.key === 'Enter') runAnalysis(); });
     birthInput.addEventListener('focus', () => { birthInput.type = 'date'; });
     birthInput.addEventListener('blur',  () => { if (!birthInput.value) birthInput.type = 'text'; });
+
+    function resetCalcBtn() {
+      if (calcBtn.textContent !== 'Calculate for free') {
+        calcBtn.textContent = 'Calculate for free';
+        calcBtn.onclick = null;
+        calcBtn.addEventListener('click', runAnalysis);
+      }
+    }
+    nameInput.addEventListener('input', resetCalcBtn);
+    birthInput.addEventListener('input', resetCalcBtn);
   </script>
   <style>
     .site-footer {
