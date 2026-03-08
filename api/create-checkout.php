@@ -1,7 +1,7 @@
 <?php
 /* ============================================================
    /api/create-checkout.php
-   Opretter en Stripe Checkout Session til 35 USD / 30 EUR analyse.
+   Opretter en Stripe Checkout Session (USD).
    Kalder Stripe REST API direkte via cURL (ingen composer).
    ============================================================ */
 error_reporting(0);
@@ -23,13 +23,13 @@ $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $fullName  = trim($body['fullName'] ?? '');
 $birthDate = trim($body['birthDate'] ?? '');
 $email     = trim($body['email'] ?? '');
-$currency  = ($body['currency'] ?? 'eur') === 'usd' ? 'usd' : 'eur';
+$currency  = 'usd';
 $plan      = $body['plan'] ?? 'foundation';
 
 $planConfig = [
-    'foundation' => ['name' => 'Foundation Report', 'usd' => 3500,  'eur' => 3000],
-    'direction'  => ['name' => 'Direction Report',  'usd' => 7500,  'eur' => 6500],
-    'activation' => ['name' => 'Activation Report', 'usd' => 14900, 'eur' => 12500],
+    'foundation' => ['name' => 'Foundation Report', 'usd' => 3500],
+    'direction'  => ['name' => 'Direction Report',  'usd' => 7500],
+    'activation' => ['name' => 'Activation Report', 'usd' => 14900],
 ];
 if (!isset($planConfig[$plan])) $plan = 'foundation';
 $planName   = $planConfig[$plan]['name'];

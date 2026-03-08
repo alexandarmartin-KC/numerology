@@ -38,5 +38,5 @@ if (!$country) {
     }
 }
 
-$currency = ($country === 'US') ? 'usd' : 'eur';
+$currency = 'usd';
 echo json_encode(['currency' => $currency, 'country' => $country ?: 'unknown']);

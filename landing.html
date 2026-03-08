@@ -623,9 +623,9 @@ reveals.forEach(el => observer.observe(el));
 // ── Checkout ──
 (function () {
   const planConfig = {
-    foundation: { label: 'Foundation Report', usd: '$35', eur: '€30' },
-    direction:  { label: 'Direction Report',  usd: '$75', eur: '€65' },
-    activation: { label: 'Activation Report', usd: '$149', eur: '€125' },
+    foundation: { label: 'Foundation Report', usd: '$35' },
+    direction:  { label: 'Direction Report',  usd: '$75' },
+    activation: { label: 'Activation Report', usd: '$149' },
   };
 
   const modal        = document.getElementById('orderModal');
@@ -638,7 +638,6 @@ reveals.forEach(el => observer.observe(el));
   const orderPay     = document.getElementById('orderPay');
 
   let activePlan     = 'foundation';
-  let activeCurrency = 'eur';
 
   // Pre-fill name + birthDate from free calculator
   try {
@@ -649,12 +648,6 @@ reveals.forEach(el => observer.observe(el));
     }
   } catch (_) {}
 
-  // Geo-detect currency
-  fetch('/api/detect-currency')
-    .then(r => r.json())
-    .then(d => { if (d.currency) activeCurrency = d.currency; })
-    .catch(() => {});
-
   // Date input behaviour
   orderBirth.addEventListener('focus', () => { orderBirth.type = 'date'; });
   orderBirth.addEventListener('blur',  () => { if (!orderBirth.value) orderBirth.type = 'text'; });
@@ -663,7 +656,7 @@ reveals.forEach(el => observer.observe(el));
     activePlan = plan;
     const p = planConfig[plan];
     orderPlanName.textContent  = p.label;
-    orderPlanPrice.textContent = activeCurrency === 'usd' ? p.usd : p.eur;
+    orderPlanPrice.textContent = p.usd;
     modal.classList.add('active');
     setTimeout(() => orderEmail.focus(), 300);
   }
@@ -700,7 +693,7 @@ reveals.forEach(el => observer.observe(el));
       const res  = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, birthDate, email, currency: activeCurrency, plan: activePlan }),
+        body: JSON.stringify({ fullName, birthDate, email, currency: 'usd', plan: activePlan }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
