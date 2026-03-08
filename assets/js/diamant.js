@@ -140,7 +140,8 @@
         title: 'Navne',
         items: d.livslinje.map(e => ({
           display: e.display,
-          label: e.role === 'fornavn' ? 'Fornavn' : e.role === 'efternavn' ? 'Efternavn' : 'Mellemnavn'
+          label: e.role === 'fornavn' ? 'Fornavn' : e.role === 'efternavn' ? 'Efternavn' : 'Mellemnavn',
+          required: true
         })).concat([{ display: d.bundtal.display, label: 'Bundtal' }])
       },
       {
@@ -172,16 +173,15 @@
       }
     ];
 
-    function energyCard(display, label) {
+    function energyCard(display, label, required = false) {
       const info = energiesData[display];
-      if (!info) return '';
-      const kw = info.keywords || '';
-      if (!kw) return '';
+      const kw = info?.keywords || info?.keywords_urent_numeroskop || '';
+      if (!kw && !required) return '';
       let h = `<div class="d-flex align-items-baseline gap-2 mb-1">`;
       h += `<span class="fw-bold" style="font-size:15px;">${esc(display)}</span>`;
       h += `<span class="text-muted" style="font-size:12px;">${esc(label)}</span>`;
       h += `</div>`;
-      h += `<div class="text-muted" style="font-size:12px;margin-top:2px;"><em>${esc(kw)}</em></div>`;
+      if (kw) h += `<div class="text-muted" style="font-size:12px;margin-top:2px;"><em>${esc(kw)}</em></div>`;
       return h;
     }
 
@@ -194,7 +194,7 @@
       const cards = [];
       sec.items.forEach(it => {
         if (seen.has(it.display)) return;
-        const card = energyCard(it.display, it.label);
+        const card = energyCard(it.display, it.label, it.required || false);
         if (card) {
           cards.push(card);
           seen.add(it.display);
