@@ -193,7 +193,7 @@
     sections.forEach(sec => {
       const cards = [];
       sec.items.forEach(it => {
-        if (seen.has(it.display)) return;
+        if (!it.required && seen.has(it.display)) return;
         const card = energyCard(it.display, it.label, it.required || false);
         if (card) {
           cards.push(card);
