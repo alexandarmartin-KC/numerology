@@ -75,6 +75,47 @@ try {
     }
 } catch (Throwable $e) { /* tabel eksisterer måske ikke endnu — fortsæt med fallback */ }
 
+// ─── Hent summary-tekster for de relevante grundtal (1-9) ───
+$summaryBlock = '';
+try {
+    $db = getDB();
+    // Udled unikke grundtal fra relevantDisplays (fx "18/9" → 9, "5" → 5)
+    $grundtal = [];
+    foreach ($relevantDisplays as $disp) {
+        $parts = explode('/', $disp);
+        $reduced = (int) end($parts);
+        if ($reduced >= 1 && $reduced <= 9) {
+            $grundtal[$reduced] = true;
+        }
+    }
+    if ($grundtal) {
+        $placeholders = implode(',', array_fill(0, count($grundtal), '?'));
+        $keys = array_keys($grundtal);
+        $types = str_repeat('i', count($keys));
+        $stmt = $db->prepare(
+            "SELECT display, summary FROM diamant_energies
+             WHERE CAST(display AS UNSIGNED) IN ($placeholders)
+             AND display NOT LIKE '%/%'
+             AND summary IS NOT NULL AND summary != ''"
+        );
+        $stmt->bind_param($types, ...$keys);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $summaries = [];
+        while ($row = $result->fetch_assoc()) {
+            $summaries[(int)$row['display']] = $row['summary'];
+        }
+        ksort($summaries);
+        if ($summaries) {
+            $summaryBlock = "<energibeskrivelser>\n";
+            foreach ($summaries as $tal => $txt) {
+                $summaryBlock .= "GRUNDENERGI {$tal}:\n" . trim($txt) . "\n\n";
+            }
+            $summaryBlock = rtrim($summaryBlock) . "\n</energibeskrivelser>";
+        }
+    }
+} catch (Throwable $e) { /* summary ikke tilgængeligt — fortsæt uden */ }
+
 // ─── Rens energitekst (fjern planeter, horoskop etc. baseret på avoids-config) ───
 function cleanEnergyText(string $text, array $avoids, array $customAvoids, string $tone = 'warm'): string {
     $t = $text;
@@ -216,6 +257,9 @@ if (!empty($cfg['customPrompt']) && str_contains($cfg['customPrompt'], '{{NUMERO
     $systemPrompt = $NEW_DEFAULT_PROMPT;
     $userPrompt  = "<navn>\n{$firstName}\n</navn>\n\n";
     $userPrompt .= "<fødselsdato>\n{$birthDate}\n</fødselsdato>\n\n";
+    if ($summaryBlock) {
+        $userPrompt .= $summaryBlock . "\n\n";
+    }
     $userPrompt .= "<numeroskop_data>\nNedenfor følger rådata til din analyse. Brug tallene som inspiration, men skriv IKKE om dem separat – smelt dem sammen til én holistisk, flydende tekst.\n\n{$nameData}\n</numeroskop_data>\n\n";
     $userPrompt .= "Skriv analysen nu for {$firstName}.";
     $useCache = true;
