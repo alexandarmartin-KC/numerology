@@ -9,14 +9,9 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
-$_OPENAI_API_KEY = '';
-$apiKey = getenv('OPENAI_API_KEY') ?: '';
-if (!$apiKey) {
-    $envFile = __DIR__ . '/.env.php';
-    if (file_exists($envFile)) include $envFile;
-    $apiKey = $_OPENAI_API_KEY ?? '';
-}
-if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
+// db.php har allerede inkluderet .env.php, så $_ANTHROPIC_API_KEY er sat
+$apiKey = getenv('ANTHROPIC_API_KEY') ?: ($_ANTHROPIC_API_KEY ?? '');
+if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
 
 $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $diamond   = $body['diamond'] ?? null;
@@ -173,21 +168,25 @@ $systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
 $payload = json_encode([
-    'model'       => 'gpt-4o',
-    'messages'    => [
-        ['role' => 'system', 'content' => $systemPrompt],
-        ['role' => 'user',   'content' => $userPrompt]
+    'model'      => 'claude-opus-4-5',
+    'system'     => $systemPrompt,
+    'messages'   => [
+        ['role' => 'user', 'content' => $userPrompt]
     ],
-    'temperature' => 0.7,
+    'temperature' => 1,
     'max_tokens'  => 8000
 ], JSON_UNESCAPED_UNICODE);
 
-$ch = curl_init('https://api.openai.com/v1/chat/completions');
+$ch = curl_init('https://api.anthropic.com/v1/messages');
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Authorization: Bearer ' . $apiKey],
+    CURLOPT_HTTPHEADER     => [
+        'Content-Type: application/json',
+        'x-api-key: ' . $apiKey,
+        'anthropic-version: 2023-06-01'
+    ],
     CURLOPT_TIMEOUT        => 120
 ]);
 $response = curl_exec($ch);
@@ -196,8 +195,8 @@ $curlErr  = curl_error($ch);
 curl_close($ch);
 
 if ($curlErr) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $curlErr]); exit; }
-if ($httpCode !== 200) { http_response_code(500); echo json_encode(['error' => 'OpenAI API fejl', 'details' => $response]); exit; }
+if ($httpCode !== 200) { http_response_code(500); echo json_encode(['error' => 'Claude API fejl', 'details' => $response]); exit; }
 
-$data   = json_decode($response, true);
-$rapport = $data['choices'][0]['message']['content'] ?? '';
+$data    = json_decode($response, true);
+$rapport = $data['content'][0]['text'] ?? '';
 echo json_encode(['rapport' => $rapport, 'usage' => $data['usage'] ?? null], JSON_UNESCAPED_UNICODE);
