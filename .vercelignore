@@ -1,0 +1,4 @@
+# PHP-filer deployes ikke til Vercel (kører kun på alexandarmartin.dk)
+*.php
+api/
+grundenergier/
