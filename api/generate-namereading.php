@@ -245,9 +245,10 @@ PROMPT;
 
 if (!empty($cfg['customPrompt']) && str_contains($cfg['customPrompt'], '{{NUMEROSKOP_DATA}}')) {
     // DB-prompt er ny format med placeholders — indsæt data og brug som system prompt (ikke cachet)
+    $numeroskopWithSummary = $summaryBlock ? $summaryBlock . "\n\n" . $nameData : $nameData;
     $systemPrompt = str_replace(
         ['{{NAVN}}', '{NAVN}', '{{FØDSELSDATO}}', '{{NUMEROSKOP_DATA}}'],
-        [$firstName, $firstName, $birthDate, $nameData],
+        [$firstName, $firstName, $birthDate, $numeroskopWithSummary],
         $cfg['customPrompt']
     );
     $userPrompt = "Skriv analysen nu for {$firstName}.";
