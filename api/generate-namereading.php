@@ -116,6 +116,44 @@ try {
     }
 } catch (Throwable $e) { /* summary ikke tilgængeligt — fortsæt uden */ }
 
+// ─── Hent kontekst for navneenergier og bundtal (sammensatte tal med /) ───
+$navneenergiBlock = '';
+try {
+    $db = getDB();
+    $sammensatte = array_values(array_filter($relevantDisplays, fn($d) => str_contains($d, '/')));
+    if ($sammensatte) {
+        $placeholders = implode(',', array_fill(0, count($sammensatte), '?'));
+        $types = str_repeat('s', count($sammensatte));
+        $stmt = $db->prepare(
+            "SELECT display, keywords, keywords_urent_numeroskop, grundenergi
+             FROM diamant_energies
+             WHERE display IN ($placeholders)"
+        );
+        $stmt->bind_param($types, ...$sammensatte);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $energiData = [];
+        while ($row = $result->fetch_assoc()) {
+            $energiData[$row['display']] = $row;
+        }
+        $lines = [];
+        foreach ($sammensatte as $disp) {
+            if (!isset($energiData[$disp])) continue;
+            $r = $energiData[$disp];
+            $parts = [];
+            if (!empty($r['keywords']))                    $parts[] = "Keywords: " . trim($r['keywords']);
+            if (!empty($r['keywords_urent_numeroskop']))   $parts[] = "Ubalanceret: " . trim($r['keywords_urent_numeroskop']);
+            if (!empty($r['grundenergi']))                 $parts[] = trim($r['grundenergi']);
+            if ($parts) {
+                $lines[] = "TAL {$disp}:\n" . implode("\n", $parts);
+            }
+        }
+        if ($lines) {
+            $navneenergiBlock = "<talenergi_kontekst>\n" . implode("\n\n", $lines) . "\n</talenergi_kontekst>";
+        }
+    }
+} catch (Throwable $e) { /* fortsæt uden */ }
+
 // ─── Rens energitekst (fjern planeter, horoskop etc. baseret på avoids-config) ───
 function cleanEnergyText(string $text, array $avoids, array $customAvoids, string $tone = 'warm'): string {
     $t = $text;
@@ -208,6 +246,8 @@ Vigtigt: Du bruger kun tallene Grundenergi – fornavn – mellemnavn – eftern
 
 Hvis der er en <energibeskrivelser>-sektion i brugerens besked: brug den som den autoritative forklaring på grundenergiernes betydning. Ignorer grundenergi-tallinjen i rådata – lad energibeskrivelserne styre fortolkningen af grundenergien.
 
+Hvis der er en <talenergi_kontekst>-sektion: brug den som kontekst for hvert navnetal og bundtal. Tallene og deres beskrivelser der angiver energiernes karakter og potentielle ubalance.
+
 Din opgave er at skrive en numerologisk personlighedsanalyse, der opfylder følgende krav:
 
 - Dyk IKKE ned i hvert enkelt tal separat – skab en holistisk analyse af personligheden
@@ -247,7 +287,11 @@ PROMPT;
 
 if (!empty($cfg['customPrompt']) && str_contains($cfg['customPrompt'], '{{NUMEROSKOP_DATA}}')) {
     // DB-prompt er ny format med placeholders — indsæt data og brug som system prompt (ikke cachet)
-    $numeroskopWithSummary = $summaryBlock ? $summaryBlock . "\n\n" . $nameData : $nameData;
+    $parts = [];
+    if ($summaryBlock)       $parts[] = $summaryBlock;
+    if ($navneenergiBlock)  $parts[] = $navneenergiBlock;
+    $parts[] = $nameData;
+    $numeroskopWithSummary = implode("\n\n", $parts);
     $systemPrompt = str_replace(
         ['{{NAVN}}', '{NAVN}', '{{FØDSELSDATO}}', '{{NUMEROSKOP_DATA}}'],
         [$firstName, $firstName, $birthDate, $numeroskopWithSummary],
@@ -262,6 +306,9 @@ if (!empty($cfg['customPrompt']) && str_contains($cfg['customPrompt'], '{{NUMERO
     $userPrompt .= "<fødselsdato>\n{$birthDate}\n</fødselsdato>\n\n";
     if ($summaryBlock) {
         $userPrompt .= $summaryBlock . "\n\n";
+    }
+    if ($navneenergiBlock) {
+        $userPrompt .= $navneenergiBlock . "\n\n";
     }
     $userPrompt .= "<numeroskop_data>\nNedenfor følger rådata til din analyse. Brug tallene som inspiration, men skriv IKKE om dem separat – smelt dem sammen til én holistisk, flydende tekst.\n\n{$nameData}\n</numeroskop_data>\n\n";
     $userPrompt .= "Skriv analysen nu for {$firstName}.";
