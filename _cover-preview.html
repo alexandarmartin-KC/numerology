@@ -316,10 +316,17 @@
 
     <div class="section-title">Om Diamanten</div>
 
-    <!-- Large centered diamond SVG — exact geometry from diamondRenderer.js -->
-    <div style="width:130mm; margin: 0 auto 12pt;">
-      <svg viewBox="-160 -120 1320 1290" width="100%" xmlns="http://www.w3.org/2000/svg"
+    <!-- Large centered diamond SVG — callout style -->
+    <div style="width:100%; margin: 0 auto 10pt;">
+      <svg viewBox="-340 -220 1680 1490" width="100%" xmlns="http://www.w3.org/2000/svg"
            style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">
+        <defs>
+          <!-- Subtle hand-drawn wobble on callout lines -->
+          <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="3" seed="7" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
 
         <!-- Diamond outline -->
         <line x1="500" y1="0"    x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
@@ -332,73 +339,64 @@
         <circle cx="500" cy="330" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
         <!-- Solarplexus cirkel -->
         <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <!-- Rygrad arc -->
+        <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#c9a84c" stroke-width="1.2" fill="none"/>
 
-        <!-- Rygrad arc (gold) -->
-        <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <!-- ── CALLOUT LINES (hand-drawn filter) ── -->
 
-        <!-- GRUNDENERGI — above top -->
-        <text x="500" y="-62" text-anchor="middle" dominant-baseline="middle"
-              font-size="19" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="3" fill="#c9a84c">GRUNDENERGI</text>
+        <!-- Grundenergi — top, gold -->
+        <line x1="500" y1="-100" x2="500" y2="-8" stroke="#c9a84c" stroke-width="0.8" opacity=".5" filter="url(#rough)"/>
+        <!-- Bundtal — bottom, gold -->
+        <line x1="500" y1="1068" x2="500" y2="1170" stroke="#c9a84c" stroke-width="0.8" opacity=".5" filter="url(#rough)"/>
 
-        <!-- BUNDTAL — below bottom -->
-        <text x="500" y="1126" text-anchor="middle" dominant-baseline="middle"
-              font-size="19" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="3" fill="#c9a84c">BUNDTAL</text>
+        <!-- Aura — upper left diagonal midpoint (~290,265) -->
+        <line x1="-130" y1="230" x2="278" y2="270" stroke="#999" stroke-width="0.7" opacity=".7" filter="url(#rough)"/>
+        <!-- Hjertecenter — left to circle left edge (390,330) -->
+        <line x1="-130" y1="330" x2="388" y2="330" stroke="#999" stroke-width="0.7" opacity=".7" filter="url(#rough)"/>
+        <!-- Solarplexus — left to circle left edge (390,740) -->
+        <line x1="-130" y1="740" x2="388" y2="740" stroke="#999" stroke-width="0.7" opacity=".7" filter="url(#rough)"/>
 
-        <!-- AURA — 4 diagonal positions, angled along the edges -->
-        <!-- upper-left diagonal -->
-        <text x="238" y="272" text-anchor="middle" dominant-baseline="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#1a1f2e" opacity=".45"
-              transform="rotate(-51 238 272)">AURA</text>
-        <!-- upper-right diagonal -->
-        <text x="762" y="272" text-anchor="middle" dominant-baseline="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#1a1f2e" opacity=".45"
-              transform="rotate(51 762 272)">AURA</text>
-        <!-- lower-left diagonal -->
-        <text x="247" y="800" text-anchor="middle" dominant-baseline="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#1a1f2e" opacity=".45"
-              transform="rotate(51 247 800)">AURA</text>
-        <!-- lower-right diagonal -->
-        <text x="753" y="800" text-anchor="middle" dominant-baseline="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#1a1f2e" opacity=".45"
-              transform="rotate(-51 753 800)">AURA</text>
+        <!-- Navneenergier / Livslinje — right, points to center of lifeline -->
+        <line x1="930" y1="510" x2="1080" y2="460" stroke="#999" stroke-width="0.7" opacity=".7" filter="url(#rough)"/>
+        <!-- Rygrad — right, points to the arc area -->
+        <line x1="930" y1="545" x2="1080" y2="600" stroke="#999" stroke-width="0.7" opacity=".7" filter="url(#rough)"/>
 
-        <!-- LIVSLINJE — 3 labels: fornavn / mellemnavn / efternavn -->
-        <text x="80"  y="508" text-anchor="middle"
-              font-size="15" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="1" fill="#1a1f2e" opacity=".4">FORNAVN</text>
-        <text x="500" y="508" text-anchor="middle"
-              font-size="15" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="1" fill="#1a1f2e" opacity=".4">MELLEMNAVN</text>
-        <text x="920" y="508" text-anchor="middle"
-              font-size="15" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="1" fill="#1a1f2e" opacity=".4">EFTERNAVN</text>
+        <!-- ── LABELS (Cormorant Garamond italic) ── -->
 
-        <!-- RYGRAD — inside arc -->
-        <text x="856" y="504" text-anchor="end"
-              font-size="15" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="1" fill="#c9a84c" opacity=".8">RYGRAD</text>
+        <!-- Grundenergi — above top -->
+        <text x="500" y="-130" text-anchor="middle" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="30"
+              fill="#c9a84c">Grundenergi</text>
 
-        <!-- HJERTE — centered in top circle -->
-        <text x="500" y="320" text-anchor="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#c9a84c">HJERTE</text>
-        <text x="500" y="342" text-anchor="middle"
-              font-size="14" font-family="Inter,sans-serif" font-weight="400"
-              letter-spacing="1" fill="#c9a84c" opacity=".7">CENTER</text>
+        <!-- Bundtal — below bottom -->
+        <text x="500" y="1200" text-anchor="middle" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="30"
+              fill="#c9a84c">Bundtal</text>
 
-        <!-- SOLAR — centered in bottom circle -->
-        <text x="500" y="730" text-anchor="middle"
-              font-size="16" font-family="Inter,sans-serif" font-weight="600"
-              letter-spacing="2" fill="#c9a84c">SOLAR</text>
-        <text x="500" y="752" text-anchor="middle"
-              font-size="14" font-family="Inter,sans-serif" font-weight="400"
-              letter-spacing="1" fill="#c9a84c" opacity=".7">PLEXUS</text>
+        <!-- Aura — left side upper -->
+        <text x="-145" y="225" text-anchor="end" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="27"
+              fill="#1a1f2e" opacity=".7">Aura</text>
+
+        <!-- Hjertecenter — left -->
+        <text x="-145" y="330" text-anchor="end" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="27"
+              fill="#1a1f2e" opacity=".7">Hjertecenter</text>
+
+        <!-- Solarplexus — left -->
+        <text x="-145" y="740" text-anchor="end" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="27"
+              fill="#1a1f2e" opacity=".7">Solarplexus</text>
+
+        <!-- Navneenergier — right upper -->
+        <text x="1092" y="450" text-anchor="start" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="27"
+              fill="#1a1f2e" opacity=".7">Navneenergier</text>
+
+        <!-- Rygrad — right lower -->
+        <text x="1092" y="615" text-anchor="start" dominant-baseline="middle"
+              font-family="Cormorant Garamond,serif" font-style="italic" font-size="27"
+              fill="#1a1f2e" opacity=".7">Rygrad</text>
       </svg>
     </div>
 
