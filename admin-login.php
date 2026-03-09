@@ -13,20 +13,20 @@ define('ADMIN_PASSWORD_HASH', '$2y$10$L9KbSmnP.Wva/8MalfWMHuT9DZiUYbNF9jgJeEkZdG
 
 // Already logged in → redirect
 if (!empty($_SESSION['admin_auth'])) {
-    header('Location: /input-generelt.html');
+    header('Location: /admin.php');
     exit;
 }
 
 $error = false;
-$from  = '/input-generelt.html';
+$from  = '/admin.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pw   = $_POST['password'] ?? '';
-    $from = $_POST['from']     ?? '/input-generelt.html';
+    $from = $_POST['from']     ?? '/admin.php';
 
-    // Validate redirect target (only allow /input-*.html or /admin-rapporter.php)
-    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && $from !== '/admin-rapporter.php') {
-        $from = '/input-generelt.html';
+    // Validate redirect target (only allow /input-*.html, /admin.php or /admin-rapporter.php)
+    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && !in_array($from, ['/admin.php', '/admin-rapporter.php'])) {
+        $from = '/admin.php';
     }
 
     if (password_verify($pw, ADMIN_PASSWORD_HASH)) {
@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = true;
     sleep(1); // slow brute-force
 } else {
-    $from = $_GET['from'] ?? '/input-generelt.html';
-    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && $from !== '/admin-rapporter.php') {
-        $from = '/input-generelt.html';
+    $from = $_GET['from'] ?? '/admin.php';
+    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && !in_array($from, ['/admin.php', '/admin-rapporter.php'])) {
+        $from = '/admin.php';
     }
 }
 ?>
