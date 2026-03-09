@@ -68,6 +68,106 @@
       @page { size: A4; margin: 0; }
       html, body { margin: 0; background: #fff; }
       .cover { width: 210mm; height: 297mm; min-height: unset; }
+      .page { width: 210mm; height: 297mm; min-height: unset; }
+    }
+
+    /* ── Interior pages ───────────────────────────── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 16mm 20mm 18mm;
+      page-break-after: always;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Running header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 6pt;
+      border-bottom: .5px solid var(--gold);
+      margin-bottom: 20pt;
+      opacity: .7;
+    }
+    .page-header-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9pt; font-weight: 400;
+      color: var(--dark); letter-spacing: .03em;
+    }
+    .page-header-plan {
+      font-size: 6.5pt; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* Section title */
+    .section-title {
+      font-size: 7pt; font-weight: 600;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14pt;
+    }
+
+    /* Body text */
+    .body-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11.5pt; font-weight: 400;
+      color: #2a2520; line-height: 1.85;
+      text-align: justify;
+    }
+
+    /* TOC */
+    .toc-divider {
+      width: 100%; height: .5px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      opacity: .3; margin: 20pt 0;
+    }
+    .toc-title {
+      font-size: 7pt; font-weight: 600;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 16pt;
+    }
+    .toc-entry {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 9pt;
+    }
+    .toc-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9pt; font-weight: 400;
+      color: var(--gold); opacity: .7;
+      width: 10mm; flex-shrink: 0;
+    }
+    .toc-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11pt; font-weight: 400;
+      color: var(--dark); flex: 1;
+      letter-spacing: .02em;
+    }
+    .toc-dots {
+      flex: 1; border-bottom: 1px dotted #ccc;
+      margin: 0 6pt 3pt; max-width: 40mm;
+    }
+    .toc-page {
+      font-size: 9pt; color: #aaa;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Page footer */
+    .page-footer {
+      margin-top: auto;
+      padding-top: 10pt;
+      border-top: .5px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      font-size: 6pt;
+      color: #ccc;
+      letter-spacing: .1em;
     }
   </style>
 </head>
@@ -94,6 +194,73 @@
     </div>
 
     <div class="cover-footer">Fortrolig &mdash; Personlig rapport</div>
+  </div>
+
+  <!-- ── Side 2: Indledning + Indholdsfortegnelse ── -->
+  <div class="page">
+    <div class="page-header">
+      <span class="page-header-name">Andreas Egholm Mollerup</span>
+      <span class="page-header-plan">Foundation Analyse</span>
+    </div>
+
+    <div class="section-title">Indledning</div>
+    <div class="body-text">
+      Denne rapport er udarbejdet eksklusivt til dig og tager udgangspunkt i din
+      fødselsdato og dit fulde navn ved fødslen. Numerologi er læren om tallets
+      energi og den indflydelse, det har på din personlighed, dine livsmønstre
+      og din timing — hvornår du er i medvind, og hvornår du bør konsolidere.
+      <br><br>
+      [Placer din standardtekst her — ca. 8-10 linjer der gælder for alle kunder.
+      Beskriv hvad rapporten dækker, hvordan man læser den, og hvad man kan
+      forvente at få ud af den. Teksten skrives én gang og genbruges på tværs
+      af alle rapporter.]
+    </div>
+
+    <div class="toc-divider"></div>
+
+    <div class="toc-title">Indholdsfortegnelse</div>
+
+    <div class="toc-entry">
+      <span class="toc-num">01</span>
+      <span class="toc-label">Din Livsenergi — Diamanten</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">3</span>
+    </div>
+    <div class="toc-entry">
+      <span class="toc-num">02</span>
+      <span class="toc-label">Grundenergi</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">5</span>
+    </div>
+    <div class="toc-entry">
+      <span class="toc-num">03</span>
+      <span class="toc-label">Bundtal</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">7</span>
+    </div>
+    <div class="toc-entry">
+      <span class="toc-num">04</span>
+      <span class="toc-label">Søjletal</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">9</span>
+    </div>
+    <div class="toc-entry">
+      <span class="toc-num">05</span>
+      <span class="toc-label">Personlige Årstal &amp; Timing</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">11</span>
+    </div>
+    <div class="toc-entry">
+      <span class="toc-num">06</span>
+      <span class="toc-label">Cyklusser &amp; Livsrytme</span>
+      <span class="toc-dots"></span>
+      <span class="toc-page">15</span>
+    </div>
+
+    <div class="page-footer">
+      <span>Strategic Numerology</span>
+      <span>2</span>
+    </div>
   </div>
 </body>
 </html>
