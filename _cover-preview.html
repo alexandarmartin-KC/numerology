@@ -321,15 +321,41 @@
       <svg viewBox="-60 -90 1120 1250" width="100%" xmlns="http://www.w3.org/2000/svg"
            style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">
 
-        <!-- Diamond outline -->
-        <line x1="500" y1="0"    x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
-        <line x1="920" y1="530"  x2="500" y2="1060" stroke="#1a1f2e" stroke-width="1.5"/>
-        <line x1="500" y1="1060" x2="80"  y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
-        <line x1="80"  y1="530"  x2="500" y2="0"    stroke="#1a1f2e" stroke-width="1.5"/>
-        <line x1="80"  y1="530"  x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
-        <!-- Circles and arc — same navy -->
-        <circle cx="500" cy="265" r="110" stroke="#1a1f2e" stroke-width="1.5" fill="none" opacity=".5"/>
-        <circle cx="500" cy="795" r="110" stroke="#1a1f2e" stroke-width="1.5" fill="none" opacity=".5"/>
+        <defs>
+          <!-- Gold gradient along diamond lines -->
+          <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#c9a84c" stop-opacity=".3"/>
+            <stop offset="50%"  stop-color="#e2c47a" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity=".3"/>
+          </linearGradient>
+          <linearGradient id="goldLineV" x1="0%" y1="0%" x2="0%" y2="100%" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#c9a84c" stop-opacity=".3"/>
+            <stop offset="50%"  stop-color="#e2c47a" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity=".3"/>
+          </linearGradient>
+          <!-- Glow filter for circles -->
+          <filter id="circleGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Diamond outline — gold gradient -->
+        <line x1="500" y1="0"    x2="920" y2="530"  stroke="url(#goldLine)"  stroke-width="1.8"/>
+        <line x1="920" y1="530"  x2="500" y2="1060" stroke="url(#goldLineV)" stroke-width="1.8"/>
+        <line x1="500" y1="1060" x2="80"  y2="530"  stroke="url(#goldLine)"  stroke-width="1.8"/>
+        <line x1="80"  y1="530"  x2="500" y2="0"    stroke="url(#goldLineV)" stroke-width="1.8"/>
+        <!-- Lifeline — navy -->
+        <line x1="80"  y1="530"  x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.2" opacity=".4"/>
+        <!-- Circles — double ring with glow -->
+        <circle cx="500" cy="265" r="118" stroke="#c9a84c" stroke-width=".6" fill="none" opacity=".25"/>
+        <circle cx="500" cy="265" r="110" stroke="#c9a84c" stroke-width="1.2" fill="none" opacity=".55" filter="url(#circleGlow)"/>
+        <circle cx="500" cy="795" r="118" stroke="#c9a84c" stroke-width=".6" fill="none" opacity=".25"/>
+        <circle cx="500" cy="795" r="110" stroke="#c9a84c" stroke-width="1.2" fill="none" opacity=".55" filter="url(#circleGlow)"/>
+        <!-- Rygrad arc -->
         <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#1a1f2e" stroke-width="1.2" fill="none" opacity=".4"/>
 
         <!-- Grundenergi — above top -->
