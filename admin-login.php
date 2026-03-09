@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pw   = $_POST['password'] ?? '';
     $from = $_POST['from']     ?? '/input-generelt.html';
 
-    // Validate redirect target (only allow /input-*.html)
-    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from)) {
+    // Validate redirect target (only allow /input-*.html or /admin-rapporter.php)
+    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && $from !== '/admin-rapporter.php') {
         $from = '/input-generelt.html';
     }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sleep(1); // slow brute-force
 } else {
     $from = $_GET['from'] ?? '/input-generelt.html';
-    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from)) {
+    if (!preg_match('/^\/input-[a-z0-9-]+\.html$/', $from) && $from !== '/admin-rapporter.php') {
         $from = '/input-generelt.html';
     }
 }

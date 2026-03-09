@@ -135,6 +135,26 @@ $ok = $db->query("
 ");
 $results['gratis_rate_limits.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
 
+// ─── orders: betalte ordrer + rapport-historik ───
+$ok = $db->query("
+    CREATE TABLE IF NOT EXISTS orders (
+        id                INT AUTO_INCREMENT PRIMARY KEY,
+        stripe_session_id VARCHAR(255)  NOT NULL UNIQUE,
+        full_name         VARCHAR(255)  NOT NULL,
+        birth_date        DATE          NOT NULL,
+        email             VARCHAR(255)  NOT NULL,
+        plan              ENUM('foundation','direction','activation') NOT NULL DEFAULT 'foundation',
+        status            ENUM('pending','generating','done','failed','sent') NOT NULL DEFAULT 'pending',
+        rapport_html      LONGTEXT      DEFAULT NULL,
+        error_msg         TEXT          DEFAULT NULL,
+        created_at        DATETIME      DEFAULT CURRENT_TIMESTAMP,
+        sent_at           DATETIME      DEFAULT NULL,
+        INDEX idx_status (status),
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$results['orders.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
 // ─── Vis nuværende kolonner ───
 $colRes = $db->query("SHOW COLUMNS FROM diamant_energies");
 $allCols = [];

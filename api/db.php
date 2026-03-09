@@ -4,6 +4,8 @@
 $_DB_HOST = ''; $_DB_USER = ''; $_DB_PASS = ''; $_DB_NAME = '';
 $_ALLOWED_ORIGIN = ''; $_ADMIN_API_KEY = '';
 $_STRIPE_SECRET_KEY = ''; $_BASE_URL = '';
+$_STRIPE_WEBHOOK_SECRET = '';
+$_MAIL_FROM = ''; $_MAIL_FROM_NAME = 'StrategicNumerology';
 $_envFile = __DIR__ . '/.env.php';
 if (file_exists($_envFile)) include $_envFile;
 
@@ -13,8 +15,11 @@ define('DB_HOST',        getenv('DB_HOST')        ?: ($_DB_HOST        ?: 'local
 define('DB_USER',        getenv('DB_USER')        ?: ($_DB_USER        ?: ''));
 define('DB_PASS',        getenv('DB_PASS')        ?: ($_DB_PASS        ?: ''));
 define('DB_NAME',        getenv('DB_NAME')        ?: ($_DB_NAME        ?: ''));
-define('CFG_ALLOWED_ORIGIN', getenv('ALLOWED_ORIGIN') ?: ($_ALLOWED_ORIGIN ?: 'https://numerology-olive-kappa.vercel.app'));
-define('CFG_ADMIN_KEY',      getenv('ADMIN_API_KEY')  ?: ($_ADMIN_API_KEY  ?: ''));
+define('CFG_ALLOWED_ORIGIN',          getenv('ALLOWED_ORIGIN')          ?: ($_ALLOWED_ORIGIN          ?: 'https://numerology-olive-kappa.vercel.app'));
+define('CFG_ADMIN_KEY',               getenv('ADMIN_API_KEY')           ?: ($_ADMIN_API_KEY           ?: ''));
+define('CFG_STRIPE_WEBHOOK_SECRET',   getenv('STRIPE_WEBHOOK_SECRET')   ?: ($_STRIPE_WEBHOOK_SECRET   ?: ''));
+define('CFG_MAIL_FROM',               getenv('MAIL_FROM')               ?: ($_MAIL_FROM               ?: ''));
+define('CFG_MAIL_FROM_NAME',          getenv('MAIL_FROM_NAME')          ?: ($_MAIL_FROM_NAME          ?: 'StrategicNumerology'));
 
 function getDB(): mysqli {
     static $db = null;
@@ -84,6 +89,32 @@ function requireAdminKey(): void {
         echo json_encode(['error' => 'Uautoriseret']);
         exit;
     }
+}
+
+/**
+ * Send an HTML email.
+ * php mail() bruges nu — byt sendSmtp() funktion ud for at skifte til SendGrid/Mailgun/SMTP.
+ *
+ * @param string $to       Modtagerens email
+ * @param string $subject  Emne
+ * @param string $htmlBody HTML-indhold
+ * @return bool            True hvis mail() ikke returnerede false
+ */
+function sendEmail(string $to, string $subject, string $htmlBody): bool {
+    $fromEmail = CFG_MAIL_FROM ?: 'noreply@alexandarmartin.dk';
+    $fromName  = CFG_MAIL_FROM_NAME ?: 'StrategicNumerology';
+
+    // ── Skift her til SMTP/SendGrid/Mailgun når det er klar ──
+    // Eksempel SendGrid:
+    //   return sendSendGrid($to, $subject, $htmlBody, $fromEmail, $fromName);
+
+    $headers  = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: {$fromName} <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: {$fromEmail}\r\n";
+    $headers .= "X-Mailer: PHP/" . PHP_VERSION . "\r\n";
+
+    return mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $htmlBody, $headers);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

@@ -29,7 +29,10 @@ $html = file_get_contents($file);
 
 $logoutBar = '<div style="position:fixed;bottom:0;right:0;padding:.4rem .9rem;'
            . 'background:rgba(0,0,0,.75);backdrop-filter:blur(6px);'
-           . 'font-size:.72rem;z-index:9999;border-top-left-radius:8px;">'
+           . 'font-size:.72rem;z-index:9999;border-top-left-radius:8px;display:flex;gap:.8rem;align-items:center;">'
+           . '<a href="/admin-rapporter.php" '
+           . 'style="color:#93c5fd;text-decoration:none;letter-spacing:.04em;">'
+           . '&#128196;&nbsp;Rapporter</a>'
            . '<a href="/admin-logout.php" '
            . 'style="color:#f8d57e;text-decoration:none;letter-spacing:.04em;">'
            . '&#x2715;&nbsp;Log ud</a></div>';
