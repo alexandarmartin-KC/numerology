@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cover Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, 'Segoe UI', sans-serif; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e2c47a;
+      --dark-bg: #0d1117;
+    }
+
+    .rapport-cover {
+      background: var(--dark-bg);
+      color: #f0ece4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .cover-brand {
+      letter-spacing: .18em;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .35rem;
+    }
+    .cover-tagline {
+      letter-spacing: .12em;
+      font-size: .6rem;
+      text-transform: uppercase;
+      color: #6a7080;
+      margin-bottom: 1.8rem;
+    }
+    .cover-divider {
+      width: min(480px, 80%);
+      border: none;
+      border-top: 1px solid var(--gold);
+      opacity: .45;
+      margin: 0 auto 3rem;
+    }
+    .cover-name {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: #f0ece4;
+      letter-spacing: .02em;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .cover-plan {
+      letter-spacing: .2em;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3.5rem;
+    }
+    .cover-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      background: rgba(201,168,76,.06);
+      box-shadow: 0 0 32px rgba(201,168,76,.12);
+    }
+    .cover-circle-label {
+      font-size: .55rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #6a7080;
+      margin-bottom: .1rem;
+    }
+    .cover-circle-number {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="rapport-cover">
+    <div class="cover-brand">Strategic Numerology</div>
+    <div class="cover-tagline">Understand Yourself. Plan Your Timing.</div>
+    <hr class="cover-divider">
+    <div class="cover-name">Andreas Egholm Mollerup</div>
+    <div class="cover-plan">Foundation Analyse</div>
+    <div class="cover-circle">
+      <span class="cover-circle-label">Grundenergi</span>
+      <span class="cover-circle-number">7</span>
+    </div>
+  </div>
+</body>
+</html>
