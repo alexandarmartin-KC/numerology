@@ -315,101 +315,85 @@
 
     <div class="section-title">Om Diamanten</div>
 
-    <div style="display:flex; gap: 10mm; align-items: flex-start;">
+    <!-- Large centered diamond SVG -->
+    <div style="width:120mm; margin: 0 auto 14pt;">
+      <svg viewBox="-80 -180 1160 1520" width="100%" xmlns="http://www.w3.org/2000/svg"
+           style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">
 
-      <!-- SVG diagram -->
-      <div style="flex-shrink:0; width: 68mm;">
-        <svg viewBox="0 -120 1000 1290" width="100%" xmlns="http://www.w3.org/2000/svg"
-             style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">
-          <!-- Diamond outline -->
-          <line x1="500" y1="0"    x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
-          <line x1="920" y1="530"  x2="500" y2="1060" stroke="#1a1f2e" stroke-width="1.5"/>
-          <line x1="500" y1="1060" x2="80"  y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
-          <line x1="80"  y1="530"  x2="500" y2="0"    stroke="#1a1f2e" stroke-width="1.5"/>
-          <!-- Livslinje -->
-          <line x1="80" y1="530" x2="920" y2="530" stroke="#1a1f2e" stroke-width="1.5"/>
-          <!-- Hjertecirkel -->
-          <circle cx="500" cy="330" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
-          <!-- Solarplexus cirkel -->
-          <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <!-- Diamond outline -->
+        <line x1="500" y1="0"    x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="920" y1="530"  x2="500" y2="1060" stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="500" y1="1060" x2="80"  y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="80"  y1="530"  x2="500" y2="0"    stroke="#1a1f2e" stroke-width="1.5"/>
+        <!-- Livslinje -->
+        <line x1="80" y1="530" x2="920" y2="530" stroke="#1a1f2e" stroke-width="1.5"/>
+        <!-- Hjertecirkel -->
+        <circle cx="500" cy="330" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <!-- Solarplexus cirkel -->
+        <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
 
-          <!-- Grundenergi label (top) -->
-          <text x="500" y="-55" text-anchor="middle" font-size="36" font-family="Cormorant Garamond, serif" fill="#c9a84c" font-weight="600">7</text>
+        <!-- ▲ Grundenergi — top -->
+        <text x="500" y="-90" text-anchor="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#c9a84c">▲</text>
+        <text x="500" y="-42" text-anchor="middle" font-size="22" font-family="Inter,sans-serif" fill="#c9a84c" font-weight="600" letter-spacing="3">GRUNDENERGI</text>
 
-          <!-- Bundtal label (bottom) -->
-          <text x="500" y="1130" text-anchor="middle" font-size="36" font-family="Cormorant Garamond, serif" fill="#c9a84c" font-weight="600">3</text>
+        <!-- ▼ Bundtal — bottom -->
+        <text x="500" y="1120" text-anchor="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#c9a84c">▼</text>
+        <text x="500" y="1168" text-anchor="middle" font-size="22" font-family="Inter,sans-serif" fill="#c9a84c" font-weight="600" letter-spacing="3">BUNDTAL</text>
 
-          <!-- Aura labels -->
-          <text x="225" y="250" text-anchor="middle" font-size="30" font-family="Cormorant Garamond, serif" fill="#1a1f2e">5</text>
-          <text x="775" y="250" text-anchor="middle" font-size="30" font-family="Cormorant Garamond, serif" fill="#1a1f2e">2</text>
-          <text x="235" y="820" text-anchor="middle" font-size="30" font-family="Cormorant Garamond, serif" fill="#1a1f2e">9</text>
-          <text x="765" y="820" text-anchor="middle" font-size="30" font-family="Cormorant Garamond, serif" fill="#1a1f2e">4</text>
+        <!-- ◆ Aura — 4 diagonal positions -->
+        <text x="215" y="255" text-anchor="middle" font-size="30" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".6">◆</text>
+        <text x="785" y="255" text-anchor="middle" font-size="30" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".6">◆</text>
+        <text x="215" y="820" text-anchor="middle" font-size="30" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".6">◆</text>
+        <text x="785" y="820" text-anchor="middle" font-size="30" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".6">◆</text>
+        <!-- Aura label — top right -->
+        <text x="860" y="200" text-anchor="middle" font-size="20" font-family="Inter,sans-serif" fill="#1a1f2e" opacity=".5" font-weight="600" letter-spacing="2">AURA</text>
 
-          <!-- Hjertecenter tal -->
-          <text x="500" y="330" text-anchor="middle" dominant-baseline="middle" font-size="34" font-family="Cormorant Garamond, serif" fill="#1a1f2e">8</text>
+        <!-- — Livslinje — center of line -->
+        <text x="500" y="495" text-anchor="middle" font-size="22" font-family="Inter,sans-serif" fill="#1a1f2e" opacity=".5" font-weight="600" letter-spacing="2">LIVSLINJE</text>
 
-          <!-- Solarplexus tal -->
-          <text x="500" y="740" text-anchor="middle" dominant-baseline="middle" font-size="34" font-family="Cormorant Garamond, serif" fill="#1a1f2e">6</text>
+        <!-- ○ Hjertecenter — inside top circle -->
+        <text x="500" y="310" text-anchor="middle" font-size="26" font-family="Cormorant Garamond,serif" fill="#c9a84c">♡</text>
+        <text x="500" y="358" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1a1f2e" opacity=".6" font-weight="600" letter-spacing="1.5">HJERTE</text>
 
-          <!-- Livslinje -->
-          <text x="80"  y="490" text-anchor="end"   font-size="28" font-family="Cormorant Garamond, serif" fill="#1a1f2e">4</text>
-          <text x="920" y="490" text-anchor="start" font-size="28" font-family="Cormorant Garamond, serif" fill="#1a1f2e">7</text>
-          <text x="500" y="505" text-anchor="middle" font-size="28" font-family="Cormorant Garamond, serif" fill="#1a1f2e">11/2</text>
-        </svg>
+        <!-- ○ Solarplexus — inside bottom circle -->
+        <text x="500" y="722" text-anchor="middle" font-size="26" font-family="Cormorant Garamond,serif" fill="#c9a84c">☉</text>
+        <text x="500" y="768" text-anchor="middle" font-size="19" font-family="Inter,sans-serif" fill="#1a1f2e" opacity=".6" font-weight="600" letter-spacing="1.5">SOLAR</text>
+      </svg>
+    </div>
+
+    <!-- Legend grid -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap: 8pt 12pt;">
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">▲ Grundenergi</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit livs kernetal — den energi du er her for at udtrykke og arbejde med.</div>
       </div>
 
-      <!-- Annotations -->
-      <div style="flex:1; display:flex; flex-direction:column; gap: 9pt; padding-top: 4mm;">
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">▲</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Grundenergi</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">Dit livs kernetal — den energi du er her for at arbejde med og udtrykke. Det øverste tal i diamanten.</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">▼</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Bundtal</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">Din jordforankring og fundament. Det tal der holder dig stabilt og viser dine praktiske styrker.</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">◆</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Aura</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">De fire diagonale tal der udgør dit energifelt udadtil — den energi andre møder, når de er i din nærhed.</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">—</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Livslinje</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">Den vandrette linje der deler diamanten. Her aflæses dit navn — fornavn til venstre, efternavn til højre. Navnets tal afslører din karakter og personlige udtryk.</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">○</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Hjertecenteret</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">Den øverste cirkel — dit følelsesmæssige center. Her sidder din evne til kærlighed, medfølelse og dybe relationer.</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap: 8pt; align-items: flex-start;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:10pt; color:#c9a84c; font-weight:600; min-width:22pt; flex-shrink:0;">○</span>
-          <div>
-            <div style="font-size:7pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:2pt;">Solarplexus</div>
-            <div style="font-family:'Cormorant Garamond',serif; font-size:9.5pt; color:#1a1f2e; line-height:1.6;">Den nederste cirkel — dit kraftcenter. Her sidder din vilje, selvtillid og evne til at handle og manifestere i verden.</div>
-          </div>
-        </div>
-
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">▼ Bundtal</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Din jordforankring og fundament. Viser dine praktiske styrker og stabilitet.</div>
       </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">◆ Aura</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">De fire diagonale tal — den energi andre møder i din nærhed.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">— Livslinje</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Den vandrette linje. Dit navn aflæses her — fornavn til venstre, efternavn til højre.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">♡ Hjertecenter</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit følelsesmæssige center — evnen til kærlighed og dybe relationer.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">☉ Solarplexus</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit kraftcenter — vilje, selvtillid og evnen til at handle og manifestere.</div>
+      </div>
+
     </div>
 
     <div class="page-footer">
