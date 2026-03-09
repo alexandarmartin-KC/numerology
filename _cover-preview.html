@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cover Preview</title>
   <style>
+    @page { size: A4; margin: 0; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, 'Segoe UI', sans-serif; }
 
@@ -24,6 +25,19 @@
       justify-content: center;
       text-align: center;
       padding: 4rem 2rem;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      page-break-after: always;
+    }
+
+    @media print {
+      @page { size: A4; margin: 0; }
+      body { margin: 0; }
+      .rapport-cover {
+        min-height: 100vh;
+        height: 100vh;
+        page-break-after: always;
+      }
     }
     .cover-brand {
       letter-spacing: .18em;

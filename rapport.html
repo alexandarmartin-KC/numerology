@@ -6,6 +6,13 @@
   <title>Rapport</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e2c47a;
+      --dark-bg: #0d1117;
+      --dark-secondary: #1a1f2e;
+    }
+
     .spinner-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(255,255,255,0.85); display: flex;
@@ -14,9 +21,99 @@
     .rapport-output { font-size: 15px; line-height: 1.8; }
     .rapport-output h2 { margin-top: 2rem; font-size: 20px; }
     .rapport-output h3 { margin-top: 1.5rem; font-size: 17px; }
+
+    /* ── Cover page ─────────────────────────────────────────── */
+    .rapport-cover {
+      background: var(--dark-bg);
+      color: #f0ece4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      margin: -1.5rem -12px 3rem;  /* bleed to edges inside .container */
+      page-break-after: always;      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;    }
+    .cover-brand {
+      letter-spacing: .18em;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .35rem;
+    }
+    .cover-tagline {
+      letter-spacing: .12em;
+      font-size: .6rem;
+      text-transform: uppercase;
+      color: #6a7080;
+      margin-bottom: 1.8rem;
+    }
+    .cover-divider {
+      width: min(480px, 80%);
+      border: none;
+      border-top: 1px solid var(--gold);
+      opacity: .45;
+      margin: 0 auto 3rem;
+    }
+    .cover-name {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: #f0ece4;
+      letter-spacing: .02em;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .cover-plan {
+      letter-spacing: .2em;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3.5rem;
+    }
+    .cover-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      background: rgba(201,168,76,.06);
+      box-shadow: 0 0 32px rgba(201,168,76,.12);
+    }
+    .cover-circle-label {
+      font-size: .55rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #6a7080;
+      margin-bottom: .1rem;
+    }
+    .cover-circle-number {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+
     @media print {
+      @page { size: A4; margin: 1.5cm 2cm; }
+      @page :first { margin: 0; }  /* cover page: no margin */
       .no-print { display: none !important; }
       .rapport-output { font-size: 12px; line-height: 1.6; }
+      .rapport-cover {
+        margin: 0;
+        min-height: 100vh;
+        height: 100vh;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
     }
   </style>
 </head>
@@ -85,6 +182,14 @@
         <div class="col-md-2">
           <label class="form-label fw-bold">Antal år</label>
           <input type="number" id="numYears" class="form-control" value="9" min="1" max="27">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">Plan</label>
+          <select id="plan" class="form-select">
+            <option value="foundation">Foundation</option>
+            <option value="direction">Direction</option>
+            <option value="activation">Activation</option>
+          </select>
         </div>
       </div>
 
@@ -449,10 +554,21 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     const data = await resp.json();
 
+    // Build cover page
+    const planLabels = {
+      foundation: 'Foundation Analyse',
+      direction:  'Direction Analyse',
+      activation: 'Activation Analyse'
+    };
+    const selectedPlan = document.getElementById('plan')?.value || 'foundation';
+    const planLabel = planLabels[selectedPlan] || selectedPlan;
+    const grundtal = diamondResult.diamond.grundenergi.value;
+    const coverHTML = buildCoverPage(fullName, planLabel, grundtal);
+
     // Render rapport (markdown-ish → simple HTML, then inject images)
     let rapportHTML = markdownToHTML(data.rapport);
     rapportHTML = injectEnergyImages(rapportHTML);
-    document.getElementById('rapportOutput').innerHTML = rapportHTML;
+    document.getElementById('rapportOutput').innerHTML = coverHTML + rapportHTML;
     document.getElementById('pdfBtn').disabled = false;
 
     if (data.usage) {
@@ -466,6 +582,29 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     document.getElementById('generateBtn').disabled = false;
   }
 });
+
+// ─── Cover page builder ───
+
+function buildCoverPage(name, planLabel, grundtal) {
+  return `
+<div class="rapport-cover">
+  <div class="cover-brand">Strategic Numerology</div>
+  <div class="cover-tagline">Understand Yourself. Plan Your Timing.</div>
+  <hr class="cover-divider">
+  <div class="cover-name">${escapeHtml(name)}</div>
+  <div class="cover-plan">${escapeHtml(planLabel)}</div>
+  <div class="cover-circle">
+    <span class="cover-circle-label">Grundenergi</span>
+    <span class="cover-circle-number">${grundtal}</span>
+  </div>
+</div>`;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 // ─── Simple markdown → HTML ───
 
