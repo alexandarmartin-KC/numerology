@@ -46,7 +46,6 @@ $html = file_get_contents($file);
 $injectCss = <<<'CSS'
 <style>
   :root { --sidebar-w: 240px; --clr-gold: #c9a84c; --clr-sidebar: #1a1a28; }
-  body > nav.navbar { display: none !important; }
   body { margin-left: var(--sidebar-w) !important; background: #f4f5f7 !important; padding-top: 0 !important; }
 
   /* Admin Sidebar */
