@@ -333,34 +333,34 @@
         <!-- Solarplexus cirkel -->
         <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
 
-        <!-- Rygrad arc — r=90, from diagonal to lifeline at right tip -->
-        <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#1a1f2e" stroke-width="1.5" fill="none"/>
+        <!-- Rygrad arc (gold) + label -->
+        <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <text x="856" y="506" text-anchor="end" font-size="19" font-family="Cormorant Garamond,serif" fill="#c9a84c" font-style="italic">rygrad</text>
 
-        <!-- ▲ Grundenergi — above top point -->
-        <text x="500" y="-55" text-anchor="middle" dominant-baseline="middle" font-size="48" font-family="Cormorant Garamond,serif" fill="#c9a84c">▲</text>
+        <!-- ▲ Grundenergi — solid gold triangle above top point -->
+        <path d="M 500,-82 L 536,-38 L 464,-38 Z" fill="#c9a84c"/>
 
-        <!-- ▼ Bundtal — below bottom point -->
-        <text x="500" y="1125" text-anchor="middle" dominant-baseline="middle" font-size="48" font-family="Cormorant Garamond,serif" fill="#c9a84c">▼</text>
+        <!-- ▼ Bundtal — solid gold triangle below bottom point -->
+        <path d="M 464,1098 L 536,1098 L 500,1140 Z" fill="#c9a84c"/>
 
-        <!-- ◇ Aura — 4 diagonal positions (hollow) -->
-        <text x="238" y="272" text-anchor="middle" dominant-baseline="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">◇</text>
-        <text x="762" y="272" text-anchor="middle" dominant-baseline="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">◇</text>
-        <text x="247" y="800" text-anchor="middle" dominant-baseline="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">◇</text>
-        <text x="753" y="800" text-anchor="middle" dominant-baseline="middle" font-size="38" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">◇</text>
+        <!-- ◇ Aura — 4 hollow diamonds, navy stroke -->
+        <path d="M 238,247 L 264,272 L 238,297 L 212,272 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
+        <path d="M 762,247 L 788,272 L 762,297 L 736,272 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
+        <path d="M 247,775 L 273,800 L 247,825 L 221,800 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
+        <path d="M 753,775 L 779,800 L 753,825 L 727,800 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
 
-        <!-- ✦ Livslinje — 3 stars: fornavn (left tip), mellemnavn (center), efternavn (right tip) -->
-        <text x="80"  y="530" text-anchor="middle" dominant-baseline="middle" font-size="32" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">✦</text>
-        <text x="500" y="530" text-anchor="middle" dominant-baseline="middle" font-size="32" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">✦</text>
-        <text x="920" y="530" text-anchor="middle" dominant-baseline="middle" font-size="32" font-family="Cormorant Garamond,serif" fill="#1a1f2e" opacity=".45">✦</text>
+        <!-- ✦ Livslinje — 3 four-pointed stars: fornavn / mellemnavn / efternavn -->
+        <path d="M 80,511 L 86,524 L 99,530 L 86,536 L 80,549 L 74,536 L 61,530 L 74,524 Z"   fill="#1a1f2e" opacity=".45"/>
+        <path d="M 500,511 L 506,524 L 519,530 L 506,536 L 500,549 L 494,536 L 481,530 L 494,524 Z" fill="#1a1f2e" opacity=".45"/>
+        <path d="M 920,511 L 926,524 L 939,530 L 926,536 L 920,549 L 914,536 L 901,530 L 914,524 Z" fill="#1a1f2e" opacity=".45"/>
 
-        <!-- ♡ Hjertecenter — centered in top circle -->
-        <text x="500" y="330" text-anchor="middle" dominant-baseline="middle" font-size="44" font-family="Cormorant Garamond,serif" fill="#c9a84c">♡</text>
+        <!-- ♡ Hjertecenter — SVG path centered in top circle (500,330) -->
+        <path d="M 500,280 C 506,257 542,254 542,280 C 542,306 514,330 500,350 C 486,330 458,306 458,280 C 458,254 494,257 500,280 Z"
+              fill="none" stroke="#c9a84c" stroke-width="2.5"/>
 
-        <!-- ☉ Solarplexus — centered in bottom circle -->
-        <text x="500" y="740" text-anchor="middle" dominant-baseline="middle" font-size="44" font-family="Cormorant Garamond,serif" fill="#c9a84c">☉</text>
-
-        <!-- Rygrad — small italic label inside arc -->
-        <text x="858" y="508" text-anchor="end" font-size="18" font-family="Cormorant Garamond,serif" fill="#c9a84c" font-style="italic">rygrad</text>
+        <!-- ☉ Solarplexus — ring + filled dot centered in bottom circle (500,740) -->
+        <circle cx="500" cy="740" r="34" fill="none" stroke="#c9a84c" stroke-width="2.2"/>
+        <circle cx="500" cy="740" r="11" fill="#c9a84c"/>
       </svg>
     </div>
 
