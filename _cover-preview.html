@@ -333,34 +333,256 @@
         <!-- Solarplexus cirkel -->
         <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
 
-        <!-- Rygrad arc (gold) + label -->
+        <!-- Rygrad arc (gold) -->
         <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
-        <text x="856" y="506" text-anchor="end" font-size="19" font-family="Cormorant Garamond,serif" fill="#c9a84c" font-style="italic">rygrad</text>
 
-        <!-- ▲ Grundenergi — solid gold triangle above top point -->
-        <path d="M 500,-82 L 536,-38 L 464,-38 Z" fill="#c9a84c"/>
+        <!-- GRUNDENERGI — above top -->
+        <text x="500" y="-62" text-anchor="middle" dominant-baseline="middle"
+              font-size="19" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="3" fill="#c9a84c">GRUNDENERGI</text>
 
-        <!-- ▼ Bundtal — solid gold triangle below bottom point -->
-        <path d="M 464,1098 L 536,1098 L 500,1140 Z" fill="#c9a84c"/>
+        <!-- BUNDTAL — below bottom -->
+        <text x="500" y="1126" text-anchor="middle" dominant-baseline="middle"
+              font-size="19" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="3" fill="#c9a84c">BUNDTAL</text>
 
-        <!-- ◇ Aura — 4 hollow diamonds, navy stroke -->
-        <path d="M 238,247 L 264,272 L 238,297 L 212,272 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
-        <path d="M 762,247 L 788,272 L 762,297 L 736,272 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
-        <path d="M 247,775 L 273,800 L 247,825 L 221,800 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
-        <path d="M 753,775 L 779,800 L 753,825 L 727,800 Z" fill="none" stroke="#1a1f2e" stroke-width="1.8" opacity=".5"/>
+        <!-- AURA — 4 diagonal positions, angled along the edges -->
+        <!-- upper-left diagonal -->
+        <text x="238" y="272" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(-51 238 272)">AURA</text>
+        <!-- upper-right diagonal -->
+        <text x="762" y="272" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(51 762 272)">AURA</text>
+        <!-- lower-left diagonal -->
+        <text x="247" y="800" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(51 247 800)">AURA</text>
+        <!-- lower-right diagonal -->
+        <text x="753" y="800" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(-51 753 800)">AURA</text>
 
-        <!-- ✦ Livslinje — 3 four-pointed stars: fornavn / mellemnavn / efternavn -->
-        <path d="M 80,511 L 86,524 L 99,530 L 86,536 L 80,549 L 74,536 L 61,530 L 74,524 Z"   fill="#1a1f2e" opacity=".45"/>
-        <path d="M 500,511 L 506,524 L 519,530 L 506,536 L 500,549 L 494,536 L 481,530 L 494,524 Z" fill="#1a1f2e" opacity=".45"/>
-        <path d="M 920,511 L 926,524 L 939,530 L 926,536 L 920,549 L 914,536 L 901,530 L 914,524 Z" fill="#1a1f2e" opacity=".45"/>
+        <!-- LIVSLINJE — 3 labels: fornavn / mellemnavn / efternavn -->
+        <text x="80"  y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">FORNAVN</text>
+        <text x="500" y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">MELLEMNAVN</text>
+        <text x="920" y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">EFTERNAVN</text>
 
-        <!-- ♡ Hjertecenter — SVG path centered in top circle (500,330) -->
-        <path d="M 500,280 C 506,257 542,254 542,280 C 542,306 514,330 500,350 C 486,330 458,306 458,280 C 458,254 494,257 500,280 Z"
-              fill="none" stroke="#c9a84c" stroke-width="2.5"/>
+        <!-- RYGRAD — inside arc -->
+        <text x="856" y="504" text-anchor="end"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#c9a84c" opacity=".8">RYGRAD</text>
 
-        <!-- ☉ Solarplexus — ring + filled dot centered in bottom circle (500,740) -->
-        <circle cx="500" cy="740" r="34" fill="none" stroke="#c9a84c" stroke-width="2.2"/>
-        <circle cx="500" cy="740" r="11" fill="#c9a84c"/>
+        <!-- HJERTE — centered in top circle -->
+        <text x="500" y="320" text-anchor="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#c9a84c">HJERTE</text>
+        <text x="500" y="342" text-anchor="middle"
+              font-size="14" font-family="Inter,sans-serif" font-weight="400"
+              letter-spacing="1" fill="#c9a84c" opacity=".7">CENTER</text>
+
+        <!-- SOLAR — centered in bottom circle -->
+        <text x="500" y="730" text-anchor="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#c9a84c">SOLAR</text>
+        <text x="500" y="752" text-anchor="middle"
+              font-size="14" font-family="Inter,sans-serif" font-weight="400"
+              letter-spacing="1" fill="#c9a84c" opacity=".7">PLEXUS</text>
+      </svg>
+    </div>
+
+    <!-- Legend grid -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap: 8pt 14pt; margin-top:4pt;">
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Grundenergi</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit livs kernetal — den energi du er her for at udtrykke.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Bundtal</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Din jordforankring og fundament. Praktiske styrker og stabilitet.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Aura</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">De fire diagonale tal — den energi andre møder i din nærhed.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Navneenergier — Livslinje</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Fornavn til venstre, mellemnavn i midten, efternavn til højre.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Hjertecenter</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit følelsesmæssige center — evnen til kærlighed og nære relationer.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Solarplexus</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Dit kraftcenter — vilje, selvtillid og evnen til at handle.</div>
+      </div>
+
+      <div>
+        <div style="font-size:6.5pt; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#c9a84c; margin-bottom:3pt;">Rygrad</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:9pt; color:#1a1f2e; line-height:1.6;">Efternavnets samlede energi — din rygrad og bærende kraft.</div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <span>Strategic Numerology</span>
+      <span>2</span>
+    </div>
+  </div>
+
+  <!-- ── Side 3: Om Numerologi ── -->
+  <div class="page">
+    <div class="page-header">
+      <span class="page-header-name">Andreas Egholm Mollerup</span>
+      <span class="page-header-plan">Foundation Analyse</span>
+    </div>
+
+    <div class="section-title">Om Numerologi</div>
+
+    <div class="body-text">
+      [Placer din "Om Numerologi"-tekst her. Ca. 8-10 afsnit der forklarer
+      hvad numerologi er, dets oprindelse, og hvordan det bruges som et
+      praktisk værktøj til selvforståelse og timing. Denne tekst er fast
+      og gælder for alle rapporter.]
+      <br><br>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur.
+      <br><br>
+      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+      deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste
+      natus error sit voluptatem accusantium doloremque laudantium, totam rem
+      aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
+      beatae vitae dicta sunt explicabo.
+      <br><br>
+      Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
+      fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
+      sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
+      sit amet, consectetur, adipisci velit.
+      <br><br>
+      At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+      praesentium voluptatum deleniti atque corrupti quos dolores et quas
+      molestias excepturi sint occaecati cupiditate non provident.
+    </div>
+
+    <div class="page-footer">
+      <span>Strategic Numerology</span>
+      <span>3</span>
+    </div>
+  </div>
+
+  <!-- ── Side 4: Om Diamanten ── -->
+  <div class="page">
+    <div class="page-header">
+      <span class="page-header-name">Andreas Egholm Mollerup</span>
+      <span class="page-header-plan">Foundation Analyse</span>
+    </div>
+
+    <div class="section-title">Om Diamanten</div>
+
+    <!-- Large centered diamond SVG — exact geometry from diamondRenderer.js -->
+    <div style="width:130mm; margin: 0 auto 12pt;">
+      <svg viewBox="-160 -120 1320 1290" width="100%" xmlns="http://www.w3.org/2000/svg"
+           style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">
+
+        <!-- Diamond outline -->
+        <line x1="500" y1="0"    x2="920" y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="920" y1="530"  x2="500" y2="1060" stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="500" y1="1060" x2="80"  y2="530"  stroke="#1a1f2e" stroke-width="1.5"/>
+        <line x1="80"  y1="530"  x2="500" y2="0"    stroke="#1a1f2e" stroke-width="1.5"/>
+        <!-- Livslinje -->
+        <line x1="80" y1="530" x2="920" y2="530" stroke="#1a1f2e" stroke-width="1.5"/>
+        <!-- Hjertecirkel -->
+        <circle cx="500" cy="330" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+        <!-- Solarplexus cirkel -->
+        <circle cx="500" cy="740" r="110" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+
+        <!-- Rygrad arc (gold) -->
+        <path d="M 864 460 A 90 90 0 0 0 830 530" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+
+        <!-- GRUNDENERGI — above top -->
+        <text x="500" y="-62" text-anchor="middle" dominant-baseline="middle"
+              font-size="19" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="3" fill="#c9a84c">GRUNDENERGI</text>
+
+        <!-- BUNDTAL — below bottom -->
+        <text x="500" y="1126" text-anchor="middle" dominant-baseline="middle"
+              font-size="19" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="3" fill="#c9a84c">BUNDTAL</text>
+
+        <!-- AURA — 4 diagonal positions, angled along the edges -->
+        <!-- upper-left diagonal -->
+        <text x="238" y="272" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(-51 238 272)">AURA</text>
+        <!-- upper-right diagonal -->
+        <text x="762" y="272" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(51 762 272)">AURA</text>
+        <!-- lower-left diagonal -->
+        <text x="247" y="800" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(51 247 800)">AURA</text>
+        <!-- lower-right diagonal -->
+        <text x="753" y="800" text-anchor="middle" dominant-baseline="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#1a1f2e" opacity=".45"
+              transform="rotate(-51 753 800)">AURA</text>
+
+        <!-- LIVSLINJE — 3 labels: fornavn / mellemnavn / efternavn -->
+        <text x="80"  y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">FORNAVN</text>
+        <text x="500" y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">MELLEMNAVN</text>
+        <text x="920" y="508" text-anchor="middle"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#1a1f2e" opacity=".4">EFTERNAVN</text>
+
+        <!-- RYGRAD — inside arc -->
+        <text x="856" y="504" text-anchor="end"
+              font-size="15" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="1" fill="#c9a84c" opacity=".8">RYGRAD</text>
+
+        <!-- HJERTE — centered in top circle -->
+        <text x="500" y="320" text-anchor="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#c9a84c">HJERTE</text>
+        <text x="500" y="342" text-anchor="middle"
+              font-size="14" font-family="Inter,sans-serif" font-weight="400"
+              letter-spacing="1" fill="#c9a84c" opacity=".7">CENTER</text>
+
+        <!-- SOLAR — centered in bottom circle -->
+        <text x="500" y="730" text-anchor="middle"
+              font-size="16" font-family="Inter,sans-serif" font-weight="600"
+              letter-spacing="2" fill="#c9a84c">SOLAR</text>
+        <text x="500" y="752" text-anchor="middle"
+              font-size="14" font-family="Inter,sans-serif" font-weight="400"
+              letter-spacing="1" fill="#c9a84c" opacity=".7">PLEXUS</text>
       </svg>
     </div>
 
