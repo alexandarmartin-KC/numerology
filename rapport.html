@@ -24,13 +24,22 @@
     /* ── Rapport text pages ─────────────────────────────────────── */
     .rapport-page {
       width: 210mm;
-      padding: 22mm 24mm;
+      padding: 16mm 20mm 18mm;
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 11pt;
       line-height: 1.75;
       color: #1a1f2e;
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      page-break-after: always;
+      break-after: always;
     }
+    .rapport-page-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding-bottom: 6pt; border-bottom: .5px solid #c9a84c;
+      margin-bottom: 20pt; opacity: .7;
+    }
+    .rph-name { font-family: 'Cormorant Garamond', serif; font-size: 9pt; color: #1a1f2e; letter-spacing: .03em; }
+    .rph-plan { font-size: 6.5pt; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #c9a84c; }
     .rapport-page h1,
     .rapport-page h2,
     .rapport-page h3 {
@@ -39,15 +48,13 @@
       font-weight: 600;
       page-break-after: avoid;
       break-after: avoid;
-      margin-top: 2.2em;
+      margin-top: 0.8em;
       margin-bottom: 0.5em;
     }
     .rapport-page h2 {
       font-size: 15pt;
       border-bottom: .5px solid #c9a84c;
       padding-bottom: 4pt;
-      page-break-before: always;
-      break-before: always;
     }
     .rapport-page h3 {
       font-size: 12pt;
@@ -585,10 +592,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     rapportOutput.innerHTML = '';
     rapportOutput.appendChild(buildCoverPageDOM(fullName, planLabel, diamondResult));
     rapportOutput.appendChild(buildDiamondPage(diamondResult.diamond, fullName, planLabel));
-    const rapportDiv = document.createElement('div');
-    rapportDiv.className = 'rapport-page';
-    rapportDiv.innerHTML = rapportHTML;
-    rapportOutput.appendChild(rapportDiv);
+    buildRapportPages(rapportHTML, fullName, planLabel).forEach(p => rapportOutput.appendChild(p));
     document.getElementById('pdfBtn').disabled = false;
 
     if (data.usage) {
@@ -602,6 +606,28 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     document.getElementById('generateBtn').disabled = false;
   }
 });
+
+// ─── Split rapport HTML into one page-div per section ───
+
+function buildRapportPages(html, name, planLabel) {
+  // Split on <h2> boundaries — each h2 starts a new page
+  const parts = html.split(/(?=<h2[^>]*>)/i).filter(s => s.trim());
+  return parts.map(part => {
+    const page = document.createElement('div');
+    page.className = 'rapport-page';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'rapport-page-header';
+    hdr.innerHTML = `<span class="rph-name">${escapeHtml(name)}</span><span class="rph-plan">${escapeHtml(planLabel)}</span>`;
+    page.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.innerHTML = part;
+    page.appendChild(body);
+
+    return page;
+  });
+}
 
 // ─── Cover page builder (white/gold design) ───
 
