@@ -571,8 +571,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     // Render rapport (markdown-ish → simple HTML, then inject images)
     let rapportHTML = markdownToHTML(data.rapport);
     rapportHTML = injectEnergyImages(rapportHTML);
-    const diamondPageHTML = buildDiamondPage(diamondResult.diamond, fullName, planLabel);
-    document.getElementById('rapportOutput').innerHTML = coverHTML + diamondPageHTML + rapportHTML;
+    // Insert cover + placeholder slot + rapport
+    document.getElementById('rapportOutput').innerHTML = coverHTML + '<div id="__diamondSlot__"></div>' + rapportHTML;
+    // Inject diamond page directly in DOM (avoids SVG namespace serialisation issues)
+    const slot = document.getElementById('__diamondSlot__');
+    const diamondPage = buildDiamondPage(diamondResult.diamond, fullName, planLabel);
+    slot.replaceWith(diamondPage);
     document.getElementById('pdfBtn').disabled = false;
 
     if (data.usage) {
@@ -590,16 +594,43 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 // ─── Cover page builder ───
 
 function buildDiamondPage(diamond, name, planLabel) {
-  const wrapper = document.createElement('div');
-  renderDiamondCover(wrapper, diamond);
-  return `<div style="width:210mm;min-height:297mm;background:#fff;display:flex;flex-direction:column;padding:16mm 20mm 18mm;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6pt;border-bottom:.5px solid #c9a84c;margin-bottom:20pt;opacity:.7;">
-      <span style="font-family:'Cormorant Garamond',serif;font-size:9pt;color:#1a1f2e;letter-spacing:.03em;">${escapeHtml(name)}</span>
-      <span style="font-size:6.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#c9a84c;">${escapeHtml(planLabel)}</span>
-    </div>
-    <div style="font-size:7pt;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#c9a84c;margin-bottom:14pt;">Om Diamanten</div>
-    ${wrapper.outerHTML}
-  </div>`;
+  // Build as live DOM nodes so SVG renders correctly
+  const page = document.createElement('div');
+  Object.assign(page.style, {
+    width: '210mm', minHeight: '297mm', background: '#fff',
+    display: 'flex', flexDirection: 'column',
+    padding: '16mm 20mm 18mm',
+    pageBreakAfter: 'always',
+    WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact'
+  });
+
+  // Header
+  const header = document.createElement('div');
+  Object.assign(header.style, {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+    paddingBottom: '6pt', borderBottom: '.5px solid #c9a84c',
+    marginBottom: '20pt', opacity: '.7'
+  });
+  header.innerHTML = `<span style="font-family:'Cormorant Garamond',serif;font-size:9pt;color:#1a1f2e;letter-spacing:.03em;">${escapeHtml(name)}</span><span style="font-size:6.5pt;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#c9a84c;">${escapeHtml(planLabel)}</span>`;
+  page.appendChild(header);
+
+  // Section label
+  const label = document.createElement('div');
+  Object.assign(label.style, {
+    fontSize: '7pt', fontWeight: '600',
+    letterSpacing: '.3em', textTransform: 'uppercase',
+    color: '#c9a84c', marginBottom: '14pt'
+  });
+  label.textContent = 'Om Diamanten';
+  page.appendChild(label);
+
+  // Navy diamond wrapper
+  const navyWrap = document.createElement('div');
+  page.appendChild(navyWrap);
+
+  renderDiamondCover(navyWrap, diamond);
+
+  return page;
 }
 
 function buildCoverPage(name, planLabel, grundtal) {
