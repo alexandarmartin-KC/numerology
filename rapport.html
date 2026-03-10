@@ -109,7 +109,10 @@
       @page { size: A4; margin: 0; }
       html, body { margin: 0; background: #fff; }
       .no-print { display: none !important; }
+      #diamondSection { display: none !important; }
+      .container, main.container { max-width: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
       .rpc { width: 210mm; height: 297mm; min-height: unset; }
+      .rapport-page { width: 210mm; padding: 22mm 24mm; }
     }
   </style>
 </head>
@@ -198,8 +201,8 @@
       <div id="knowledgeStatus" class="mb-3"></div>
     </div>
 
-    <!-- DIAMOND PREVIEW -->
-    <div id="diamondSection" style="max-width:500px;margin:0 auto 2rem;"></div>
+    <!-- DIAMOND PREVIEW (hidden on print — diamond-page is built into rapportOutput) -->
+    <div id="diamondSection" class="no-print" style="max-width:500px;margin:0 auto 2rem;"></div>
 
     <!-- RAPPORT OUTPUT -->
     <div id="rapportOutput" class="rapport-output"></div>
