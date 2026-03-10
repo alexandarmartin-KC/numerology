@@ -563,8 +563,11 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     const selectedPlan = document.getElementById('plan')?.value || 'foundation';
     const planLabel = planLabels[selectedPlan] || selectedPlan;
 
+    // Strip intern_analyse block (AI internal reasoning, not for the user)
+    const cleanRapport = (data.rapport || '').replace(/<intern_analyse>[\s\S]*?<\/intern_analyse>/gi, '').trim();
+
     // Render rapport (markdown-ish → simple HTML, then inject images)
-    let rapportHTML = markdownToHTML(data.rapport);
+    let rapportHTML = markdownToHTML(cleanRapport);
     rapportHTML = injectEnergyImages(rapportHTML);
 
     // Build all pages as DOM nodes
