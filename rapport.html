@@ -19,9 +19,51 @@
       background: rgba(255,255,255,0.85); display: flex;
       align-items: center; justify-content: center; z-index: 9999;
     }
-    .rapport-output { font-size: 15px; line-height: 1.8; }
-    .rapport-output h2 { margin-top: 2rem; font-size: 20px; }
-    .rapport-output h3 { margin-top: 1.5rem; font-size: 17px; }
+    .rapport-output { }
+
+    /* ── Rapport text pages ─────────────────────────────────────── */
+    .rapport-page {
+      width: 210mm;
+      padding: 22mm 24mm;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11pt;
+      line-height: 1.75;
+      color: #1a1f2e;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .rapport-page h1,
+    .rapport-page h2,
+    .rapport-page h3 {
+      font-family: 'Cormorant Garamond', serif;
+      color: #1a1f2e;
+      font-weight: 600;
+      page-break-after: avoid;
+      break-after: avoid;
+      margin-top: 2.2em;
+      margin-bottom: 0.5em;
+    }
+    .rapport-page h2 {
+      font-size: 15pt;
+      border-bottom: .5px solid #c9a84c;
+      padding-bottom: 4pt;
+    }
+    .rapport-page h3 {
+      font-size: 12pt;
+      color: #c9a84c;
+    }
+    .rapport-page p {
+      page-break-inside: avoid;
+      break-inside: avoid;
+      margin-bottom: 0.75em;
+      orphans: 3;
+      widows: 3;
+      text-align: justify;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+      color: #1a1f2e;
+    }
+    .rapport-page strong { font-weight: 700; color: #1a1f2e; }
+    .rapport-page em { font-style: italic; }
 
     /* ── PDF Cover page ─────────────────────────────────────────── */
     .rpc {
@@ -528,6 +570,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     rapportOutput.appendChild(buildCoverPageDOM(fullName, planLabel, diamondResult));
     rapportOutput.appendChild(buildDiamondPage(diamondResult.diamond, fullName, planLabel));
     const rapportDiv = document.createElement('div');
+    rapportDiv.className = 'rapport-page';
     rapportDiv.innerHTML = rapportHTML;
     rapportOutput.appendChild(rapportDiv);
     document.getElementById('pdfBtn').disabled = false;
@@ -626,15 +669,20 @@ function escapeHtml(str) {
 
 function markdownToHTML(md) {
   if (!md) return '';
-  let html = md
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-  return '<p>' + html + '</p>';
+  md = md.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+
+  const inline = (s) => s
+    .replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+
+  return md.split(/\n{2,}/).map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (block.startsWith('### ')) return `<h3>${inline(block.slice(4))}</h3>`;
+    if (block.startsWith('## '))  return `<h2>${inline(block.slice(3))}</h2>`;
+    if (block.startsWith('# '))   return `<h1>${inline(block.slice(2))}</h1>`;
+    return `<p>${inline(block.replace(/\n/g, ' '))}</p>`;
+  }).join('\n');
 }
 
 // ─── Inject energy images where AI placed [BILLEDE:X] placeholders ───
