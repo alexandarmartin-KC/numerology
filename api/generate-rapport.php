@@ -9,9 +9,9 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
-// db.php har allerede inkluderet .env.php, så $_OPENAI_API_KEY er sat
-$apiKey = getenv('OPENAI_API_KEY') ?: ($_OPENAI_API_KEY ?? '');
-if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'OPENAI_API_KEY ikke konfigureret']); exit; }
+// db.php har allerede inkluderet .env.php, så $_ANTHROPIC_API_KEY er sat
+$apiKey = getenv('ANTHROPIC_API_KEY') ?: ($_ANTHROPIC_API_KEY ?? '');
+if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
 
 $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $diamond   = $body['diamond'] ?? null;
@@ -168,23 +168,23 @@ $systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
 $payload = json_encode([
-    'model'       => 'gpt-4o',
-    'messages'    => [
-        ['role' => 'system', 'content' => $systemPrompt],
-        ['role' => 'user',   'content' => $userPrompt]
+    'model'      => 'claude-opus-4-5',
+    'system'     => $systemPrompt,
+    'messages'   => [
+        ['role' => 'user', 'content' => $userPrompt]
     ],
-    'temperature' => 1,
-    'max_tokens'  => 8000
+    'max_tokens' => 8000
 ], JSON_UNESCAPED_UNICODE);
 
-$ch = curl_init('https://api.openai.com/v1/chat/completions');
+$ch = curl_init('https://api.anthropic.com/v1/messages');
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $payload,
     CURLOPT_HTTPHEADER     => [
         'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
+        'x-api-key: ' . $apiKey,
+        'anthropic-version: 2023-06-01'
     ],
     CURLOPT_TIMEOUT        => 120
 ]);
@@ -198,8 +198,8 @@ $data = json_decode($response, true);
 if ($httpCode !== 200) {
     $apiMsg = $data['error']['message'] ?? $response;
     http_response_code(500);
-    echo json_encode(['error' => 'OpenAI API fejl (HTTP ' . $httpCode . '): ' . $apiMsg]);
+    echo json_encode(['error' => 'Claude API fejl (HTTP ' . $httpCode . '): ' . $apiMsg]);
     exit;
 }
-$rapport = $data['choices'][0]['message']['content'] ?? '';
+$rapport = $data['content'][0]['text'] ?? '';
 echo json_encode(['rapport' => $rapport, 'usage' => $data['usage'] ?? null], JSON_UNESCAPED_UNICODE);
