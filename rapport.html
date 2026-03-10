@@ -128,7 +128,7 @@
       font-family: 'Cormorant Garamond', serif; font-size: 160pt; font-weight: 300;
       color: #1a1f2e; line-height: 1;
       position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -70%);
+      transform: translate(-50%, -50%);
     }
     .rpc-footer { position: absolute; bottom: 17mm; left: 50%; transform: translateX(-50%); font-size: 6pt; letter-spacing: .15em; text-transform: uppercase; color: #ccc; white-space: nowrap; }
 
@@ -750,7 +750,7 @@ function buildCoverPageDOM(name, planLabel, diamondResult) {
       <div class="rpc-plan">${escapeHtml(planLabel)}</div>
       <div class="rpc-rule2"></div>
       <div class="rpc-energy-label">Grundenergi</div>
-      <div class="rpc-planet-wrap">${planetImg}<span class="rpc-number">${grundtal}</span></div>
+      <div class="rpc-planet-wrap">${planetImg}<span class="rpc-number" style="transform:translate(-50%,${({'6':'-62%','9':'-38%'})[String(grundtal)]||'-50%'})">${grundtal}</span></div>
     </div>
     <div class="rpc-footer">Fortrolig &mdash; Personlig rapport</div>
   `;
