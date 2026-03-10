@@ -590,9 +590,30 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     // Build all pages as DOM nodes
     const rapportOutput = document.getElementById('rapportOutput');
     rapportOutput.innerHTML = '';
+
+    // Parse section titles for TOC
+    const sectionTitles = [];
+    const h2re = /<h2[^>]*>([\s\S]*?)<\/h2>/gi;
+    let m;
+    while ((m = h2re.exec(rapportHTML)) !== null) {
+      sectionTitles.push(m[1].replace(/<[^>]+>/g, ''));
+    }
+
+    // 1. Forside
     rapportOutput.appendChild(buildCoverPageDOM(fullName, planLabel, diamondResult));
+    // 2. Indholdsfortegnelse
+    rapportOutput.appendChild(buildTocPage(sectionTitles, fullName, planLabel));
+    // 3. Om numerologi (placeholder)
+    rapportOutput.appendChild(buildStaticPage('Om numerologi', '', fullName, planLabel));
+    // 4. Om diamanten (placeholder)
+    rapportOutput.appendChild(buildStaticPage('Om diamanten', '', fullName, planLabel));
+    // 5. Brugerens diamant
     rapportOutput.appendChild(buildDiamondPage(diamondResult.diamond, fullName, planLabel));
+    // 6. Din diamant (placeholder)
+    rapportOutput.appendChild(buildStaticPage('Din diamant', '', fullName, planLabel));
+    // 7-12. AI rapport-sektioner
     buildRapportPages(rapportHTML, fullName, planLabel).forEach(p => rapportOutput.appendChild(p));
+
     document.getElementById('pdfBtn').disabled = false;
 
     if (data.usage) {
@@ -610,23 +631,76 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 // ─── Split rapport HTML into one page-div per section ───
 
 function buildRapportPages(html, name, planLabel) {
-  // Split on <h2> boundaries — each h2 starts a new page
   const parts = html.split(/(?=<h2[^>]*>)/i).filter(s => s.trim());
   return parts.map(part => {
     const page = document.createElement('div');
     page.className = 'rapport-page';
-
     const hdr = document.createElement('div');
     hdr.className = 'rapport-page-header';
     hdr.innerHTML = `<span class="rph-name">${escapeHtml(name)}</span><span class="rph-plan">${escapeHtml(planLabel)}</span>`;
     page.appendChild(hdr);
-
     const body = document.createElement('div');
     body.innerHTML = part;
     page.appendChild(body);
-
     return page;
   });
+}
+
+// ─── Static placeholder page ───
+
+function buildStaticPage(title, bodyHTML, name, planLabel) {
+  const page = document.createElement('div');
+  page.className = 'rapport-page';
+  page.innerHTML = `
+    <div class="rapport-page-header">
+      <span class="rph-name">${escapeHtml(name)}</span>
+      <span class="rph-plan">${escapeHtml(planLabel)}</span>
+    </div>
+    <h2>${escapeHtml(title)}</h2>
+    ${bodyHTML}
+  `;
+  return page;
+}
+
+// ─── Table of contents page ───
+
+function buildTocPage(sectionTitles, name, planLabel) {
+  const fixedItems = [
+    'Om numerologi',
+    'Om diamanten',
+    'Din diamant',
+  ];
+  const allItems = [...fixedItems, ...sectionTitles];
+  const rows = allItems.map((t, i) => `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;
+                padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
+      <span style="font-size:10pt;color:#1a1f2e;">${escapeHtml(t)}</span>
+      <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">${i + 3}</span>
+    </div>`).join('');
+
+  const page = document.createElement('div');
+  page.className = 'rapport-page';
+  page.innerHTML = `
+    <div class="rapport-page-header">
+      <span class="rph-name">${escapeHtml(name)}</span>
+      <span class="rph-plan">${escapeHtml(planLabel)}</span>
+    </div>
+    <h2>Indholdsfortegnelse</h2>
+    <div style="margin-top:1.5em;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;
+                  padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
+        <span style="font-size:10pt;color:#1a1f2e;">Forside</span>
+        <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">1</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;
+                  padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
+        <span style="font-size:10pt;color:#1a1f2e;">Indholdsfortegnelse</span>
+        <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">2</span>
+      </div>
+      ${rows}
+    </div>
+  `;
+  return page;
 }
 
 // ─── Cover page builder (white/gold design) ───
