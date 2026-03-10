@@ -124,7 +124,12 @@
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: contain; opacity: .15; filter: sepia(30%) saturate(50%);
     }
-    .rpc-number { font-family: 'Cormorant Garamond', serif; font-size: 160pt; font-weight: 300; color: #1a1f2e; line-height: 1; position: relative; }
+    .rpc-number {
+      font-family: 'Cormorant Garamond', serif; font-size: 160pt; font-weight: 300;
+      color: #1a1f2e; line-height: 1;
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -45%);
+    }
     .rpc-footer { position: absolute; bottom: 17mm; left: 50%; transform: translateX(-50%); font-size: 6pt; letter-spacing: .15em; text-transform: uppercase; color: #ccc; white-space: nowrap; }
 
     @media print {
