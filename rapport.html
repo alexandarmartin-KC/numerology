@@ -23,99 +23,51 @@
     .rapport-output h2 { margin-top: 2rem; font-size: 20px; }
     .rapport-output h3 { margin-top: 1.5rem; font-size: 17px; }
 
-    /* ── Cover page ─────────────────────────────────────────── */
-    .rapport-cover {
-      background: var(--dark-bg);
-      color: #f0ece4;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 4rem 2rem;
-      margin: -1.5rem -12px 3rem;  /* bleed to edges inside .container */
-      page-break-after: always;      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;    }
-    .cover-brand {
-      letter-spacing: .18em;
-      font-size: .72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: .35rem;
+    /* ── PDF Cover page ─────────────────────────────────────────── */
+    .rpc {
+      width: 210mm; min-height: 297mm; background: #fff;
+      position: relative;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 20mm; padding-top: 38mm;
+      overflow: hidden;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      page-break-after: always;
     }
-    .cover-tagline {
-      letter-spacing: .12em;
-      font-size: .6rem;
-      text-transform: uppercase;
-      color: #6a7080;
-      margin-bottom: 1.8rem;
+    .rpc::before {
+      content: ''; position: absolute; inset: 10mm;
+      border: 1px solid var(--gold); opacity: .45; pointer-events: none;
     }
-    .cover-divider {
-      width: min(480px, 80%);
-      border: none;
-      border-top: 1px solid var(--gold);
-      opacity: .45;
-      margin: 0 auto 3rem;
+    .rpc::after {
+      content: ''; position: absolute; inset: 11.5mm;
+      border: .5px solid var(--gold); opacity: .2; pointer-events: none;
     }
-    .cover-name {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 700;
-      color: #f0ece4;
-      letter-spacing: .02em;
-      line-height: 1.15;
-      margin-bottom: .75rem;
+    .rpc-corner { position: absolute; width: 10mm; height: 10mm; opacity: .5; }
+    .rpc-corner-tl { top: 13mm; left: 13mm; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    .rpc-corner-tr { top: 13mm; right: 13mm; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+    .rpc-corner-bl { bottom: 13mm; left: 13mm; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+    .rpc-corner-br { bottom: 13mm; right: 13mm; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+    .rpc-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
-    .cover-plan {
-      letter-spacing: .2em;
-      font-size: .7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 3.5rem;
-    }
-    .cover-circle {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 2px solid var(--gold);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      background: rgba(201,168,76,.06);
-      box-shadow: 0 0 32px rgba(201,168,76,.12);
-    }
-    .cover-circle-label {
-      font-size: .55rem;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: #6a7080;
-      margin-bottom: .1rem;
-    }
-    .cover-circle-number {
-      font-size: 2.6rem;
-      font-weight: 700;
-      color: var(--gold-light);
-      line-height: 1;
-    }
+    .rpc-brand { font-size: 8pt; font-weight: 600; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 4pt; }
+    .rpc-tagline { font-size: 6.5pt; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; color: #aaa; margin-bottom: 18pt; }
+    .rpc-rule { width: 40mm; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 0 auto 22pt; opacity: .6; }
+    .rpc-name { font-family: 'Cormorant Garamond', serif; font-size: 32pt; font-weight: 600; color: #1a1f2e; letter-spacing: .01em; line-height: 1.1; margin-bottom: 6pt; }
+    .rpc-rygrad { font-family: 'Cormorant Garamond', serif; font-size: 13pt; font-weight: 400; color: var(--gold); vertical-align: super; margin-left: 4pt; opacity: .85; }
+    .rpc-birthdate { font-size: 8pt; font-weight: 300; letter-spacing: .1em; color: #999; margin-bottom: 10pt; }
+    .rpc-plan { font-size: 7pt; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); margin-bottom: 28pt; }
+    .rpc-rule2 { width: 20mm; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 0 auto 22pt; opacity: .4; }
+    .rpc-energy-label { font-size: 6.5pt; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: #bbb; margin-bottom: 10pt; }
+    .rpc-number { font-family: 'Cormorant Garamond', serif; font-size: 160pt; font-weight: 300; color: #1a1f2e; line-height: 1; position: relative; }
+    .rpc-footer { position: absolute; bottom: 17mm; left: 50%; transform: translateX(-50%); font-size: 6pt; letter-spacing: .15em; text-transform: uppercase; color: #ccc; white-space: nowrap; }
 
     @media print {
-      @page { size: A4; margin: 1.5cm 2cm; }
-      @page :first { margin: 0; }  /* cover page: no margin */
+      @page { size: A4; margin: 0; }
+      html, body { margin: 0; background: #fff; }
       .no-print { display: none !important; }
-      .rapport-output { font-size: 12px; line-height: 1.6; }
-      .rapport-cover {
-        margin: 0;
-        width: 210mm;
-        height: 297mm;
-        min-height: unset;
-        page-break-after: always;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
+      .rpc { width: 210mm; height: 297mm; min-height: unset; }
     }
   </style>
 </head>
@@ -565,18 +517,19 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     };
     const selectedPlan = document.getElementById('plan')?.value || 'foundation';
     const planLabel = planLabels[selectedPlan] || selectedPlan;
-    const grundtal = diamondResult.diamond.grundenergi.value;
-    const coverHTML = buildCoverPage(fullName, planLabel, grundtal);
 
     // Render rapport (markdown-ish → simple HTML, then inject images)
     let rapportHTML = markdownToHTML(data.rapport);
     rapportHTML = injectEnergyImages(rapportHTML);
-    // Insert cover + placeholder slot + rapport
-    document.getElementById('rapportOutput').innerHTML = coverHTML + '<div id="__diamondSlot__"></div>' + rapportHTML;
-    // Inject diamond page directly in DOM (avoids SVG namespace serialisation issues)
-    const slot = document.getElementById('__diamondSlot__');
-    const diamondPage = buildDiamondPage(diamondResult.diamond, fullName, planLabel);
-    slot.replaceWith(diamondPage);
+
+    // Build all pages as DOM nodes
+    const rapportOutput = document.getElementById('rapportOutput');
+    rapportOutput.innerHTML = '';
+    rapportOutput.appendChild(buildCoverPageDOM(fullName, planLabel, diamondResult));
+    rapportOutput.appendChild(buildDiamondPage(diamondResult.diamond, fullName, planLabel));
+    const rapportDiv = document.createElement('div');
+    rapportDiv.innerHTML = rapportHTML;
+    rapportOutput.appendChild(rapportDiv);
     document.getElementById('pdfBtn').disabled = false;
 
     if (data.usage) {
@@ -591,7 +544,37 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   }
 });
 
-// ─── Cover page builder ───
+// ─── Cover page builder (white/gold design) ───
+
+function buildCoverPageDOM(name, planLabel, diamondResult) {
+  const months = ['januar','februar','marts','april','maj','juni','juli','august','september','oktober','november','december'];
+  const { day, month, year } = diamondResult.input.birthDate;
+  const birthdate = `${day}. ${months[month-1]} ${year}`;
+  const grundtal  = diamondResult.diamond.grundenergi.value;
+  const rygrad    = diamondResult.diamond.rygraden.display;
+
+  const cover = document.createElement('div');
+  cover.className = 'rpc';
+  cover.innerHTML = `
+    <div class="rpc-corner rpc-corner-tl"></div>
+    <div class="rpc-corner rpc-corner-tr"></div>
+    <div class="rpc-corner rpc-corner-bl"></div>
+    <div class="rpc-corner rpc-corner-br"></div>
+    <div class="rpc-inner">
+      <div class="rpc-brand">Strategic Numerology</div>
+      <div class="rpc-tagline">Understand Yourself. Plan Your Timing.</div>
+      <div class="rpc-rule"></div>
+      <div class="rpc-name">${escapeHtml(name)}<span class="rpc-rygrad">${escapeHtml(rygrad)}</span></div>
+      <div class="rpc-birthdate">${escapeHtml(birthdate)}</div>
+      <div class="rpc-plan">${escapeHtml(planLabel)}</div>
+      <div class="rpc-rule2"></div>
+      <div class="rpc-energy-label">Grundenergi</div>
+      <div class="rpc-number">${grundtal}</div>
+    </div>
+    <div class="rpc-footer">Fortrolig &mdash; Personlig rapport</div>
+  `;
+  return cover;
+}
 
 function buildDiamondPage(diamond, name, planLabel) {
   // Build as live DOM nodes so SVG renders correctly
@@ -631,21 +614,6 @@ function buildDiamondPage(diamond, name, planLabel) {
   renderDiamondCover(navyWrap, diamond);
 
   return page;
-}
-
-function buildCoverPage(name, planLabel, grundtal) {
-  return `
-<div class="rapport-cover">
-  <div class="cover-brand">Strategic Numerology</div>
-  <div class="cover-tagline">Understand Yourself. Plan Your Timing.</div>
-  <hr class="cover-divider">
-  <div class="cover-name">${escapeHtml(name)}</div>
-  <div class="cover-plan">${escapeHtml(planLabel)}</div>
-  <div class="cover-circle">
-    <span class="cover-circle-label">Grundenergi</span>
-    <span class="cover-circle-number">${grundtal}</span>
-  </div>
-</div>`;
 }
 
 function escapeHtml(str) {
