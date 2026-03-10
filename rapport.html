@@ -665,18 +665,30 @@ function buildStaticPage(title, bodyHTML, name, planLabel) {
 // ─── Table of contents page ───
 
 function buildTocPage(sectionTitles, name, planLabel) {
+  // Fixed pages before AI sections: Om numerologi=3, Om diamanten=4, Diamant=5, Din diamant=6
   const fixedItems = [
-    'Om numerologi',
-    'Om diamanten',
-    'Din diamant',
+    { title: 'Om numerologi', page: 3 },
+    { title: 'Om diamanten',  page: 4 },
+    { title: 'Din diamant',   page: 6 },
   ];
-  const allItems = [...fixedItems, ...sectionTitles];
-  const rows = allItems.map((t, i) => `
-    <div style="display:flex;justify-content:space-between;align-items:baseline;
-                padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
-      <span style="font-size:10pt;color:#1a1f2e;">${escapeHtml(t)}</span>
-      <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">${i + 3}</span>
-    </div>`).join('');
+  // AI sections start at page 7, each on its own page
+  const aiItems = sectionTitles.map((t, i) => ({ title: t, page: 7 + i }));
+  const allItems = [...fixedItems, ...aiItems];
+
+  const rows = allItems.map((item, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    return `
+    <div style="display:flex;align-items:baseline;gap:0;padding:9pt 0;border-bottom:.5px solid rgba(201,168,76,.15);">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:8pt;color:#c9a84c;
+                   letter-spacing:.12em;min-width:22pt;flex-shrink:0;">${num}</span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:11pt;color:#1a1f2e;
+                   flex-shrink:0;margin-right:6pt;">${escapeHtml(item.title)}</span>
+      <span style="flex:1;border-bottom:1px dotted rgba(201,168,76,.35);
+                   margin-bottom:3pt;min-width:10pt;"></span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:8pt;color:#c9a84c;
+                   letter-spacing:.1em;margin-left:6pt;flex-shrink:0;">${item.page}</span>
+    </div>`;
+  }).join('');
 
   const page = document.createElement('div');
   page.className = 'rapport-page';
@@ -686,19 +698,7 @@ function buildTocPage(sectionTitles, name, planLabel) {
       <span class="rph-plan">${escapeHtml(planLabel)}</span>
     </div>
     <h2>Indholdsfortegnelse</h2>
-    <div style="margin-top:1.5em;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;
-                  padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
-        <span style="font-size:10pt;color:#1a1f2e;">Forside</span>
-        <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">1</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;
-                  padding:7pt 0;border-bottom:.5px solid rgba(201,168,76,.2);">
-        <span style="font-size:10pt;color:#1a1f2e;">Indholdsfortegnelse</span>
-        <span style="font-size:8pt;color:#c9a84c;letter-spacing:.08em;">2</span>
-      </div>
-      ${rows}
-    </div>
+    <div style="margin-top:2em;">${rows}</div>
   `;
   return page;
 }
