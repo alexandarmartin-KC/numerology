@@ -590,8 +590,11 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     const selectedPlan = document.getElementById('plan')?.value || 'foundation';
     const planLabel = planLabels[selectedPlan] || selectedPlan;
 
-    // Strip intern_analyse block (AI internal reasoning, not for the user)
-    const cleanRapport = (data.rapport || '').replace(/<intern_analyse>[\s\S]*?<\/intern_analyse>/gi, '').trim();
+    // Strip intern_analyse block and any h1 title the AI prepends
+    const cleanRapport = (data.rapport || '')
+      .replace(/<intern_analyse>[\s\S]*?<\/intern_analyse>/gi, '')
+      .replace(/^#\s+.+$/m, '')
+      .trim();
 
     // Render rapport (markdown-ish → simple HTML, then inject images)
     let rapportHTML = markdownToHTML(cleanRapport);
@@ -815,7 +818,7 @@ function markdownToHTML(md) {
     if (!block) return '';
     if (block.startsWith('### ')) return `<h3>${inline(block.slice(4))}</h3>`;
     if (block.startsWith('## '))  return `<h2>${inline(block.slice(3))}</h2>`;
-    if (block.startsWith('# '))   return `<h1>${inline(block.slice(2))}</h1>`;
+    if (block.startsWith('# '))   return ''; // H1 not used in PDF
     return `<p>${inline(block.replace(/\n/g, ' '))}</p>`;
   }).join('\n');
 }
