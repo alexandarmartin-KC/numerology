@@ -7,7 +7,7 @@ $db = getDB();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $res = $db->query('SELECT * FROM rapport_sections ORDER BY id ASC');
     $sections = mysqli_fetch_all($res, MYSQLI_ASSOC);
-    $genRes = $db->query('SELECT rapportGlobalInstruction FROM generelt WHERE id = 1');
+    $genRes = $db->query('SELECT rapportGlobalInstruction, rapportOmNumerologi, rapportOmDiamanten, rapportAfslutning FROM generelt WHERE id = 1');
     $gen = $genRes->num_rows ? $genRes->fetch_assoc() : [];
     jsonOut([
         'globalInstruction' => $gen['rapportGlobalInstruction'] ?? '',
@@ -35,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $r = $db->query('SELECT id FROM generelt WHERE id = 1');
     if ($r && $r->num_rows > 0) {
         $stmt = $db->prepare('UPDATE generelt SET rapportGlobalInstruction=?, rapportOmNumerologi=?, rapportOmDiamanten=?, rapportAfslutning=? WHERE id=1');
-        $stmt->bind_param('ssss', $globalInstruction, $omNumerologi, $omDiamanten, $afslutning);
     } else {
         $stmt = $db->prepare('INSERT INTO generelt (id, rapportGlobalInstruction, rapportOmNumerologi, rapportOmDiamanten, rapportAfslutning) VALUES (1, ?, ?, ?, ?)');
-        $stmt->bind_param('ssss', $globalInstruction, $omNumerologi, $omDiamanten, $afslutning);
     }
+    if (!$stmt) jsonOut(['error' => 'DB prepare fejl: ' . $db->error . ' — kør /api/migrate.php'], 500);
+    $stmt->bind_param('ssss', $globalInstruction, $omNumerologi, $omDiamanten, $afslutning);
     $stmt->execute();
 
     // Gem sektioner
