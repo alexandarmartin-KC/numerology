@@ -29,6 +29,36 @@
 
     <p class="text-muted mb-4">Definer rapportens struktur — sektioner, rækkefølge, datakilder og instruktioner til motoren. Motoren bygger rapporten sektion for sektion.</p>
 
+    <!-- Om numerologi (fast tekst) -->
+    <div class="card mb-3 border-success">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <label class="form-label fw-bold mb-0">Om numerologi</label>
+          <span class="badge bg-success" style="font-size:10px;">Fast sektion</span>
+        </div>
+        <p class="text-muted mb-2" style="font-size:12px;">Denne tekst indsættes som fast side i toppen af rapporten. Brug <code>{{fornavn}}</code> for at flette klientens fornavn ind i teksten.</p>
+        <div class="mb-1">
+          <button type="button" class="btn btn-outline-secondary btn-sm insert-fornavn" data-target="omNumerologi" style="font-size:11px;padding:2px 8px;">+ {{fornavn}}</button>
+        </div>
+        <textarea id="omNumerologi" class="form-control" rows="6" placeholder="Fx: Kære {{fornavn}}, numerologi er kunsten at..." style="font-size:13px;"></textarea>
+      </div>
+    </div>
+
+    <!-- Om Diamanten (fast tekst) -->
+    <div class="card mb-4 border-success">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <label class="form-label fw-bold mb-0">Om Diamanten</label>
+          <span class="badge bg-success" style="font-size:10px;">Fast sektion</span>
+        </div>
+        <p class="text-muted mb-2" style="font-size:12px;">Denne tekst indsættes som fast side i toppen af rapporten. Brug <code>{{fornavn}}</code> for at flette klientens fornavn ind i teksten.</p>
+        <div class="mb-1">
+          <button type="button" class="btn btn-outline-secondary btn-sm insert-fornavn" data-target="omDiamanten" style="font-size:11px;padding:2px 8px;">+ {{fornavn}}</button>
+        </div>
+        <textarea id="omDiamanten" class="form-control" rows="6" placeholder="Fx: {{fornavn}}, diamanten er dit personlige numeroskop..." style="font-size:13px;"></textarea>
+      </div>
+    </div>
+
     <!-- Overordnet instruktion -->
     <div class="card mb-4">
       <div class="card-body">
@@ -54,8 +84,28 @@ function getAdminKey() {
 }
 function adminHeaders(extra) { return Object.assign({ 'X-Admin-Key': getAdminKey() }, extra || {}); }
 
-const STORAGE_KEY = 'rapportSections';
-const GLOBAL_KEY = 'rapportGlobalInstruction';
+function insertAtCursor(textarea, text) {
+  const start = textarea.selectionStart;
+  const end   = textarea.selectionEnd;
+  const before = textarea.value.slice(0, start);
+  const after  = textarea.value.slice(end);
+  textarea.value = before + text + after;
+  textarea.selectionStart = textarea.selectionEnd = start + text.length;
+  textarea.focus();
+  textarea.dispatchEvent(new Event('input'));
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.insert-fornavn');
+  if (!btn) return;
+  const ta = document.getElementById(btn.dataset.target);
+  if (ta) insertAtCursor(ta, '{{fornavn}}');
+});
+
+const STORAGE_KEY       = 'rapportSections';
+const GLOBAL_KEY        = 'rapportGlobalInstruction';
+const OM_NUMEROLOGI_KEY = 'rapportOmNumerologi';
+const OM_DIAMANTEN_KEY  = 'rapportOmDiamanten';
 
 const DATA_SOURCES = [
   { id: 'grundenergi', label: 'Grundenergi' },
@@ -238,6 +288,23 @@ function setup() {
     localStorage.setItem(GLOBAL_KEY, globalEl.value);
     flash();
   });
+
+  // Fixed sections
+  const omNumEl = document.getElementById('omNumerologi');
+  omNumEl.value = localStorage.getItem(OM_NUMEROLOGI_KEY) || '';
+  omNumEl.addEventListener('input', () => {
+    localStorage.setItem(OM_NUMEROLOGI_KEY, omNumEl.value);
+    flash();
+    dbSaveRapport();
+  });
+
+  const omDiaEl = document.getElementById('omDiamanten');
+  omDiaEl.value = localStorage.getItem(OM_DIAMANTEN_KEY) || '';
+  omDiaEl.addEventListener('input', () => {
+    localStorage.setItem(OM_DIAMANTEN_KEY, omDiaEl.value);
+    flash();
+    dbSaveRapport();
+  });
 }
 
 // ─── Database sync ───
@@ -263,7 +330,7 @@ function dbSaveRapport() {
       const res = await fetch('/api/save-rapport.php', {
         method: 'POST',
         headers: adminHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ globalInstruction: localStorage.getItem(GLOBAL_KEY) || '', sections: loadSections() })))) })
+        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ globalInstruction: localStorage.getItem(GLOBAL_KEY) || '', omNumerologi: localStorage.getItem(OM_NUMEROLOGI_KEY) || '', omDiamanten: localStorage.getItem(OM_DIAMANTEN_KEY) || '', sections: loadSections() })))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
     } catch (e) { _dbToast('DB gem fejl: ' + e.message); }
@@ -280,6 +347,8 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
     if (!res.ok) return;
     const d = await res.json();
     if (d.globalInstruction !== undefined && d.globalInstruction !== null) localStorage.setItem(GLOBAL_KEY, d.globalInstruction);
+    if (d.omNumerologi !== undefined && d.omNumerologi !== null) localStorage.setItem(OM_NUMEROLOGI_KEY, d.omNumerologi);
+    if (d.omDiamanten !== undefined && d.omDiamanten !== null) localStorage.setItem(OM_DIAMANTEN_KEY, d.omDiamanten);
     if (d.sections && d.sections.length) {
       const parsed = d.sections.map(s => ({
         ...s,
@@ -293,6 +362,10 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
   // Opdater global instruction fra DB
   const gEl = document.getElementById('globalInstruction');
   if (gEl) gEl.value = localStorage.getItem(GLOBAL_KEY) || '';
+  const onEl = document.getElementById('omNumerologi');
+  if (onEl) onEl.value = localStorage.getItem(OM_NUMEROLOGI_KEY) || '';
+  const odEl = document.getElementById('omDiamanten');
+  if (odEl) odEl.value = localStorage.getItem(OM_DIAMANTEN_KEY) || '';
 })();
 
 // ─── Init ───

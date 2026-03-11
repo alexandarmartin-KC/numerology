@@ -11,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $gen = $genRes->num_rows ? $genRes->fetch_assoc() : [];
     jsonOut([
         'globalInstruction' => $gen['rapportGlobalInstruction'] ?? '',
+        'omNumerologi'      => $gen['rapportOmNumerologi'] ?? '',
+        'omDiamanten'       => $gen['rapportOmDiamanten'] ?? '',
         'sections' => array_map(function($s) {
             $s['sources'] = json_decode($s['sources'] ?? '[]', true) ?: [];
             return $s;
@@ -23,16 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     requireAdminKey();
     $b = getBody();
     $globalInstruction = $b['globalInstruction'] ?? null;
+    $omNumerologi      = $b['omNumerologi'] ?? null;
+    $omDiamanten       = $b['omDiamanten'] ?? null;
     $sections = $b['sections'] ?? [];
 
     // Gem global instruktion
     $r = $db->query('SELECT id FROM generelt WHERE id = 1');
     if ($r && $r->num_rows > 0) {
-        $stmt = $db->prepare('UPDATE generelt SET rapportGlobalInstruction=? WHERE id=1');
-        $stmt->bind_param('s', $globalInstruction);
+        $stmt = $db->prepare('UPDATE generelt SET rapportGlobalInstruction=?, rapportOmNumerologi=?, rapportOmDiamanten=? WHERE id=1');
+        $stmt->bind_param('sss', $globalInstruction, $omNumerologi, $omDiamanten);
     } else {
-        $stmt = $db->prepare('INSERT INTO generelt (id, rapportGlobalInstruction) VALUES (1, ?)');
-        $stmt->bind_param('s', $globalInstruction);
+        $stmt = $db->prepare('INSERT INTO generelt (id, rapportGlobalInstruction, rapportOmNumerologi, rapportOmDiamanten) VALUES (1, ?, ?, ?)');
+        $stmt->bind_param('sss', $globalInstruction, $omNumerologi, $omDiamanten);
     }
     $stmt->execute();
 

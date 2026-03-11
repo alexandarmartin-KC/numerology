@@ -72,6 +72,8 @@ $knowledge = [
 
     // Rapport
     'rapportGlobalInstruction' => $g['rapportGlobalInstruction'] ?? '',
+    'rapportOmNumerologi'      => $g['rapportOmNumerologi'] ?? '',
+    'rapportOmDiamanten'       => $g['rapportOmDiamanten'] ?? '',
     'rapportSections'          => $parsedSections,
 
     // Diamant

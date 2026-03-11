@@ -171,6 +171,24 @@ $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
 $results['meta_data_kolonner'] = $allCols;
 
+// ─── generelt: tilføj rapportOmNumerologi ───
+$check = $db->query("SHOW COLUMNS FROM generelt LIKE 'rapportOmNumerologi'");
+if ($check && $check->num_rows > 0) {
+    $results["generelt.rapportOmNumerologi"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE generelt ADD COLUMN rapportOmNumerologi LONGTEXT DEFAULT NULL");
+    $results["generelt.rapportOmNumerologi"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
+// ─── generelt: tilføj rapportOmDiamanten ───
+$check = $db->query("SHOW COLUMNS FROM generelt LIKE 'rapportOmDiamanten'");
+if ($check && $check->num_rows > 0) {
+    $results["generelt.rapportOmDiamanten"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE generelt ADD COLUMN rapportOmDiamanten LONGTEXT DEFAULT NULL");
+    $results["generelt.rapportOmDiamanten"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
 $colRes = $db->query("SHOW COLUMNS FROM content_generated");
 $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];

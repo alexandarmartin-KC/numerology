@@ -616,10 +616,13 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     rapportOutput.appendChild(buildCoverPageDOM(fullName, planLabel, diamondResult));
     // 2. Indholdsfortegnelse
     rapportOutput.appendChild(buildTocPage(sectionTitles, fullName, planLabel));
-    // 3. Om numerologi (placeholder)
-    rapportOutput.appendChild(buildStaticPage('Om numerologi', '', fullName, planLabel));
+    // 3. Om numerologi
+    const fornavn = fullName.split(/\s+/)[0];
+    const omNumHTML = markdownToHTML((knowledge.rapportOmNumerologi || '').replace(/\{\{fornavn\}\}/g, fornavn));
+    const omDiamantHTML = markdownToHTML((knowledge.rapportOmDiamanten || '').replace(/\{\{fornavn\}\}/g, fornavn));
+    rapportOutput.appendChild(buildStaticPage('Om numerologi', omNumHTML, fullName, planLabel));
     // 4. Om diamanten (placeholder)
-    rapportOutput.appendChild(buildStaticPage('Om diamanten', '', fullName, planLabel));
+    rapportOutput.appendChild(buildStaticPage('Om diamanten', omDiamantHTML, fullName, planLabel));
     // 5. Brugerens diamant
     rapportOutput.appendChild(buildDiamondPage(diamondResult.diamond, fullName, planLabel));
     // 6. Din diamant (placeholder)
