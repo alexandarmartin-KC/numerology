@@ -139,7 +139,7 @@ try {
     // 7. Send email
     $planNames = ['foundation' => 'Foundation Report', 'direction' => 'Direction Report', 'activation' => 'Activation Report'];
     $planName  = $planNames[$plan] ?? 'Numerological Reading';
-    $emailHtml = buildEmailHtml($fullName, $planName, $rapportHtml);
+    $emailHtml = buildEmailHtml($fullName, $planName, $rapportHtml, $k['rapportOmNumerologi'] ?? '', $k['rapportOmDiamanten'] ?? '', $k['rapportAfslutning'] ?? '');
     $sent = sendEmail($email, "Your {$planName} — StrategicNumerology", $emailHtml);
 
     // 8. Opdatér status
@@ -445,6 +445,9 @@ function getKnowledgeForRapport(mysqli $db, string $plan, array $diamondResult):
         'rapportStil'              => $g['rapportStil'] ?? '',
         'eksempelRapport'          => $g['eksempelRapport'] ?? '',
         'rapportGlobalInstruction' => $g['rapportGlobalInstruction'] ?? '',
+        'rapportOmNumerologi'      => $g['rapportOmNumerologi'] ?? '',
+        'rapportOmDiamanten'       => $g['rapportOmDiamanten'] ?? '',
+        'rapportAfslutning'        => $g['rapportAfslutning'] ?? '',
         'rapportSections'          => $parsedSections,
         'energies'                 => $energies,
         'energiesWithImages'       => [], // billeder er localStorage-only, ingen i email
@@ -517,8 +520,7 @@ function buildSystemPrompt(array $k): string {
         foreach ($k['energies'] as $e) {
             $p .= "\n### Energi " . ($e['display'] ?? $e['id'] ?? '') . "\n";
             if (!empty($e['keywords']))                    $p .= "Nøgleord (rent): {$e['keywords']}\n";
-            if (!empty($e['keywords_urent_numeroskop']))   $p .= "Nøgleord (urent): {$e['keywords_urent_numeroskop']}\n";
-            if (!empty($e['grundenergi']))                 $p .= "Grundenergi: {$e['grundenergi']}\n";
+            if (!empty($e['keywords_urent_numeroskop']))   $p .= "Nøgleord (urent): {$e['keywords_urent_numeroskop']}\n";            if (!empty($e['summary']))                     $p .= "Resum\u00e9: {$e['summary']}\n";            if (!empty($e['grundenergi']))                 $p .= "Grundenergi: {$e['grundenergi']}\n";
             if (!empty($e['beskrivelse']))                 $p .= "Beskrivelse: {$e['beskrivelse']}\n";
             if (!empty($e['ubalance_i_urent_numeroskop'])) $p .= "Ubalance: {$e['ubalance_i_urent_numeroskop']}\n";
             if (!empty($e['helheds_funktion']))            $p .= "Helhedsfunktion: {$e['helheds_funktion']}\n";
@@ -671,9 +673,18 @@ function markdownToHtml(string $md): string {
     return '<p>' . $html . '</p>';
 }
 
-function buildEmailHtml(string $fullName, string $planName, string $rapportHtml): string {
+function buildEmailHtml(string $fullName, string $planName, string $rapportHtml, string $omNumerologi = '', string $omDiamanten = '', string $afslutning = ''): string {
     $safeName = htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8');
     $safePlan = htmlspecialchars($planName, ENT_QUOTES, 'UTF-8');
+    $fornavn  = htmlspecialchars(explode(' ', trim($fullName))[0], ENT_QUOTES, 'UTF-8');
+
+    $sectionStyle = 'background:#13131f;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:36px 40px;margin-bottom:16px;';
+    $textStyle    = 'font-size:15px;line-height:1.8;color:#ddd8ca;';
+    $h2Style      = 'font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#c9a84c;font-weight:600;margin:0 0 16px;';
+
+    $omNumBlock  = $omNumerologi ? "<tr><td style=\"{$sectionStyle}\"><h2 style=\"{$h2Style}\">Om numerologi</h2><div style=\"{$textStyle}\">" . markdownToHtml(str_replace('{{fornavn}}', $fornavn, $omNumerologi)) . "</div></td></tr>" : '';
+    $omDiaBlock  = $omDiamanten  ? "<tr><td style=\"{$sectionStyle}\"><h2 style=\"{$h2Style}\">Om diamanten</h2><div style=\"{$textStyle}\">" . markdownToHtml(str_replace('{{fornavn}}', $fornavn, $omDiamanten))  . "</div></td></tr>" : '';
+    $afslBlock   = $afslutning   ? "<tr><td style=\"{$sectionStyle}\"><h2 style=\"{$h2Style}\">Afslutning</h2><div style=\"{$textStyle}\">"    . markdownToHtml(str_replace('{{fornavn}}', $fornavn, $afslutning))   . "</div></td></tr>" : '';
     return <<<HTML
 <!DOCTYPE html>
 <html lang="da">
@@ -698,13 +709,16 @@ function buildEmailHtml(string $fullName, string $planName, string $rapportHtml)
         </tr>
 
         <!-- Rapport indhold -->
+        {$omNumBlock}
+        {$omDiaBlock}
         <tr>
-          <td style="background:#13131f;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:36px 40px;">
+          <td style="background:#13131f;border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:36px 40px;margin-bottom:16px;">
             <div style="font-size:15px;line-height:1.8;color:#ddd8ca;">
               {$rapportHtml}
             </div>
           </td>
         </tr>
+        {$afslBlock}
 
         <!-- Footer -->
         <tr>
