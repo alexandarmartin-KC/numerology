@@ -37,10 +37,11 @@
           <span class="badge bg-success" style="font-size:10px;">Fast sektion</span>
         </div>
         <p class="text-muted mb-2" style="font-size:12px;">Denne tekst indsættes som fast side i toppen af rapporten. Brug <code>{{fornavn}}</code> for at flette klientens fornavn ind i teksten.</p>
-        <div class="mb-1">
+        <div class="mb-1 d-flex align-items-center gap-2">
           <button type="button" class="btn btn-outline-secondary btn-sm insert-fornavn" data-target="omNumerologi" style="font-size:11px;padding:2px 8px;">+ {{fornavn}}</button>
+          <span id="omNumerologi-counter" class="ms-auto" style="font-size:11px;color:#6c757d;"></span>
         </div>
-        <textarea id="omNumerologi" class="form-control" rows="6" placeholder="Fx: Kære {{fornavn}}, numerologi er kunsten at..." style="font-size:13px;"></textarea>
+        <textarea id="omNumerologi" class="form-control" rows="6" placeholder="Fx: Kære {{fornavn}}, numerologi er kunsten at..." style="font-size:13px;" maxlength="2000"></textarea>
       </div>
     </div>
 
@@ -52,10 +53,11 @@
           <span class="badge bg-success" style="font-size:10px;">Fast sektion</span>
         </div>
         <p class="text-muted mb-2" style="font-size:12px;">Denne tekst indsættes som fast side i toppen af rapporten. Brug <code>{{fornavn}}</code> for at flette klientens fornavn ind i teksten.</p>
-        <div class="mb-1">
+        <div class="mb-1 d-flex align-items-center gap-2">
           <button type="button" class="btn btn-outline-secondary btn-sm insert-fornavn" data-target="omDiamanten" style="font-size:11px;padding:2px 8px;">+ {{fornavn}}</button>
+          <span id="omDiamanten-counter" class="ms-auto" style="font-size:11px;color:#6c757d;"></span>
         </div>
-        <textarea id="omDiamanten" class="form-control" rows="6" placeholder="Fx: {{fornavn}}, diamanten er dit personlige numeroskop..." style="font-size:13px;"></textarea>
+        <textarea id="omDiamanten" class="form-control" rows="6" placeholder="Fx: {{fornavn}}, diamanten er dit personlige numeroskop..." style="font-size:13px;" maxlength="2000"></textarea>
       </div>
     </div>
 
@@ -94,6 +96,29 @@ function insertAtCursor(textarea, text) {
   textarea.focus();
   textarea.dispatchEvent(new Event('input'));
 }
+
+const PAGE_LIMIT = 2000;
+function updateCounter(taId) {
+  const ta = document.getElementById(taId);
+  const counter = document.getElementById(taId + '-counter');
+  if (!ta || !counter) return;
+  const used = ta.value.length;
+  const left = PAGE_LIMIT - used;
+  const pct  = used / PAGE_LIMIT;
+  let color = '#6c757d';
+  if (pct >= 1)        color = '#dc3545';
+  else if (pct >= 0.9) color = '#fd7e14';
+  else if (pct >= 0.75) color = '#ffc107';
+  counter.style.color = color;
+  counter.textContent = left >= 0
+    ? `${used.toLocaleString('da')} / ${PAGE_LIMIT.toLocaleString('da')} tegn  ·  ${left.toLocaleString('da')} tilbage`
+    : `${Math.abs(left)} tegn over sægrænsen!`;
+}
+
+['omNumerologi', 'omDiamanten'].forEach(id => {
+  const ta = document.getElementById(id);
+  if (ta) ta.addEventListener('input', () => updateCounter(id));
+});
 
 document.addEventListener('click', e => {
   const btn = e.target.closest('.insert-fornavn');
@@ -366,6 +391,8 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
   if (onEl) onEl.value = localStorage.getItem(OM_NUMEROLOGI_KEY) || '';
   const odEl = document.getElementById('omDiamanten');
   if (odEl) odEl.value = localStorage.getItem(OM_DIAMANTEN_KEY) || '';
+  updateCounter('omNumerologi');
+  updateCounter('omDiamanten');
 })();
 
 // ─── Init ───
