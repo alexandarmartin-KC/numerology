@@ -697,11 +697,8 @@ function buildTocPage(sectionTitles, name, planLabel) {
   const allItems = [...fixedItems, ...aiItems, afslutningItem];
 
   const rows = allItems.map((item, i) => {
-    const num = String(i + 1).padStart(2, '0');
     return `
     <div style="display:flex;align-items:baseline;gap:0;padding:9pt 0;border-bottom:.5px solid rgba(201,168,76,.15);">
-      <span style="font-family:'Cormorant Garamond',serif;font-size:8pt;color:#c9a84c;
-                   letter-spacing:.12em;min-width:22pt;flex-shrink:0;">${num}</span>
       <span style="font-family:'Cormorant Garamond',serif;font-size:11pt;color:#1a1f2e;
                    flex-shrink:0;margin-right:6pt;">${escapeHtml(item.title)}</span>
       <span style="flex:1;border-bottom:1px dotted rgba(201,168,76,.35);
