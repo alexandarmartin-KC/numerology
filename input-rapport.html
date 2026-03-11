@@ -46,7 +46,7 @@
     </div>
 
     <!-- Om Diamanten (fast tekst) -->
-    <div class="card mb-4 border-success">
+    <div class="card mb-3 border-success">
       <div class="card-body">
         <div class="d-flex align-items-center gap-2 mb-1">
           <label class="form-label fw-bold mb-0">Om Diamanten</label>
@@ -58,6 +58,23 @@
           <span id="omDiamanten-counter" class="ms-auto" style="font-size:11px;color:#6c757d;"></span>
         </div>
         <textarea id="omDiamanten" class="form-control" rows="6" placeholder="Fx: {{fornavn}}, diamanten er dit personlige numeroskop..." style="font-size:13px;" maxlength="2000"></textarea>
+      </div>
+    </div>
+
+    <!-- Afslutning (fast tekst) -->
+    <div class="card mb-4 border-success">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <label class="form-label fw-bold mb-0">Afslutning</label>
+          <span class="badge bg-success" style="font-size:10px;">Fast sektion</span>
+          <span class="text-muted" style="font-size:11px;">Indsættes altid som den <em>sidste</em> side i rapporten</span>
+        </div>
+        <p class="text-muted mb-2" style="font-size:12px;">Brug <code>{{fornavn}}</code> for at flette klientens fornavn ind i teksten.</p>
+        <div class="mb-1 d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm insert-fornavn" data-target="afslutning" style="font-size:11px;padding:2px 8px;">+ {{fornavn}}</button>
+          <span id="afslutning-counter" class="ms-auto" style="font-size:11px;color:#6c757d;"></span>
+        </div>
+        <textarea id="afslutning" class="form-control" rows="6" placeholder="Fx: Kære {{fornavn}}, jeg håber denne rapport giver dig..." style="font-size:13px;" maxlength="2000"></textarea>
       </div>
     </div>
 
@@ -115,7 +132,7 @@ function updateCounter(taId) {
     : `${Math.abs(left)} tegn over sægrænsen!`;
 }
 
-['omNumerologi', 'omDiamanten'].forEach(id => {
+['omNumerologi', 'omDiamanten', 'afslutning'].forEach(id => {
   const ta = document.getElementById(id);
   if (ta) ta.addEventListener('input', () => updateCounter(id));
 });
@@ -131,6 +148,7 @@ const STORAGE_KEY       = 'rapportSections';
 const GLOBAL_KEY        = 'rapportGlobalInstruction';
 const OM_NUMEROLOGI_KEY = 'rapportOmNumerologi';
 const OM_DIAMANTEN_KEY  = 'rapportOmDiamanten';
+const AFSLUTNING_KEY    = 'rapportAfslutning';
 
 const DATA_SOURCES = [
   { id: 'grundenergi', label: 'Grundenergi' },
@@ -323,10 +341,10 @@ function setup() {
     dbSaveRapport();
   });
 
-  const omDiaEl = document.getElementById('omDiamanten');
-  omDiaEl.value = localStorage.getItem(OM_DIAMANTEN_KEY) || '';
-  omDiaEl.addEventListener('input', () => {
-    localStorage.setItem(OM_DIAMANTEN_KEY, omDiaEl.value);
+  const afslEl = document.getElementById('afslutning');
+  afslEl.value = localStorage.getItem(AFSLUTNING_KEY) || '';
+  afslEl.addEventListener('input', () => {
+    localStorage.setItem(AFSLUTNING_KEY, afslEl.value);
     flash();
     dbSaveRapport();
   });
@@ -355,7 +373,7 @@ function dbSaveRapport() {
       const res = await fetch('/api/save-rapport.php', {
         method: 'POST',
         headers: adminHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ globalInstruction: localStorage.getItem(GLOBAL_KEY) || '', omNumerologi: localStorage.getItem(OM_NUMEROLOGI_KEY) || '', omDiamanten: localStorage.getItem(OM_DIAMANTEN_KEY) || '', sections: loadSections() })))) })
+        body: JSON.stringify({ _b64: btoa(unescape(encodeURIComponent(JSON.stringify({ globalInstruction: localStorage.getItem(GLOBAL_KEY) || '', omNumerologi: localStorage.getItem(OM_NUMEROLOGI_KEY) || '', omDiamanten: localStorage.getItem(OM_DIAMANTEN_KEY) || '', afslutning: localStorage.getItem(AFSLUTNING_KEY) || '', sections: loadSections() })))) })
       });
       if (!res.ok) { const t = await res.text(); _dbToast('DB gem fejl: ' + res.status + ' ' + t); }
     } catch (e) { _dbToast('DB gem fejl: ' + e.message); }
@@ -374,6 +392,7 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
     if (d.globalInstruction !== undefined && d.globalInstruction !== null) localStorage.setItem(GLOBAL_KEY, d.globalInstruction);
     if (d.omNumerologi !== undefined && d.omNumerologi !== null) localStorage.setItem(OM_NUMEROLOGI_KEY, d.omNumerologi);
     if (d.omDiamanten !== undefined && d.omDiamanten !== null) localStorage.setItem(OM_DIAMANTEN_KEY, d.omDiamanten);
+    if (d.afslutning !== undefined && d.afslutning !== null) localStorage.setItem(AFSLUTNING_KEY, d.afslutning);
     if (d.sections && d.sections.length) {
       const parsed = d.sections.map(s => ({
         ...s,
@@ -391,8 +410,11 @@ document.getElementById('globalInstruction').addEventListener('input', dbSaveRap
   if (onEl) onEl.value = localStorage.getItem(OM_NUMEROLOGI_KEY) || '';
   const odEl = document.getElementById('omDiamanten');
   if (odEl) odEl.value = localStorage.getItem(OM_DIAMANTEN_KEY) || '';
+  const afEl = document.getElementById('afslutning');
+  if (afEl) afEl.value = localStorage.getItem(AFSLUTNING_KEY) || '';
   updateCounter('omNumerologi');
   updateCounter('omDiamanten');
+  updateCounter('afslutning');
 })();
 
 // ─── Init ───

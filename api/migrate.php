@@ -171,6 +171,15 @@ $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
 $results['meta_data_kolonner'] = $allCols;
 
+// ─── generelt: tilføj rapportAfslutning ───
+$check = $db->query("SHOW COLUMNS FROM generelt LIKE 'rapportAfslutning'");
+if ($check && $check->num_rows > 0) {
+    $results["generelt.rapportAfslutning"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE generelt ADD COLUMN rapportAfslutning LONGTEXT DEFAULT NULL");
+    $results["generelt.rapportAfslutning"] = $ok ? "TILF\u00d8JET" : "FEJL: " . $db->error;
+}
+
 // ─── generelt: tilføj rapportOmNumerologi ───
 $check = $db->query("SHOW COLUMNS FROM generelt LIKE 'rapportOmNumerologi'");
 if ($check && $check->num_rows > 0) {

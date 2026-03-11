@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'globalInstruction' => $gen['rapportGlobalInstruction'] ?? '',
         'omNumerologi'      => $gen['rapportOmNumerologi'] ?? '',
         'omDiamanten'       => $gen['rapportOmDiamanten'] ?? '',
+        'afslutning'        => $gen['rapportAfslutning'] ?? '',
         'sections' => array_map(function($s) {
             $s['sources'] = json_decode($s['sources'] ?? '[]', true) ?: [];
             return $s;
@@ -27,16 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $globalInstruction = $b['globalInstruction'] ?? null;
     $omNumerologi      = $b['omNumerologi'] ?? null;
     $omDiamanten       = $b['omDiamanten'] ?? null;
+    $afslutning        = $b['afslutning'] ?? null;
     $sections = $b['sections'] ?? [];
 
     // Gem global instruktion
     $r = $db->query('SELECT id FROM generelt WHERE id = 1');
     if ($r && $r->num_rows > 0) {
-        $stmt = $db->prepare('UPDATE generelt SET rapportGlobalInstruction=?, rapportOmNumerologi=?, rapportOmDiamanten=? WHERE id=1');
-        $stmt->bind_param('sss', $globalInstruction, $omNumerologi, $omDiamanten);
+        $stmt = $db->prepare('UPDATE generelt SET rapportGlobalInstruction=?, rapportOmNumerologi=?, rapportOmDiamanten=?, rapportAfslutning=? WHERE id=1');
+        $stmt->bind_param('ssss', $globalInstruction, $omNumerologi, $omDiamanten, $afslutning);
     } else {
-        $stmt = $db->prepare('INSERT INTO generelt (id, rapportGlobalInstruction, rapportOmNumerologi, rapportOmDiamanten) VALUES (1, ?, ?, ?)');
-        $stmt->bind_param('sss', $globalInstruction, $omNumerologi, $omDiamanten);
+        $stmt = $db->prepare('INSERT INTO generelt (id, rapportGlobalInstruction, rapportOmNumerologi, rapportOmDiamanten, rapportAfslutning) VALUES (1, ?, ?, ?, ?)');
+        $stmt->bind_param('ssss', $globalInstruction, $omNumerologi, $omDiamanten, $afslutning);
     }
     $stmt->execute();
 

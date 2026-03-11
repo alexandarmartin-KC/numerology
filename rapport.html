@@ -629,6 +629,9 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     rapportOutput.appendChild(buildStaticPage('Din diamant', '', fullName, planLabel));
     // 7-12. AI rapport-sektioner
     buildRapportPages(rapportHTML, fullName, planLabel).forEach(p => rapportOutput.appendChild(p));
+    // Last. Afslutning
+    const afslutningHTML = markdownToHTML((knowledge.rapportAfslutning || '').replace(/\{\{fornavn\}\}/g, fornavn));
+    rapportOutput.appendChild(buildStaticPage('Afslutning', afslutningHTML, fullName, planLabel));
 
     document.getElementById('pdfBtn').disabled = false;
 
@@ -689,7 +692,9 @@ function buildTocPage(sectionTitles, name, planLabel) {
   ];
   // AI sections start at page 7, each on its own page
   const aiItems = sectionTitles.map((t, i) => ({ title: t, page: 7 + i }));
-  const allItems = [...fixedItems, ...aiItems];
+  // Afslutning always last
+  const afslutningItem = { title: 'Afslutning', page: 7 + sectionTitles.length };
+  const allItems = [...fixedItems, ...aiItems, afslutningItem];
 
   const rows = allItems.map((item, i) => {
     const num = String(i + 1).padStart(2, '0');
