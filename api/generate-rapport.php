@@ -56,8 +56,13 @@ function buildSystemPrompt(array $k, array $lang): string {
             $p .= "\n### Energi " . ($e['display'] ?? $e['id'] ?? '') . "\n";
             if (!empty($e['keywords'])) $p .= "Nøgleord (rent): {$e['keywords']}\n";
             if (!empty($e['keywords_urent_numeroskop'])) $p .= "Nøgleord (urent): {$e['keywords_urent_numeroskop']}\n";
-            if (!empty($e['summary'])) $p .= "Resumé: {$e['summary']}\n";
-            if (!empty($e['grundenergi'])) $p .= "Grundenergi: {$e['grundenergi']}\n";
+            $display = $e['display'] ?? '';
+            $isGrundtal = is_numeric($display) && (int)$display >= 1 && (int)$display <= 9;
+            if ($isGrundtal && !empty($e['summary'])) {
+                $p .= "Grundenergi: {$e['summary']}\n";
+            } elseif (!$isGrundtal && !empty($e['grundenergi'])) {
+                $p .= "Grundenergi: {$e['grundenergi']}\n";
+            }
             if (!empty($e['beskrivelse'])) $p .= "Beskrivelse: {$e['beskrivelse']}\n";
             if (!empty($e['ubalance_i_urent_numeroskop'])) $p .= "Ubalance: {$e['ubalance_i_urent_numeroskop']}\n";
             if (!empty($e['helheds_funktion'])) $p .= "Helhedsfunktion: {$e['helheds_funktion']}\n";
