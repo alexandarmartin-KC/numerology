@@ -222,4 +222,22 @@ function renderDiamondCover(container, diamond) {
 
   txt(848, 550, "Rygrad",                  { size: 20, italic: true, anchor: "end",    fill: WHITE, opacity: ".5" });
   txt(858, 505, diamond.rygraden?.display, { size: 38, weight: "300", anchor: "middle", opacity: ".8" });
+
+  // ── Søjletal (trekant, nederst venstre — matcher bundtal Y) ──────────────
+  const soej      = diamond.soejletal ?? {};
+  const tx = 80, tw = 48, th = 65;
+  const triBottom = 1112;           // samme Y som bundtal-tekst
+  const ty        = triBottom - th;
+  const triPath   = document.createElementNS(NS, "path");
+  triPath.setAttribute("d", `M ${tx} ${ty} L ${tx + tw} ${triBottom} L ${tx - tw} ${triBottom} Z`);
+  triPath.setAttribute("stroke", GOLD);
+  triPath.setAttribute("stroke-width", "1.5");
+  triPath.setAttribute("fill", "none");
+  triPath.setAttribute("opacity", ".7");
+  svg.appendChild(triPath);
+
+  const triCenterY = ty + th * 2 / 3;
+  txt(tx - tw - 10, triCenterY, soej.compound,  { size: 32, weight: "300", opacity: ".9", anchor: "end" });
+  txt(tx,           triCenterY, soej.reduced,   { size: 30, weight: "300", opacity: ".9" });
+  txt(tx,           ty - 32,    "Søjletal",     { size: 19, italic: true, fill: WHITE, opacity: ".5" });
 }
