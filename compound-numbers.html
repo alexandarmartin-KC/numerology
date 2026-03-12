@@ -177,8 +177,8 @@
       color: var(--clr-gold);
     }
     .number-heading .reduced {
-      font-size: 0.55em; color: var(--clr-muted);
-      font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--clr-muted);
+      font-weight: 400;
     }
     .number-body {
       font-size: 1.05rem; font-weight: 300;
@@ -336,7 +336,7 @@
         return `
           <div class="number-section reveal">
             <h2 class="number-heading">
-              <span class="compound">${comp}</span>${red ? `<span class="reduced">/ ${red}</span>` : ''}${label ? `<span style="font-size:0.5em;color:var(--clr-muted);font-weight:400;">${label}</span>` : ''}
+              <span class="compound">${comp}</span>${red ? `<span class="reduced">/${red}</span>` : ''}${label ? `<span style="font-size:0.45em;color:var(--clr-muted);font-weight:400;">${label}</span>` : ''}
             </h2>
             <div class="number-body">${textHTML}</div>
           </div>`;
