@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Compound Numbers</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body { background: #f5f5f5; }
+
+    .save-indicator {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 12px; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-indicator.show { opacity: 1; }
+
+    /* ─── Top intro card ─── */
+    .intro-card {
+      background: #fff; border: 1px solid #dee2e6; border-radius: 10px;
+      padding: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .intro-card .card-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: #999; margin-bottom: 6px; display: block;
+    }
+    .intro-card textarea {
+      width: 100%; font-size: 13px; line-height: 1.7;
+      border: 1px solid #dee2e6; border-radius: 6px;
+      padding: 10px 12px; resize: vertical;
+    }
+    .intro-card textarea:focus { border-color: #c9a84c; outline: none; }
+
+    /* ─── Number rows ─── */
+    .number-row {
+      background: #fff; border: 1px solid #dee2e6; border-radius: 10px;
+      padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .number-row:focus-within { border-color: #0d6efd; }
+    .number-row.is-off {
+      opacity: 0.5;
+    }
+    .number-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 0.85rem;
+    }
+    .number-badge {
+      font-size: 1.25rem; font-weight: 700; color: #c9a84c;
+      min-width: 64px; line-height: 1;
+    }
+    .number-label {
+      font-size: 0.82rem; color: #999; flex: 1;
+    }
+
+    /* Toggle switch */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 0.5rem;
+      user-select: none;
+    }
+    .toggle-wrap label {
+      font-size: 12px; color: #888; cursor: pointer; margin: 0;
+    }
+    .toggle {
+      position: relative; display: inline-block;
+      width: 40px; height: 22px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ccc; border-radius: 22px; transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background: #fff; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: #198754; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .number-row textarea {
+      width: 100%; font-size: 13px; line-height: 1.7;
+      border: 1px solid #dee2e6; border-radius: 6px;
+      padding: 10px 12px; resize: vertical; min-height: 100px;
+    }
+    .number-row textarea:focus { border-color: #0d6efd; outline: none; }
+
+    /* Sticky header */
+    .sticky-header {
+      position: sticky; top: 0; z-index: 100;
+      background: #f5f5f5; border-bottom: 1px solid #dee2e6;
+      padding: 0.75rem 0; margin-bottom: 1.5rem;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      background: #fff; border: 1px solid #dee2e6; border-radius: 8px;
+      padding: 0.75rem 1rem; margin-bottom: 1rem;
+      display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+    }
+    .filter-bar label { font-size: 12px; color: #666; margin: 0; }
+    .filter-btn {
+      font-size: 12px; padding: 3px 10px; border-radius: 20px;
+      border: 1px solid #dee2e6; background: #fff; cursor: pointer; color: #555;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: #c9a84c; background: rgba(201,168,76,0.1); color: #7a5c00;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container py-4" style="max-width: 860px;">
+
+    <div class="sticky-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h1 class="h4 mb-0">Input Compound Numbers</h1>
+        <div class="d-flex align-items-center gap-2">
+          <span id="saveIndicator" class="save-indicator bg-success text-white">Gemt!</span>
+          <button class="btn btn-sm btn-primary" onclick="saveAll()">Save all</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Page intro / description ─── -->
+    <div class="intro-card">
+      <span class="card-label">Page introduction — shown at the top of the public Compound Numbers page</span>
+      <textarea id="pageIntro" rows="4" placeholder="Describe what compound numbers are and how to use this page…"></textarea>
+    </div>
+
+    <!-- ─── Filter bar ─── -->
+    <div class="filter-bar">
+      <label>Show:</label>
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" data-filter="on" onclick="setFilter('on', this)">On</button>
+      <button class="filter-btn" data-filter="off" onclick="setFilter('off', this)">Off</button>
+    </div>
+
+    <!-- ─── Number rows ─── -->
+    <div id="numberRows"></div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+
+    // ─── Admin key ───
+    function getAdminKey() {
+      let key = localStorage.getItem('adminApiKey') || '';
+      if (!key) {
+        key = prompt('Indtast admin API-nøgle:') || '';
+        if (key) localStorage.setItem('adminApiKey', key);
+      }
+      return key;
+    }
+
+    let allNumbers = [];
+    let currentFilter = 'all';
+
+    // ─── Load ───
+    async function loadData() {
+      try {
+        const res = await fetch('/api/save-compound-numbers.php', {
+          headers: { 'X-Admin-Key': getAdminKey() }
+        });
+        const data = await res.json();
+        document.getElementById('pageIntro').value = data.intro || '';
+        allNumbers = data.numbers || [];
+        renderRows();
+      } catch (err) {
+        alert('Could not load data: ' + err.message);
+      }
+    }
+
+    // ─── Render rows ───
+    function renderRows() {
+      const container = document.getElementById('numberRows');
+      container.innerHTML = '';
+      allNumbers.forEach((n, idx) => {
+        const enabled = parseInt(n.enabled) !== 0;
+
+        if (currentFilter === 'on'  && !enabled) return;
+        if (currentFilter === 'off' &&  enabled) return;
+
+        const parts = n.display.split('/');
+        const comp  = parts[0];
+        const red   = parts[1] ? `/${parts[1]}` : '';
+
+        const div = document.createElement('div');
+        div.className = 'number-row' + (enabled ? '' : ' is-off');
+        div.dataset.idx = idx;
+
+        div.innerHTML = `
+          <div class="number-header">
+            <span class="number-badge">${comp}<span style="font-size:0.7em;color:#aaa;">${red}</span></span>
+            <span class="number-label">${n.label || ''}</span>
+            <div class="toggle-wrap">
+              <label for="toggle-${idx}">Show on site</label>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-${idx}" ${enabled ? 'checked' : ''} onchange="onToggle(${idx}, this)">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <textarea id="text-${idx}" rows="4" placeholder="Description for ${n.display}…">${escapeHTML(n.beskrivelse || '')}</textarea>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ─── Toggle handler ───
+    function onToggle(idx, checkbox) {
+      allNumbers[idx].enabled = checkbox.checked ? 1 : 0;
+      const row = document.querySelector(`.number-row[data-idx="${idx}"]`);
+      if (row) row.classList.toggle('is-off', !checkbox.checked);
+      autoSave();
+    }
+
+    // ─── Collect current textarea values before saving ───
+    function collectValues() {
+      allNumbers.forEach((n, idx) => {
+        const ta = document.getElementById('text-' + idx);
+        if (ta) n.beskrivelse = ta.value;
+      });
+    }
+
+    // ─── Auto-save (debounced) ───
+    let saveTimer = null;
+    document.addEventListener('input', e => {
+      if (e.target.tagName === 'TEXTAREA' && e.target.id !== 'pageIntro') {
+        const idx = parseInt(e.target.id.replace('text-', ''));
+        if (!isNaN(idx)) allNumbers[idx].beskrivelse = e.target.value;
+      }
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(autoSave, 1200);
+    });
+
+    async function autoSave() {
+      await doSave(false);
+    }
+
+    // ─── Save all ───
+    async function saveAll() {
+      collectValues();
+      await doSave(true);
+    }
+
+    async function doSave(showAlert) {
+      const intro = document.getElementById('pageIntro').value;
+      try {
+        const res = await fetch('/api/save-compound-numbers.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': getAdminKey()
+          },
+          body: JSON.stringify({ intro, numbers: allNumbers })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showSaveIndicator();
+          if (showAlert) alert('Saved!');
+        } else {
+          if (showAlert) alert('Error: ' + (data.error || 'Unknown'));
+        }
+      } catch (err) {
+        if (showAlert) alert('Save failed: ' + err.message);
+      }
+    }
+
+    function showSaveIndicator() {
+      const el = document.getElementById('saveIndicator');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    // ─── Filter ───
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderRows();
+    }
+
+    // ─── Init ───
+    loadData();
+  </script>
+</body>
+</html>

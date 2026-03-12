@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compound Numbers — Numerology 10 to 78</title>
+  <meta name="description" content="Explore the compound numbers in numerology — from 10/1 to 78/6. Each compound number carries a unique energy beyond its base digit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --clr-bg:        #0b0b12;
+      --clr-surface:   #13131f;
+      --clr-surface-2: #1a1a2e;
+      --clr-gold:      #c9a84c;
+      --clr-gold-light:#e8d5a3;
+      --clr-text:      #e8e4da;
+      --clr-muted:     #7c7c8a;
+      --clr-border:    rgba(201,168,76,0.15);
+      --font-heading:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--clr-bg); color: var(--clr-text);
+      font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(11,11,18,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .site-nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; height: 64px;
+    }
+    .nav-brand {
+      font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
+      color: var(--clr-gold); text-decoration: none; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; line-height: 1.15;
+    }
+    .nav-brand:hover { color: var(--clr-gold-light); }
+    .nav-brand .brandline {
+      font-family: var(--font-body);
+      font-size: 0.55rem; font-weight: 400;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--clr-muted); opacity: 0.7;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      display: block; padding: 0.5rem 0.75rem; font-size: 0.82rem; font-weight: 400;
+      letter-spacing: 0.3px; color: var(--clr-muted); text-decoration: none;
+      border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--clr-gold-light); background: rgba(201,168,76,0.08); }
+    .nav-links a.active { color: var(--clr-gold); font-weight: 500; }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after {
+      content: ''; display: inline-block; width: 0; height: 0;
+      margin-left: 5px; vertical-align: middle;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid currentColor;
+    }
+    .nav-dropdown-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 4px);
+      background: var(--clr-surface); border: 1px solid var(--clr-border);
+      border-radius: 8px; min-width: 200px; padding: 0.5rem 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      max-height: calc(100vh - 80px); overflow-y: auto;
+    }
+    .nav-dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.82rem; border-radius: 0; }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 32px; height: 32px; position: relative;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px; background: var(--clr-gold);
+      position: absolute; left: 6px; transition: 0.3s;
+    }
+    .nav-toggle span:nth-child(1) { top: 9px; }
+    .nav-toggle span:nth-child(2) { top: 15px; }
+    .nav-toggle span:nth-child(3) { top: 21px; }
+    .nav-toggle.open span:nth-child(1) { top: 15px; transform: rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { top: 15px; transform: rotate(-45deg); }
+    @media (max-width: 991px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: stretch;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--clr-surface); border-bottom: 1px solid var(--clr-border);
+        padding: 1rem; gap: 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 0.65rem 0.75rem; font-size: 0.9rem; }
+      .nav-dropdown-menu {
+        position: static; box-shadow: none; border: none;
+        background: transparent; padding-left: 1rem; display: none;
+      }
+      .nav-dropdown.open-mobile .nav-dropdown-menu { display: block; }
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 140px 1.5rem 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--clr-gold); border: 1px solid rgba(201,168,76,0.35);
+      padding: 0.6rem 2rem; border-radius: 100px; margin-bottom: 1.5rem;
+      background: rgba(201,168,76,0.06); text-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 7vw, 4.5rem);
+      font-weight: 700; color: var(--clr-text); margin: 0 0 1rem; line-height: 1.1;
+    }
+    .hero h1 span { color: var(--clr-gold); }
+    .hero-intro {
+      max-width: 680px; margin: 0 auto;
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.85;
+    }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: var(--clr-border);
+      margin: 1.8rem auto 0;
+    }
+
+    /* ─── INTRO TEXT BLOCK ─── */
+    .page-intro {
+      max-width: 740px; margin: 0 auto;
+      padding: 3rem 1.5rem 0;
+    }
+    .page-intro p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.9;
+      margin: 0 0 1rem;
+    }
+    .page-intro p:last-child { margin: 0; }
+
+    /* ─── NUMBER SECTIONS ─── */
+    .numbers-list {
+      max-width: 740px; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .number-section {
+      padding: 3rem 0;
+      border-top: 1px solid var(--clr-border);
+    }
+    .number-section:first-child { border-top: none; padding-top: 2rem; }
+    .number-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; color: var(--clr-text);
+      margin: 0 0 1.4rem;
+      display: flex; align-items: baseline; gap: 0.6rem;
+    }
+    .number-heading .compound {
+      color: var(--clr-gold);
+    }
+    .number-heading .reduced {
+      font-size: 0.55em; color: var(--clr-muted);
+      font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .number-body {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); line-height: 1.9;
+      white-space: pre-wrap;
+    }
+    .number-body p {
+      margin: 0 0 1rem;
+    }
+    .number-body p:last-child { margin: 0; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center; padding: 5rem 1.5rem;
+      color: var(--clr-muted); font-size: 1rem; font-weight: 300;
+    }
+
+    /* ─── LOADING ─── */
+    .loading {
+      text-align: center; padding: 6rem 1.5rem;
+      color: var(--clr-muted); font-size: 0.9rem; letter-spacing: 2px;
+      text-transform: uppercase; opacity: 0.6;
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      border-top: 1px solid var(--clr-border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-size: 0.82rem; color: var(--clr-muted);
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="site-nav">
+    <div class="container">
+      <a class="nav-brand" href="index.html">StrategicNumerology<span class="brandline">Understand yourself. Plan your timing.</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Base numbers</a>
+          <div class="nav-dropdown-menu">
+            <a href="grundenergi-1.html">1 — The Leader</a>
+            <a href="grundenergi-2.html">2 — The Diplomat</a>
+            <a href="grundenergi-3.html">3 — The Creative</a>
+            <a href="grundenergi-4.html">4 — The Builder</a>
+            <a href="grundenergi-5.html">5 — The Adventurer</a>
+            <a href="grundenergi-6.html">6 — The Nurturer</a>
+            <a href="grundenergi-7.html">7 — The Thinker</a>
+            <a href="grundenergi-8.html">8 — The Ambitious</a>
+            <a href="grundenergi-9.html">9 — The Wise</a>
+          </div>
+        </li>
+        <li><a href="produkter.html">Products</a></li>
+        <li><a href="compound-numbers.html" class="active">Compound Numbers</a></li>
+        <li><a href="om-numerologi.html">About Numerology</a></li>
+        <li><a href="om-os.html">About Us</a></li>
+        <li class="nav-dropdown">
+          <a href="#" tabindex="0">Admin</a>
+          <div class="nav-dropdown-menu">
+            <a href="diamant.html">Diamant</a>
+            <a href="aarstalsraekker.html">Årstalsrækker</a>
+            <a href="rapport.html">Rapport</a>
+            <a href="artikel.html">Artikler</a>
+            <a href="input-diamant.html">Input Diamant</a>
+            <a href="input-aarstalsraekker.html">Input Årstalsrækker</a>
+            <a href="input-generelt.html">Input Generelt</a>
+            <a href="input-rapport.html">Input Rapport</a>
+            <a href="input-navnegenerator.html">Input Navnegenerator</a>
+            <a href="input-gratisberegning.html">Input Gratis Beregning</a>
+            <a href="input-om-numerologi.html">Input Om Numerologi</a>
+            <a href="input-om-os.html">Input Om Os</a>
+            <a href="input-grundenergier.html">Input Grundenergier</a>
+            <a href="input-tak.html">Input Tak-side</a>
+            <a href="input-meta.html">Input Meta Data</a>
+            <a href="input-compound-numbers.html">Input Compound Numbers</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-label">Numerology</div>
+    <h1><span>Compound</span> numbers</h1>
+    <p class="hero-intro" id="heroIntro">Loading…</p>
+    <div class="hero-divider"></div>
+  </section>
+
+  <!-- ─── NUMBER SECTIONS ─── -->
+  <div class="numbers-list" id="numbersList">
+    <div class="loading">Loading numbers</div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    &copy; 2026 StrategicNumerology
+  </footer>
+
+  <script>
+    // ─── Nav toggle ───
+    const navToggle = document.getElementById('navToggle');
+    const navLinks  = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('.nav-dropdown > a').forEach(a => {
+      a.addEventListener('click', e => {
+        if (window.innerWidth <= 991) {
+          e.preventDefault();
+          a.closest('.nav-dropdown').classList.toggle('open-mobile');
+        }
+      });
+    });
+
+    // ─── Reveal on scroll ───
+    function initReveal() {
+      const els = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      els.forEach(el => obs.observe(el));
+    }
+
+    // ─── Render ───
+    function renderNumbers(numbers) {
+      const list = document.getElementById('numbersList');
+      if (!numbers.length) {
+        list.innerHTML = '<div class="empty-state">No compound numbers available yet.</div>';
+        return;
+      }
+      list.innerHTML = numbers.map(n => {
+        const parts  = n.display.split('/');
+        const comp   = parts[0];
+        const red    = parts[1] ? parts[1] : '';
+        const label  = n.label ? ` — ${n.label}` : '';
+        const text   = (n.beskrivelse || '').trim();
+        const textHTML = text
+          ? text.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')
+          : '<p style="opacity:0.4;font-style:italic;">No description yet.</p>';
+        return `
+          <div class="number-section reveal">
+            <h2 class="number-heading">
+              <span class="compound">${comp}</span>${red ? `<span class="reduced">/ ${red}</span>` : ''}${label ? `<span style="font-size:0.5em;color:var(--clr-muted);font-weight:400;">${label}</span>` : ''}
+            </h2>
+            <div class="number-body">${textHTML}</div>
+          </div>`;
+      }).join('');
+      initReveal();
+    }
+
+    // ─── Fetch ───
+    async function loadData() {
+      try {
+        const adminKey = localStorage.getItem('adminApiKey') || '';
+        const res = await fetch('/api/save-compound-numbers.php', {
+          headers: adminKey ? { 'X-Admin-Key': adminKey } : {}
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        // Intro
+        const introEl = document.getElementById('heroIntro');
+        introEl.textContent = data.intro && data.intro.trim()
+          ? data.intro
+          : 'The compound numbers carry a deeper layer of meaning beyond the single digit. Each number from 10 to 78 holds its own unique vibration.';
+
+        // Filter to only enabled
+        const enabled = (data.numbers || []).filter(n => parseInt(n.enabled) !== 0);
+        renderNumbers(enabled);
+      } catch (err) {
+        document.getElementById('numbersList').innerHTML =
+          '<div class="empty-state">Could not load content. Please try again later.</div>';
+        document.getElementById('heroIntro').textContent =
+          'The compound numbers carry a deeper layer of meaning beyond the single digit.';
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

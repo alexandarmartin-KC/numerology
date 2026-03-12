@@ -155,6 +155,24 @@ $ok = $db->query("
 ");
 $results['orders.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
 
+// ─── diamant_energies: tilføj enabled (on/off til compound-numbers side) ───
+$check = $db->query("SHOW COLUMNS FROM diamant_energies LIKE 'enabled'");
+if ($check && $check->num_rows > 0) {
+    $results["diamant_energies.enabled"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE diamant_energies ADD COLUMN enabled TINYINT(1) NOT NULL DEFAULT 1");
+    $results["diamant_energies.enabled"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
+// ─── generelt: tilføj compound_intro (indledning på compound-numbers siden) ───
+$check = $db->query("SHOW COLUMNS FROM generelt LIKE 'compound_intro'");
+if ($check && $check->num_rows > 0) {
+    $results["generelt.compound_intro"] = "Eksisterer allerede";
+} else {
+    $ok = $db->query("ALTER TABLE generelt ADD COLUMN compound_intro LONGTEXT DEFAULT NULL");
+    $results["generelt.compound_intro"] = $ok ? "TILFØJET" : "FEJL: " . $db->error;
+}
+
 // ─── Vis nuværende kolonner ───
 $colRes = $db->query("SHOW COLUMNS FROM diamant_energies");
 $allCols = [];
