@@ -3,9 +3,22 @@ require_once __DIR__ . '/db.php';
 
 $db = getDB();
 
+// ─── Ensure columns exist (idempotent) ───
+function ensureColumns(mysqli $db): void {
+    $c = $db->query("SHOW COLUMNS FROM diamant_energies LIKE 'enabled'");
+    if ($c && $c->num_rows === 0) {
+        $db->query("ALTER TABLE diamant_energies ADD COLUMN enabled TINYINT(1) NOT NULL DEFAULT 1");
+    }
+    $c = $db->query("SHOW COLUMNS FROM generelt LIKE 'compound_intro'");
+    if ($c && $c->num_rows === 0) {
+        $db->query("ALTER TABLE generelt ADD COLUMN compound_intro LONGTEXT DEFAULT NULL");
+    }
+}
+
 // ─── GET: hent intro + alle sammensatte tal ───
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     requireAdminKey();
+    ensureColumns($db);
 
     $g = $db->query("SELECT compound_intro FROM generelt WHERE id = 1");
     $intro = '';
@@ -28,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     requireAdminKey();
     $body = getBody();
+    ensureColumns($db);
 
     // Gem intro
     $intro = $body['intro'] ?? '';
@@ -45,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$stmt) jsonOut(['error' => 'Prepare fejl: ' . $db->error], 500);
 
     foreach ($numbers as $n) {
-        $display    = $n['display'] ?? '';
+        $display     = $n['display'] ?? '';
         $beskrivelse = $n['beskrivelse'] ?? '';
-        $enabled    = isset($n['enabled']) ? (int)(bool)$n['enabled'] : 1;
+        $enabled     = isset($n['enabled']) ? (int)(bool)$n['enabled'] : 1;
         if ($display === '') continue;
         $stmt->bind_param('sis', $beskrivelse, $enabled, $display);
         $stmt->execute();
