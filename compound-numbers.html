@@ -217,6 +217,158 @@
       transition: opacity 0.6s, transform 0.6s;
     }
     .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── BUTTONS ─── */
+    .btn-gold {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--clr-bg);
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border: none; border-radius: 50px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+      color: var(--clr-bg);
+    }
+    .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ─── CALCULATOR SECTION ─── */
+    .section-calculator {
+      padding: 5rem 1.5rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--clr-border);
+    }
+    .section-calculator .inner {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .section-calculator h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600;
+      margin: 0 0 0.9rem;
+      color: var(--clr-text);
+    }
+    .section-calculator p {
+      font-size: 1rem; font-weight: 300;
+      color: var(--clr-muted);
+      margin: 0 auto 1.5rem;
+    }
+    .hero-form { display: flex; flex-direction: column; gap: 0.75rem; }
+    .hero-form-row { display: flex; gap: 0.75rem; flex-direction: column; }
+    .hero-form-hint {
+      display: block; margin-bottom: 0.35rem; padding-left: 1.2rem;
+      font-size: 0.78rem; color: var(--clr-muted); opacity: 0.75;
+    }
+    .hero-form input {
+      flex: 1; padding: 0.9rem 1.2rem;
+      font-family: var(--font-body); font-size: 1rem;
+      color: var(--clr-text);
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border);
+      border-radius: 50px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .hero-form input::placeholder { color: var(--clr-muted); }
+    .hero-form input:focus { border-color: var(--clr-gold); }
+    .hero-form input[type="date"] { color-scheme: dark; }
+    .hero-form .btn-gold { width: 100%; }
+
+    /* ─── RESULT SECTION ─── */
+    .section-result {
+      padding: 0 1.5rem;
+      max-width: 720px; margin: 0 auto;
+      text-align: center;
+    }
+    .result-box {
+      display: none;
+      padding: 3rem 2rem;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      animation: result-in 0.8s ease forwards;
+    }
+    .result-box.visible { display: block; }
+    .gratis-counter {
+      display: none; text-align: center;
+      font-size: 0.78rem; color: var(--clr-muted);
+      margin-top: 0.6rem; opacity: 0.8;
+    }
+    .gratis-counter.visible { display: block; }
+    @keyframes result-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-name-number {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 72px; height: 72px;
+      font-family: var(--font-heading);
+      font-size: 2rem; font-weight: 700;
+      color: var(--clr-gold);
+      border: 2px solid var(--clr-gold);
+      border-radius: 50%;
+      margin-bottom: 1.5rem;
+    }
+    .result-reading {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-text); line-height: 1.9; text-align: left;
+    }
+    .result-reading h3 {
+      font-size: 1rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--clr-text);
+      margin: 1.6rem 0 0.4rem;
+    }
+    .result-reading h3:first-child { margin-top: 0; }
+    .result-reading p { margin: 0 0 0.6rem; }
+
+    /* ─── CANVAS LOADER ─── */
+    .loading-spinner {
+      display: none; flex-direction: column; align-items: center;
+      gap: 1.75rem; padding: 2.5rem 0;
+    }
+    .loading-spinner.visible { display: flex; }
+    .loader-canvas { display: block; width: min(220px, 70vw); height: min(220px, 70vw); }
+    .loader-label {
+      font-family: var(--font-heading);
+      font-size: clamp(0.52rem, 2.5vw, 0.65rem);
+      letter-spacing: 0.32em; color: var(--clr-gold);
+      text-transform: uppercase; opacity: 0.75;
+    }
+    .loader-label .dots span { animation: ldBlink 1.4s infinite; opacity: 0; }
+    .loader-label .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-label .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ldBlink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+    /* ─── TEASER ─── */
+    .section-teaser { display: none; padding: 0 1.5rem 5rem; text-align: center; }
+    .section-teaser.visible { display: block; animation: fade-up 0.8s ease forwards; }
+    .teaser-line {
+      font-family: var(--font-heading);
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 600; font-style: italic;
+      color: var(--clr-gold-light);
+      max-width: 560px; margin: 0 auto 1rem;
+    }
+    .teaser-sub {
+      font-size: 0.95rem; font-weight: 300;
+      color: var(--clr-muted); max-width: 500px; margin: 0 auto 2rem;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+      .section-result { padding: 0 1rem; }
+      .result-box { padding: 2rem 1.25rem; }
+      .result-name-number { width: 60px; height: 60px; font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
@@ -286,11 +438,48 @@
     <div class="loading">Loading numbers</div>
   </div>
 
+  <!-- ─── FREE CALCULATOR ─── -->
+  <section class="section-calculator reveal" id="beregner">
+    <div class="inner">
+      <h2>Ready to discover your numbers?</h2>
+      <p>Get a free numerological reading based on your name and date of birth — and see what the numbers say about you.</p>
+      <div class="hero-form">
+        <div class="hero-form-row">
+          <small class="hero-form-hint">Enter your name exactly as it appears on your official documents</small>
+          <input type="text" id="nameInput" placeholder="Your full name…" autocomplete="name">
+        </div>
+        <div class="hero-form-row">
+          <input type="text" id="birthInput" placeholder="dd/mm/yyyy">
+        </div>
+        <button class="btn-gold" id="calcBtn">Calculate for free</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-result" id="resultSection">
+    <div class="loading-spinner" id="loadSpinner">
+      <canvas class="loader-canvas" id="loaderCanvas"></canvas>
+      <div class="loader-label">Calculating your name<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="result-name-number" id="resultNumber"></div>
+      <div class="result-reading" id="resultText"></div>
+    </div>
+    <p class="gratis-counter" id="gratis-counter"></p>
+  </section>
+
+  <section class="section-teaser" id="teaserSection">
+    <p class="teaser-line">"This is just a glimpse…"</p>
+    <p class="teaser-sub">Your full numerological diamond contains over 20 positions — from personality and life task to yearly cycles and hidden potentials. Get the complete analysis below.</p>
+    <a href="landing.html" class="btn-gold">Get My Full Report</a>
+  </section>
+
   <!-- ─── FOOTER ─── -->
   <footer class="site-footer">
     &copy; 2026 StrategicNumerology
   </footer>
 
+  <script src="assets/js/diamondEngine.js"></script>
   <script>
     // ─── Nav toggle ───
     const navToggle = document.getElementById('navToggle');
@@ -372,6 +561,247 @@
     }
 
     loadData();
+
+    // ─── Preload gratis config from DB ───
+    (async () => {
+      try {
+        const res = await fetch('/api/get-knowledge.php');
+        if (!res.ok) return;
+        const k = await res.json();
+        if (k.gratisBeregning && Object.keys(k.gratisBeregning).length) {
+          localStorage.setItem('gratisBeregningConfig', JSON.stringify(k.gratisBeregning));
+        }
+        if (Array.isArray(k.energies) && k.energies.length) {
+          const editsObj = {};
+          k.energies.forEach(e => {
+            if (!e.display) return;
+            const copy = { ...e }; delete copy.id;
+            editsObj[e.display] = copy;
+          });
+          localStorage.setItem('energiesEdits', JSON.stringify(editsObj));
+        }
+      } catch (e) { console.warn('DB preload failed:', e); }
+    })();
+
+    function formatReading(text) {
+      if (!text) return '';
+      const sectionHeaders = ['Grundenergi', 'Livslinje', 'Bundtal'];
+      let normalized = text;
+      sectionHeaders.forEach(h => {
+        normalized = normalized.replace(new RegExp('([^\n])(' + h + ')', 'g'), '$1\n$2');
+      });
+      const escaped = normalized.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const lines = escaped.split(/\n/);
+      let html = '', inParagraph = false;
+      for (let i = 0; i < lines.length; i++) {
+        const trimmed = lines[i].replace(/^##\s*/, '').trim();
+        if (sectionHeaders.includes(trimmed)) {
+          if (inParagraph) { html += '</p>'; inParagraph = false; }
+          html += `<h3>${trimmed}</h3>`;
+        } else if (trimmed === '') {
+          if (inParagraph) { html += '</p>'; inParagraph = false; }
+        } else {
+          if (!inParagraph) { html += '<p>'; inParagraph = true; } else html += ' ';
+          html += trimmed;
+        }
+      }
+      if (inParagraph) html += '</p>';
+      return html;
+    }
+
+    function getGratisConfig() {
+      try { return JSON.parse(localStorage.getItem('gratisBeregningConfig')) || null; } catch { return null; }
+    }
+
+    function buildDiamondText(result) {
+      const d = result.diamond;
+      const cfg = getGratisConfig();
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','soejletal'];
+      let inner = '';
+      if (pos.includes('grundenergi'))  inner += `G-tal (top): ${d.grundenergi.value}\n`;
+      if (pos.includes('livslinje'))    inner += `Navnetal: ${d.livslinje.map(e => `${e.role} "${e.name}" = ${e.display}`).join(', ')}\n`;
+      if (pos.includes('bundtal'))      inner += `B-tal: ${d.bundtal.display}\n`;
+      if (pos.includes('aura'))         inner += `Aura — øvre venstre: ${d.aura.auraUpperLeft.display}, øvre højre: ${d.aura.auraUpperRight.display}, nedre venstre: ${d.aura.auraLowerLeft.display}, nedre højre: ${d.aura.auraLowerRight.display}\n`;
+      if (pos.includes('hjertecenter')) inner += `Hjertecenter: ${d.body.hjertecenter.centerTal.display}\n`;
+      if (pos.includes('solarplexus'))  inner += `Solarplexus: ${d.body.solarplexus.centerTal.display}\n`;
+      if (pos.includes('rygraden'))     inner += `Rygraden: ${d.rygraden.display}\n`;
+      if (pos.includes('soejletal'))    inner += `Søjletal: ${d.soejletal.compound}/${d.soejletal.reduced}\n`;
+      return `<rådata>\n${inner}</rådata>\n`;
+    }
+
+    function collectDisplays(diamond) {
+      const cfg = getGratisConfig();
+      const pos = cfg ? cfg.positions : ['grundenergi','livslinje','bundtal','aura','hjertecenter','solarplexus','soejletal'];
+      const displays = new Set();
+      const disp = (compound, reduced) => compound < 10 ? `${compound}` : `${compound}/${reduced}`;
+      if (pos.includes('grundenergi'))   displays.add(diamond.grundenergi.display);
+      if (pos.includes('livslinje'))     diamond.livslinje.forEach(e => displays.add(disp(e.compound, e.reduced)));
+      if (pos.includes('bundtal'))       displays.add(diamond.bundtal.display);
+      if (pos.includes('aura')) {
+        displays.add(diamond.aura.auraUpperLeft.display);
+        displays.add(diamond.aura.auraUpperRight.display);
+        displays.add(diamond.aura.auraLowerLeft.display);
+        displays.add(diamond.aura.auraLowerRight.display);
+      }
+      if (pos.includes('hjertecenter'))  displays.add(diamond.body.hjertecenter.centerTal.display);
+      if (pos.includes('solarplexus'))   displays.add(diamond.body.solarplexus.centerTal.display);
+      if (pos.includes('rygraden'))      displays.add(diamond.rygraden.display);
+      if (pos.includes('soejletal'))     displays.add(disp(diamond.soejletal.compound, diamond.soejletal.reduced));
+      return [...displays];
+    }
+
+    // ─── Calculator main flow ───
+    const nameInput     = document.getElementById('nameInput');
+    const birthInput    = document.getElementById('birthInput');
+    const calcBtn       = document.getElementById('calcBtn');
+    const loadSpinner   = document.getElementById('loadSpinner');
+    const resultBox     = document.getElementById('resultBox');
+    const resultNumber  = document.getElementById('resultNumber');
+    const resultText    = document.getElementById('resultText');
+    const teaserSection = document.getElementById('teaserSection');
+
+    async function runAnalysis() {
+      const name = nameInput.value.trim();
+      const dateVal = birthInput.value;
+      if (!name) { nameInput.focus(); return; }
+      if (!dateVal) { birthInput.focus(); return; }
+
+      let result;
+      try { result = computeDiamond(name, dateVal); }
+      catch (err) { alert(err.message); return; }
+
+      const diamond = result.diamond;
+      const relevantDisplays = collectDisplays(diamond);
+      const firstName = name.trim().split(/\s+/)[0];
+      const firstNameDisplay = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
+
+      resultBox.classList.remove('visible');
+      teaserSection.classList.remove('visible');
+      loadSpinner.classList.add('visible');
+      document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const gratisConfig = getGratisConfig();
+      if (gratisConfig && gratisConfig.teaserText && gratisConfig.teaserText.trim()) {
+        const tSub = document.querySelector('.teaser-sub');
+        if (tSub) tSub.textContent = gratisConfig.teaserText;
+      }
+
+      try {
+        const resp = await fetch('/api/generate-namereading', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: firstNameDisplay,
+            birthDate: dateVal,
+            nameData: buildDiamondText(result),
+            relevantDisplays: relevantDisplays,
+            provider: 'claude'
+          })
+        });
+        if (!resp.ok) {
+          let errType = 'ukendt'; let isRateLimit = false;
+          try { const j = await resp.json(); errType = j.error || errType; isRateLimit = !!j.rateLimit; } catch(_) {}
+          const e = new Error(isRateLimit ? errType : 'An error occurred. Please try again.');
+          e.isRateLimit = isRateLimit; throw e;
+        }
+        const data = await resp.json();
+        try { localStorage.setItem('gratisUserData', JSON.stringify({ name, birthDate: dateVal })); } catch(_) {}
+        const used = 4 - (data.remaining ?? 0);
+        const counterEl = document.getElementById('gratis-counter');
+        if (counterEl) {
+          counterEl.textContent = `Reading ${used} of 4 — you have ${data.remaining ?? 0} free ${(data.remaining ?? 0) === 1 ? 'reading' : 'readings'} left today`;
+          counterEl.classList.add('visible');
+        }
+        resultNumber.textContent = diamond.grundenergi.value;
+        resultText.innerHTML = formatReading(data.reading);
+        loadSpinner.classList.remove('visible');
+        resultBox.classList.add('visible');
+        calcBtn.textContent = 'Get My Complete Analysis';
+        calcBtn.onclick = () => { window.location.href = 'landing.html'; };
+        setTimeout(() => { teaserSection.classList.add('visible'); }, 1200);
+      } catch (err) {
+        loadSpinner.classList.remove('visible');
+        if (err.isRateLimit) {
+          resultNumber.style.display = 'none';
+          resultText.innerHTML = `<p style="margin:0 0 1.2rem;">You've explored 4 different readings today. Ready to go deeper?<br>Your full report covers everything your free readings hinted at — and much more.</p><div style="text-align:center;"><a href="landing.html" class="btn-gold" style="display:inline-block;text-decoration:none;">Get My Full Report — $35</a></div>`;
+        } else {
+          resultText.textContent = 'An error occurred. Please try again.';
+          resultNumber.textContent = '?';
+        }
+        resultBox.classList.add('visible');
+      }
+    }
+
+    calcBtn.addEventListener('click', runAnalysis);
+    nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); birthInput.focus(); } });
+    birthInput.addEventListener('keydown', e => { if (e.key === 'Enter') runAnalysis(); });
+    birthInput.addEventListener('focus', () => { birthInput.type = 'date'; });
+    birthInput.addEventListener('blur',  () => { if (!birthInput.value) birthInput.type = 'text'; });
+
+    function resetCalcBtn() {
+      if (calcBtn.textContent !== 'Calculate for free') {
+        calcBtn.textContent = 'Calculate for free';
+        calcBtn.onclick = null;
+        calcBtn.addEventListener('click', runAnalysis);
+      }
+    }
+    nameInput.addEventListener('input', resetCalcBtn);
+    birthInput.addEventListener('input', resetCalcBtn);
+
+    initReveal();
+  </script>
+
+  <script>
+  /* ─── Canvas particle loader ─── */
+  (function () {
+    const canvas = document.getElementById('loaderCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize() {
+      const size = Math.min(220, window.innerWidth * 0.7);
+      canvas.width = size; canvas.height = size;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    const particles = Array.from({ length: 120 }, () => ({
+      orbitFrac:   (30 + Math.random() * 100) / 280,
+      angle:       Math.random() * Math.PI * 2,
+      speed:       (0.004 + Math.random() * 0.008) * (Math.random() < 0.5 ? 1 : -1),
+      wobble:      Math.random() * Math.PI * 2,
+      wobbleSpeed: 0.01 + Math.random() * 0.02,
+      wobbleFrac:  (8 + Math.random() * 18) / 280,
+      sizeFrac:    (0.8 + Math.random() * 1.6) / 280,
+      hue:         36 + (Math.random() - 0.5) * 16,
+      brightness:  55 + Math.random() * 25,
+      alpha:       0.35 + Math.random() * 0.55,
+    }));
+    const spinner = document.getElementById('loadSpinner');
+    function draw() {
+      requestAnimationFrame(draw);
+      if (!spinner || !spinner.classList.contains('visible')) return;
+      const W = canvas.width, H = canvas.height;
+      const CX = W / 2, CY = H / 2;
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.angle  += p.speed;
+        p.wobble += p.wobbleSpeed;
+        const orbit     = p.orbitFrac  * W;
+        const wobbleAmt = p.wobbleFrac * W;
+        const size      = p.sizeFrac   * W;
+        const r = orbit + Math.sin(p.wobble) * wobbleAmt;
+        const x = CX + Math.cos(p.angle) * r;
+        const y = CY + Math.sin(p.angle) * r * 0.55;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, size * 3);
+        g.addColorStop(0, `hsla(${p.hue},85%,${p.brightness + 15}%,${p.alpha})`);
+        g.addColorStop(1, `hsla(${p.hue},80%,${p.brightness}%,0)`);
+        ctx.beginPath(); ctx.arc(x, y, size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = g; ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue},100%,92%,${p.alpha})`; ctx.fill();
+      });
+    }
+    draw();
+  }());
   </script>
 </body>
 </html>
