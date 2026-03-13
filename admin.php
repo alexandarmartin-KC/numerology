@@ -187,6 +187,7 @@ $statusConfig = [
     <a href="/input-gratisberegning.html"><i class="bi bi-gift"></i> Gratis beregning</a>
 
     <div class="sidebar-section mt-2">Indhold</div>
+    <a href="/input-compound-numbers.html"><i class="bi bi-list-ol"></i> Compound Numbers</a>
     <a href="/input-om-numerologi.html"><i class="bi bi-book"></i> Om numerologi</a>
     <a href="/input-om-os.html"><i class="bi bi-people"></i> Om os</a>
     <a href="/input-tak.html"><i class="bi bi-check-circle"></i> Tak-side</a>
@@ -318,6 +319,7 @@ $statusConfig = [
           <a class="ql-item" href="/input-om-os.html"><i class="bi bi-people"></i> Om os</a>
           <a class="ql-item" href="/input-tak.html"><i class="bi bi-check-circle"></i> Tak-side</a>
           <a class="ql-item" href="/input-meta.html"><i class="bi bi-tags"></i> Meta / SEO</a>
+          <a class="ql-item" href="/input-compound-numbers.html"><i class="bi bi-list-ol"></i> Compound Numbers</a>
           <a class="ql-item" href="/admin-rapporter.php"><i class="bi bi-file-earmark-text"></i> Rapporter</a>
         </div>
       </div>
