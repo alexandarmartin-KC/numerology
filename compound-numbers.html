@@ -204,6 +204,21 @@
     }
 
     /* ─── FOOTER ─── */
+    /* ─── MID-LIST CTA ─── */
+    .cta-midlist {
+      text-align: center;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--clr-border);
+      border-bottom: 1px solid var(--clr-border);
+      margin: 1rem 0 2rem;
+    }
+    .cta-midlist-btn {
+      font-size: 0.9rem;
+      padding: 1rem 2.8rem;
+      letter-spacing: 1.5px;
+    }
+
+    /* ─── FOOTER ─── */
     .site-footer {
       border-top: 1px solid var(--clr-border);
       padding: 2.5rem 1.5rem;
@@ -849,6 +864,17 @@
 
   <script src="assets/js/diamondEngine.js"></script>
   <script>
+    // ─── Scroll to calculator with sticky-nav offset ───
+    function scrollToCalculator(e) {
+      e.preventDefault();
+      const target = document.getElementById('beregner');
+      if (!target) return;
+      const navHeight = 64;
+      const extraPadding = 24;
+      const y = target.getBoundingClientRect().top + window.pageYOffset - navHeight - extraPadding;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
     // ─── Nav toggle ───
     const navToggle = document.getElementById('navToggle');
     const navLinks  = document.getElementById('navLinks');
@@ -881,7 +907,8 @@
         list.innerHTML = '<div class="empty-state">No compound numbers available yet.</div>';
         return;
       }
-      list.innerHTML = numbers.map(n => {
+      const CTA_AFTER = '21'; // insert CTA button after compound number 21
+      const parts_list = numbers.map(n => {
         const parts  = n.display.split('/');
         const comp   = parts[0];
         const red    = parts[1] ? parts[1] : '';
@@ -890,14 +917,20 @@
         const textHTML = text
           ? text.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')
           : '<p style="opacity:0.4;font-style:italic;">No description yet.</p>';
-        return `
+        const card = `
           <div class="number-section reveal">
             <h2 class="number-heading">
               <span class="compound">${comp}</span>${red ? `<span class="reduced">/${red}</span>` : ''}${label ? `<span style="font-size:0.45em;color:var(--clr-muted);font-weight:400;">${label}</span>` : ''}
             </h2>
             <div class="number-body">${textHTML}</div>
           </div>`;
-      }).join('');
+        const cta = comp === CTA_AFTER ? `
+          <div class="cta-midlist reveal">
+            <a href="#beregner" class="btn-gold cta-midlist-btn" onclick="scrollToCalculator(event)">Get a free reading</a>
+          </div>` : '';
+        return card + cta;
+      });
+      list.innerHTML = parts_list.join('');
       initReveal();
     }
 
