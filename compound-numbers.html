@@ -369,6 +369,160 @@
       .result-box { padding: 2rem 1.25rem; }
       .result-name-number { width: 60px; height: 60px; font-size: 1.6rem; }
     }
+
+    /* ─── BUTTON OUTLINE ─── */
+    .btn-outline-gold {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--clr-gold);
+      background: transparent;
+      border: 1px solid var(--clr-gold);
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-outline-gold:hover { background: rgba(201,168,76,0.1); color: var(--clr-gold-light); }
+
+    /* ─── PRICING ─── */
+    .section-pricing {
+      padding: 6rem 1.5rem;
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .section-pricing .container { max-width: 1060px; margin: 0 auto; }
+    .pricing-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--clr-gold); margin-bottom: 1rem;
+    }
+    .pricing-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600; color: var(--clr-text); margin: 0 0 1rem;
+    }
+    .pricing-header p {
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--clr-muted); max-width: 550px; margin: 0 auto;
+    }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+    }
+    .pricing-card {
+      background: var(--clr-surface-2); border: 1px solid var(--clr-border);
+      border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pricing-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+    .pricing-card.featured {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 0 1px var(--clr-gold), 0 8px 32px rgba(201,168,76,0.15);
+    }
+    .pricing-card-head {
+      padding: 1.5rem 1.5rem 1rem; text-align: center;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .pricing-card.featured .pricing-card-head {
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
+      border-bottom-color: transparent;
+    }
+    .pricing-card-head h3 {
+      font-family: var(--font-heading); font-size: 1.4rem; font-weight: 600;
+      color: var(--clr-text); margin: 0;
+    }
+    .pricing-card.featured .pricing-card-head h3 { color: var(--clr-bg); }
+    .pricing-card-body {
+      padding: 2rem 1.5rem; text-align: center;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .pricing-price {
+      font-family: var(--font-heading); font-size: 3rem; font-weight: 700;
+      color: var(--clr-text); line-height: 1; margin-bottom: 1.5rem;
+    }
+    .pricing-features { list-style: none; padding: 0; margin: 0 0 2rem; }
+    .pricing-features li {
+      padding: 0.5rem 0; font-size: 0.92rem; font-weight: 300;
+      color: var(--clr-text); border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li.highlight { color: var(--clr-text); font-weight: 400; }
+    .pricing-description {
+      font-size: 0.88rem; font-weight: 300; font-style: italic;
+      color: var(--clr-muted); line-height: 1.6;
+      margin-top: auto; margin-bottom: 1.2rem; padding: 0 0.25rem;
+      min-height: 7.5em;
+    }
+    .pricing-tagline {
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--clr-gold-light);
+      margin-bottom: 1.5rem; min-height: 2.8em;
+    }
+    .pricing-subtitle {
+      font-size: 0.92rem; font-weight: 400;
+      color: var(--clr-gold-light); margin-top: 0.3rem; min-height: 3.4em;
+    }
+    .pricing-card-body .btn-gold,
+    .pricing-card-body .btn-outline-gold { width: 100%; text-align: center; padding: 0.75rem 1.5rem; }
+    .card-learn-more {
+      display: block; text-align: center; margin-top: 0.6rem;
+      font-size: 0.75rem; color: var(--clr-muted); text-decoration: none;
+      letter-spacing: 0.5px; transition: color 0.2s;
+    }
+    .card-learn-more:hover { color: var(--clr-gold-light); }
+
+    /* ─── ORDER MODAL ─── */
+    .order-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,11,18,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .order-overlay.active { opacity: 1; pointer-events: all; }
+    .order-box {
+      background: var(--clr-surface);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 12px; padding: 36px 28px;
+      max-width: 400px; width: 100%;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .order-overlay.active .order-box { transform: translateY(0); }
+    .order-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: var(--clr-muted);
+      font-size: 20px; cursor: pointer; padding: 4px; line-height: 1;
+    }
+    .order-close:hover { color: var(--clr-text); }
+    .order-plan-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--clr-gold); margin-bottom: 4px; }
+    .order-plan-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; margin-bottom: 2px; }
+    .order-plan-price { font-family: var(--font-heading); font-size: 2rem; font-weight: 700; color: var(--clr-gold-light); margin-bottom: 1.25rem; }
+    .order-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+    .order-field { display: flex; flex-direction: column; }
+    .order-field-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--clr-muted); margin-bottom: 4px; font-weight: 500; }
+    .order-fields input {
+      width: 100%; padding: 0.7rem 1rem;
+      background: var(--clr-surface-2);
+      border: 1px solid var(--clr-border); border-radius: 50px;
+      color: var(--clr-text); font-family: var(--font-body); font-size: 0.95rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .order-fields input::placeholder { color: var(--clr-muted); }
+    .order-fields input:focus { border-color: var(--clr-gold); }
+    .order-fields input[type="date"] { color-scheme: dark; -webkit-appearance: none; appearance: none; }
+    .btn-note { text-align: center; font-size: 0.75rem; color: var(--clr-muted); margin-top: 0.75rem; font-weight: 300; }
+    .order-box .btn-gold { width: 100%; display: flex; align-items: center; justify-content: center; }
+    @media (max-width: 576px) { .order-box { padding: 28px 20px; } }
   </style>
 </head>
 <body>
@@ -473,6 +627,107 @@
     <p class="teaser-sub">Your full numerological diamond contains over 20 positions — from personality and life task to yearly cycles and hidden potentials. Get the complete analysis below.</p>
     <a href="landing.html" class="btn-gold">Get My Full Report</a>
   </section>
+
+  <!-- ─── PRICING ─── -->
+  <section class="section-pricing reveal" id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <div class="section-label">Pricing</div>
+        <h2>Choose your depth</h2>
+        <p>Three levels of insight — from foundation to full activation of your potential.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Foundation</h3>
+            <div class="pricing-subtitle">Understand your core structure</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$35</div>
+            <ul class="pricing-features">
+              <li class="highlight">Analysis of your Core Energy</li>
+              <li class="highlight">Full calculation of the Diamond</li>
+              <li>Your strengths and natural competencies</li>
+              <li>Your challenges and development patterns</li>
+              <li>How your name shapes your personality</li>
+            </ul>
+            <p class="pricing-description">This report gives you a clear picture of your inner structure and the patterns that influence your choices and relationships.</p>
+            <p class="pricing-tagline">A strong foundation for personal understanding.</p>
+            <button type="button" class="btn-outline-gold" onclick="openModal('foundation')">Start with insight</button>
+            <a href="landing-analyse-35usd.html" class="card-learn-more">Learn more &rarr;</a>
+          </div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Direction</h3>
+            <div class="pricing-subtitle">See when you are at your strongest</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$75</div>
+            <ul class="pricing-features">
+              <li class="highlight">Everything from Foundation, plus:</li>
+              <li class="highlight">Personal Yearly Cycles</li>
+              <li class="highlight">Analysis of the next 9+ years</li>
+              <li>Periods of progress and momentum</li>
+              <li>Periods where you should consolidate and adjust</li>
+              <li>Strategic decision windows</li>
+            </ul>
+            <p class="pricing-description">This analysis gives you an overview of your upcoming energy cycles, so you can make larger decisions with greater clarity.</p>
+            <p class="pricing-tagline">From insight to strategic direction.</p>
+            <button type="button" class="btn-gold" onclick="openModal('direction')">Plan with awareness</button>
+            <a href="landing-direction-75usd.html" class="card-learn-more">Learn more &rarr;</a>
+          </div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-card-head">
+            <h3>Activation</h3>
+            <div class="pricing-subtitle">Optimise your potential</div>
+          </div>
+          <div class="pricing-card-body">
+            <div class="pricing-price">$149</div>
+            <ul class="pricing-features">
+              <li class="highlight">Everything from Direction, plus:</li>
+              <li class="highlight">Analysis of name variations</li>
+              <li class="highlight">Calculation of optimal name</li>
+              <li>Comparison of current and alternative name</li>
+              <li>Impact on career, visibility and influence</li>
+              <li>Concrete recommendations</li>
+            </ul>
+            <p class="pricing-description">This package is for those who not only want to understand their structure and timing – but actively work to strengthen their position.</p>
+            <p class="pricing-tagline">Here we move from analysis to adjustment.</p>
+            <button type="button" class="btn-gold" onclick="openModal('activation')">Take active control</button>
+            <a href="landing-activation-149usd.html" class="card-learn-more">Learn more &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ORDER MODAL ─── -->
+  <div class="order-overlay" id="orderModal">
+    <div class="order-box">
+      <button class="order-close" id="orderClose" aria-label="Close">✕</button>
+      <p class="order-plan-label">Your report</p>
+      <div class="order-plan-name" id="orderPlanName"></div>
+      <div class="order-plan-price" id="orderPlanPrice"></div>
+      <div class="order-fields">
+        <div class="order-field">
+          <div class="order-field-label">Full name</div>
+          <input type="text" id="orderName" name="fullName" placeholder="As on your official documents" autocomplete="name">
+        </div>
+        <div class="order-field">
+          <div class="order-field-label">Date of birth</div>
+          <input type="text" id="orderBirth" name="birthDate" placeholder="dd/mm/yyyy">
+        </div>
+        <div class="order-field">
+          <div class="order-field-label">Email</div>
+          <input type="email" id="orderEmail" name="email" placeholder="Your report will be sent here" autocomplete="email">
+        </div>
+      </div>
+      <button type="button" class="btn-gold" id="orderPay">Continue to payment</button>
+      <p class="btn-note">Secure payment &middot; Instant delivery &middot; No subscription</p>
+    </div>
+  </div>
 
   <!-- ─── FOOTER ─── -->
   <footer class="site-footer">
@@ -749,6 +1004,69 @@
     birthInput.addEventListener('input', resetCalcBtn);
 
     initReveal();
+
+    // ─── Order modal ───
+    (function () {
+      const planConfig = {
+        foundation: { label: 'Foundation Report', usd: '$35' },
+        direction:  { label: 'Direction Report',  usd: '$75' },
+        activation: { label: 'Activation Report', usd: '$149' },
+      };
+      const modal          = document.getElementById('orderModal');
+      const orderClose     = document.getElementById('orderClose');
+      const orderPlanName  = document.getElementById('orderPlanName');
+      const orderPlanPrice = document.getElementById('orderPlanPrice');
+      const orderNameEl    = document.getElementById('orderName');
+      const orderBirthEl   = document.getElementById('orderBirth');
+      const orderEmailEl   = document.getElementById('orderEmail');
+      const orderPay       = document.getElementById('orderPay');
+      let activePlan = 'foundation';
+      try {
+        const saved = JSON.parse(localStorage.getItem('gratisUserData') || 'null');
+        if (saved) {
+          if (saved.name)      orderNameEl.value  = saved.name;
+          if (saved.birthDate) { orderBirthEl.value = saved.birthDate; orderBirthEl.type = 'date'; }
+        }
+      } catch (_) {}
+      orderBirthEl.addEventListener('focus', () => { orderBirthEl.type = 'date'; });
+      orderBirthEl.addEventListener('blur',  () => { if (!orderBirthEl.value) orderBirthEl.type = 'text'; });
+      function openModal(plan) {
+        activePlan = plan;
+        const p = planConfig[plan];
+        orderPlanName.textContent  = p.label;
+        orderPlanPrice.textContent = p.usd;
+        modal.classList.add('active');
+        setTimeout(() => orderEmailEl.focus(), 300);
+      }
+      window.openModal = openModal;
+      function closeModal() { modal.classList.remove('active'); orderPay.disabled = false; orderPay.textContent = 'Continue to payment'; }
+      orderClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+      orderPay.addEventListener('click', async () => {
+        const fullName  = orderNameEl.value.trim();
+        const birthDate = orderBirthEl.value;
+        const email     = orderEmailEl.value.trim();
+        if (!fullName)  { orderNameEl.focus();  return; }
+        if (!birthDate) { orderBirthEl.focus(); return; }
+        if (!email || !email.includes('@')) { orderEmailEl.focus(); return; }
+        orderPay.disabled = true;
+        orderPay.textContent = 'Please wait…';
+        try {
+          const res  = await fetch('/api/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName, birthDate, email, currency: 'usd', plan: activePlan }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+          window.location.href = data.url;
+        } catch (err) {
+          alert(err.message);
+          orderPay.disabled = false;
+          orderPay.textContent = 'Continue to payment';
+        }
+      });
+    }());
   </script>
 
   <script>
