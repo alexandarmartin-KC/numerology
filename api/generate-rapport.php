@@ -177,7 +177,13 @@ $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
 $claudePayload = json_encode([
     'model'      => 'claude-opus-4-5',
-    'system'     => $systemPrompt,
+    'system'     => [
+        [
+            'type'          => 'text',
+            'text'          => $systemPrompt,
+            'cache_control' => ['type' => 'ephemeral'],
+        ]
+    ],
     'messages'   => [['role' => 'user', 'content' => $userPrompt]],
     'max_tokens' => 8000
 ], JSON_UNESCAPED_UNICODE);

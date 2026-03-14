@@ -57,9 +57,10 @@ curl_setopt_array($ch, [
     CURLOPT_HTTPHEADER     => [
         'Content-Type: application/json',
         'x-api-key: ' . $apiKey,
-        'anthropic-version: 2023-06-01'
+        'anthropic-version: 2023-06-01',
+        'anthropic-beta: prompt-caching-2024-07-31',
     ],
-    CURLOPT_TIMEOUT        => 280,
+    CURLOPT_TIMEOUT        => 600,
     CURLOPT_CONNECTTIMEOUT => 15,
 ]);
 $response = curl_exec($ch);
