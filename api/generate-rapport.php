@@ -176,7 +176,7 @@ $systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
 $claudePayload = json_encode([
-    'model'      => 'claude-opus-4-5',
+    'model'      => 'claude-sonnet-4-5',
     'system'     => [
         [
             'type'          => 'text',
