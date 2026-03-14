@@ -175,77 +175,45 @@ function buildUserPrompt(array $diamond, array $aar, array $k): string {
 $systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
-$payload = json_encode([
+$claudePayload = json_encode([
     'model'      => 'claude-opus-4-5',
     'system'     => $systemPrompt,
     'messages'   => [['role' => 'user', 'content' => $userPrompt]],
     'max_tokens' => 8000
 ], JSON_UNESCAPED_UNICODE);
 
-// ─── Opret job i DB og svar browseren omgående ───
+// ─── Opret job i DB med payload, svar browseren omgående ───
 $db    = getDB();
 $jobId = bin2hex(random_bytes(16));
 
 // Ryd gamle jobs (> 2 timer) for at undgå DB-bloat
 $db->query("DELETE FROM rapport_jobs WHERE created_at < DATE_SUB(NOW(), INTERVAL 2 HOUR)");
 
-$stmt = $db->prepare("INSERT INTO rapport_jobs (id, status) VALUES (?, 'processing')");
-$stmt->bind_param('s', $jobId);
+// Gem payload i DB så worker-script kan hente det
+$stmt = $db->prepare("INSERT INTO rapport_jobs (id, status, payload) VALUES (?, 'processing', ?)");
+$stmt->bind_param('ss', $jobId, $claudePayload);
 $stmt->execute();
 $stmt->close();
 
-// Send jobId til browseren og luk HTTP-forbindelsen
-$responseBody = json_encode(['jobId' => $jobId], JSON_UNESCAPED_UNICODE);
-header('Content-Length: ' . strlen($responseBody));
-header('Connection: close');
-echo $responseBody;
+// Svar browseren med jobId
+echo json_encode(['jobId' => $jobId], JSON_UNESCAPED_UNICODE);
 
-// Luk forbindelsen til browseren — PHP fortsætter i baggrunden
-if (function_exists('fastcgi_finish_request')) {
-    fastcgi_finish_request();
-} else {
-    while (ob_get_level()) { ob_end_flush(); }
-    flush();
-}
+// ─── Fire-and-forget: kald worker via cURL med 1 sekunds timeout ───
+// Workeren kører uafhængigt og gemmer resultatet i DB
+$scheme    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host      = $_SERVER['HTTP_HOST'] ?? 'alexandarmartin.dk';
+$workerUrl = $scheme . '://' . $host . '/api/run-rapport-job.php';
 
-// ─── Baggrunds-behandling (kører efter browseren har fået svar) ───
-ignore_user_abort(true);
-@set_time_limit(300);
-
-$ch = curl_init('https://api.anthropic.com/v1/messages');
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
+$fireAndForget = curl_init($workerUrl);
+curl_setopt_array($fireAndForget, [
+    CURLOPT_RETURNTRANSFER => false,
     CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_HTTPHEADER     => [
-        'Content-Type: application/json',
-        'x-api-key: ' . $apiKey,
-        'anthropic-version: 2023-06-01'
-    ],
-    CURLOPT_TIMEOUT        => 280,
-    CURLOPT_CONNECTTIMEOUT => 15
+    CURLOPT_POSTFIELDS     => json_encode(['jobId' => $jobId, 'apiKey' => $apiKey]),
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_TIMEOUT        => 1,
+    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_NOSIGNAL       => 1,
+    CURLOPT_SSL_VERIFYPEER => false,
 ]);
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curlErr  = curl_error($ch);
-curl_close($ch);
-
-if ($curlErr) {
-    $errMsg = 'cURL fejl: ' . $curlErr;
-    $stmt = $db->prepare("UPDATE rapport_jobs SET status='error', error=? WHERE id=?");
-    $stmt->bind_param('ss', $errMsg, $jobId);
-    $stmt->execute();
-    exit;
-}
-$data = json_decode($response, true);
-if ($httpCode !== 200) {
-    $errMsg = 'Claude API fejl (HTTP ' . $httpCode . '): ' . ($data['error']['message'] ?? substr($response, 0, 200));
-    $stmt = $db->prepare("UPDATE rapport_jobs SET status='error', error=? WHERE id=?");
-    $stmt->bind_param('ss', $errMsg, $jobId);
-    $stmt->execute();
-    exit;
-}
-$rapport = $data['content'][0]['text'] ?? '';
-$stmt = $db->prepare("UPDATE rapport_jobs SET status='done', result=? WHERE id=?");
-$stmt->bind_param('ss', $rapport, $jobId);
-$stmt->execute();
+curl_exec($fireAndForget);
+curl_close($fireAndForget);

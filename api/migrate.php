@@ -266,6 +266,7 @@ $ok = $db->query("
     CREATE TABLE IF NOT EXISTS rapport_jobs (
         id         CHAR(32) PRIMARY KEY,
         status     ENUM('processing','done','error') NOT NULL DEFAULT 'processing',
+        payload    LONGTEXT DEFAULT NULL,
         result     LONGTEXT DEFAULT NULL,
         error      TEXT DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -273,5 +274,14 @@ $ok = $db->query("
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ");
 $results['rapport_jobs.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
+// Tilføj payload-kolonne hvis den mangler (eksisterende installationer)
+$check = $db->query("SHOW COLUMNS FROM rapport_jobs LIKE 'payload'");
+if ($check && $check->num_rows === 0) {
+    $ok = $db->query("ALTER TABLE rapport_jobs ADD COLUMN payload LONGTEXT DEFAULT NULL AFTER status");
+    $results['rapport_jobs.payload'] = $ok ? 'TILFØJET' : 'FEJL: ' . $db->error;
+} else {
+    $results['rapport_jobs.payload'] = 'Eksisterer allerede';
+}
 
 echo json_encode(['ok' => true, 'migrations' => $results], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
