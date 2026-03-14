@@ -198,22 +198,31 @@ $stmt->close();
 // Svar browseren med jobId
 echo json_encode(['jobId' => $jobId], JSON_UNESCAPED_UNICODE);
 
-// ─── Fire-and-forget: kald worker via cURL med 1 sekunds timeout ───
-// Workeren kører uafhængigt og gemmer resultatet i DB
-$scheme    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host      = $_SERVER['HTTP_HOST'] ?? 'alexandarmartin.dk';
-$workerUrl = $scheme . '://' . $host . '/api/run-rapport-job.php';
+// ─── Spawn baggrunds-PHP-process via exec() (ikke tilknyttet HTTP-forbindelsen) ───
+$script  = __DIR__ . '/run-rapport-job.php';
+$phpBin  = PHP_BINARY ?: 'php';
+$disabledFunctions = array_map('trim', explode(',', ini_get('disable_functions')));
 
-$fireAndForget = curl_init($workerUrl);
-curl_setopt_array($fireAndForget, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => json_encode(['jobId' => $jobId, 'apiKey' => $apiKey]),
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-    CURLOPT_TIMEOUT        => 1,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_NOSIGNAL       => 1,
-    CURLOPT_SSL_VERIFYPEER => false,
-]);
-curl_exec($fireAndForget);
-curl_close($fireAndForget);
+if (function_exists('exec') && !in_array('exec', $disabledFunctions)) {
+    // Fuldt uafhængig proces — overlever LiteSpeed's HTTP-timeout
+    $cmd = $phpBin . ' ' . escapeshellarg($script) . ' ' . escapeshellarg($jobId) . ' > /dev/null 2>&1 &';
+    exec($cmd);
+} else {
+    // Fallback: cURL fire-and-forget (virker kun hvis serveren tillader lange baggrundskald)
+    $scheme    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host      = $_SERVER['HTTP_HOST'] ?? 'alexandarmartin.dk';
+    $workerUrl = $scheme . '://' . $host . '/api/run-rapport-job.php';
+    $faf = curl_init($workerUrl);
+    curl_setopt_array($faf, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode(['jobId' => $jobId]),
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_TIMEOUT        => 1,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_NOSIGNAL       => 1,
+        CURLOPT_SSL_VERIFYPEER => false,
+    ]);
+    curl_exec($faf);
+    curl_close($faf);
+}
