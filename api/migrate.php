@@ -261,4 +261,17 @@ if ($aarColCheck && $aarRow = $aarColCheck->fetch_assoc()) {
     $results['aarstalsraekker_energies.tal'] = "Tabel/kolonne 'aarstalsraekker_energies.tal' ikke fundet";
 }
 
+// ─── rapport_jobs: async job-kø til rapport-generering ───
+$ok = $db->query("
+    CREATE TABLE IF NOT EXISTS rapport_jobs (
+        id         CHAR(32) PRIMARY KEY,
+        status     ENUM('processing','done','error') NOT NULL DEFAULT 'processing',
+        result     LONGTEXT DEFAULT NULL,
+        error      TEXT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$results['rapport_jobs.create'] = $ok ? 'OK (oprettet eller eksisterede)' : 'FEJL: ' . $db->error;
+
 echo json_encode(['ok' => true, 'migrations' => $results], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
