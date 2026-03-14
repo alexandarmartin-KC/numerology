@@ -469,15 +469,15 @@ async function showKnowledgeStatus() {
   const k = await gatherKnowledge();
   const checks = [
     { label: 'Om numerologi', ok: !!k.aboutNumerology },
-    { label: 'Energibeskrivelser (diamant)', ok: k.energies.length > 0 },
-    { label: 'Positioner', ok: k.positions.length > 0 },
-    { label: 'Regler (diamant)', ok: k.diamondRules.length > 0 },
-    { label: 'Energibeskrivelser (år)', ok: Object.keys(k.aarEnergies).length > 0 },
+    { label: 'Energibeskrivelser (diamant)', ok: (k.energies?.length ?? 0) > 0 },
+    { label: 'Positioner', ok: (k.positions?.length ?? 0) > 0 },
+    { label: 'Regler (diamant)', ok: (k.diamondRules?.length ?? 0) > 0 },
+    { label: 'Energibeskrivelser (år)', ok: Object.keys(k.aarEnergies ?? {}).length > 0 },
     { label: 'Cyklusser', ok: !!k.cycles_about },
-    { label: 'Regler (år)', ok: k.aarRules.length > 0 },
+    { label: 'Regler (år)', ok: (k.aarRules?.length ?? 0) > 0 },
     { label: 'Rapportstil', ok: !!k.rapportStil },
-    { label: 'Rapportsektioner', ok: k.rapportSections.length > 0 },
-    { label: 'Energibilleder', ok: k.energiesWithImages.length > 0 }
+    { label: 'Rapportsektioner', ok: (k.rapportSections?.length ?? 0) > 0 },
+    { label: 'Energibilleder', ok: (k.energiesWithImages?.length ?? 0) > 0 }
   ];
   const filled = checks.filter(c => c.ok).length;
   const el = document.getElementById('knowledgeStatus');
@@ -576,7 +576,11 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     if (!resp.ok) {
       let errMsg = 'Server fejl ' + resp.status;
-      try { const e = await resp.json(); errMsg = e.error || errMsg; } catch {}
+      try {
+        const raw = await resp.text();
+        try { const e = JSON.parse(raw); errMsg = e.error || errMsg; }
+        catch { errMsg = raw.substring(0, 300) || errMsg; }
+      } catch {}
       throw new Error(errMsg);
     }
 
