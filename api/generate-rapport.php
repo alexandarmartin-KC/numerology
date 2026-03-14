@@ -1,23 +1,18 @@
 <?php
 require_once __DIR__ . '/db.php';
 error_reporting(E_ERROR);
-@set_time_limit(0);
+@set_time_limit(300);
 
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Content-Type: application/json; charset=utf-8');
-    http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit;
-}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
 // db.php har allerede inkluderet .env.php, så $_ANTHROPIC_API_KEY er sat
 $apiKey = getenv('ANTHROPIC_API_KEY') ?: ($_ANTHROPIC_API_KEY ?? '');
-if (!$apiKey) {
-    header('Content-Type: application/json; charset=utf-8');
-    http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit;
-}
+if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
 
 $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $diamond   = $body['diamond'] ?? null;
@@ -25,10 +20,7 @@ $aar       = $body['aarstalsraekker'] ?? [];
 $k         = $body['knowledge'] ?? [];
 $language  = in_array($body['language'] ?? '', ['da','en','de','sv','no']) ? $body['language'] : 'da';
 
-if (!$diamond || !$k) {
-    header('Content-Type: application/json; charset=utf-8');
-    http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit;
-}
+if (!$diamond || !$k) { http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit; }
 
 // ─── Language config ───
 $langConfig = [
@@ -182,33 +174,16 @@ function buildUserPrompt(array $diamond, array $aar, array $k): string {
 $systemPrompt = buildSystemPrompt($k, $lang);
 $userPrompt   = buildUserPrompt($diamond, $aar, $k);
 
-// ─── Switch to SSE streaming ───
-while (@ob_end_clean()) {}
-header('Content-Type: text/event-stream; charset=utf-8');
-header('Cache-Control: no-cache');
-header('X-Accel-Buffering: no');
-@ob_implicit_flush(true);
-
-// Keepalive ping so browser knows connection started
-echo ": ok\n\n";
-@flush();
-
 $payload = json_encode([
     'model'      => 'claude-opus-4-5',
     'system'     => $systemPrompt,
     'messages'   => [['role' => 'user', 'content' => $userPrompt]],
-    'max_tokens' => 8000,
-    'stream'     => true
+    'max_tokens' => 8000
 ], JSON_UNESCAPED_UNICODE);
-
-$sseBuffer      = '';
-$errorBuffer    = '';
-$isError        = false;
-$anthropicStatus = 200;
 
 $ch = curl_init('https://api.anthropic.com/v1/messages');
 curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => false,
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $payload,
     CURLOPT_HTTPHEADER     => [
@@ -216,57 +191,21 @@ curl_setopt_array($ch, [
         'x-api-key: ' . $apiKey,
         'anthropic-version: 2023-06-01'
     ],
-    CURLOPT_TIMEOUT        => 240,
-    CURLOPT_CONNECTTIMEOUT => 30,
-    CURLOPT_HEADERFUNCTION => function($ch, $header) use (&$isError, &$anthropicStatus) {
-        if (preg_match('/^HTTP\/\S+\s+(\d+)/', $header, $m)) {
-            $anthropicStatus = (int)$m[1];
-            if ($anthropicStatus !== 200) $isError = true;
-        }
-        return strlen($header);
-    },
-    CURLOPT_WRITEFUNCTION  => function($ch, $data) use (&$sseBuffer, &$errorBuffer, &$isError) {
-        if ($isError) {
-            $errorBuffer .= $data;
-            return strlen($data);
-        }
-        $sseBuffer .= $data;
-        while (($pos = strpos($sseBuffer, "\n\n")) !== false) {
-            $chunk    = substr($sseBuffer, 0, $pos);
-            $sseBuffer = substr($sseBuffer, $pos + 2);
-            foreach (explode("\n", $chunk) as $line) {
-                if (!str_starts_with($line, 'data: ')) continue;
-                $json = substr($line, 6);
-                if ($json === '[DONE]') continue;
-                $evt  = json_decode($json, true);
-                if (!$evt) continue;
-                $type = $evt['type'] ?? '';
-                if ($type === 'content_block_delta' && isset($evt['delta']['text'])) {
-                    echo 'data: ' . json_encode(['text' => $evt['delta']['text']], JSON_UNESCAPED_UNICODE) . "\n\n";
-                    @flush();
-                } elseif ($type === 'message_stop') {
-                    echo 'data: ' . json_encode(['done' => true]) . "\n\n";
-                    @flush();
-                } elseif ($type === 'error') {
-                    echo 'data: ' . json_encode(['error' => $evt['error']['message'] ?? 'Claude fejl']) . "\n\n";
-                    @flush();
-                }
-            }
-        }
-        return strlen($data);
-    }
+    CURLOPT_TIMEOUT        => 280,
+    CURLOPT_CONNECTTIMEOUT => 15
 ]);
-
-curl_exec($ch);
-$curlErr = curl_error($ch);
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlErr  = curl_error($ch);
 curl_close($ch);
 
-if ($curlErr) {
-    echo 'data: ' . json_encode(['error' => 'cURL fejl: ' . $curlErr]) . "\n\n";
-    @flush();
-} elseif ($isError) {
-    $errData = json_decode($errorBuffer, true);
-    $errMsg  = $errData['error']['message'] ?? "Claude API fejl (HTTP {$anthropicStatus})";
-    echo 'data: ' . json_encode(['error' => $errMsg]) . "\n\n";
-    @flush();
+if ($curlErr) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $curlErr]); exit; }
+$data = json_decode($response, true);
+if ($httpCode !== 200) {
+    $apiMsg = $data['error']['message'] ?? $response;
+    http_response_code(500);
+    echo json_encode(['error' => 'Claude API fejl (HTTP ' . $httpCode . '): ' . $apiMsg]);
+    exit;
 }
+$rapport = $data['content'][0]['text'] ?? '';
+echo json_encode(['rapport' => $rapport], JSON_UNESCAPED_UNICODE);

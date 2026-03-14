@@ -575,36 +575,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     });
 
     if (!resp.ok) {
-      const errText = await resp.text().catch(() => '');
-      throw new Error('Server fejl ' + resp.status + (errText ? ': ' + errText.substring(0, 300) : ''));
+      let errMsg = 'Server fejl ' + resp.status;
+      try { const e = await resp.json(); errMsg = e.error || errMsg; } catch {}
+      throw new Error(errMsg);
     }
 
-    // Read SSE stream from generate-rapport.php
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let streamBuf = '';
-    let rapportText = '';
-
-    outer: while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      streamBuf += decoder.decode(value, { stream: true });
-      const parts = streamBuf.split('\n\n');
-      streamBuf = parts.pop() ?? '';
-      for (const part of parts) {
-        const trimmed = part.trim();
-        if (!trimmed || trimmed.startsWith(':')) continue; // keepalive/comments
-        if (!trimmed.startsWith('data: ')) continue;
-        let evt;
-        try { evt = JSON.parse(trimmed.slice(6)); } catch { continue; }
-        if (evt.error) throw new Error(evt.error);
-        if (evt.text) rapportText += evt.text;
-        if (evt.done) break outer;
-      }
-    }
-
-    if (!rapportText) throw new Error('Tom rapport modtaget — prøv igen.');
-    const data = { rapport: rapportText };
+    const data = await resp.json();
 
     // Build cover page
     const planLabels = {

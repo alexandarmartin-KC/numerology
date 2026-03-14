@@ -6,6 +6,20 @@
     SecRuleEngine Off
 </IfModule>
 
+# Øg PHP timeout for lange AI-kald (mod_php)
+<IfModule mod_php.c>
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+<IfModule mod_php8.c>
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+<IfModule mod_php7.c>
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
 # Videresend extensionless API-kald til PHP-filer
 <IfModule mod_rewrite.c>
     RewriteEngine On
