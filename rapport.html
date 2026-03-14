@@ -588,12 +588,14 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     const { jobId } = await resp.json();
     if (!jobId) throw new Error('Intet jobId modtaget fra serveren');
 
+    const spinnerMsg = document.querySelector('#spinnerOverlay p.text-muted');
     let data = null;
     for (let attempt = 0; attempt < 75; attempt++) {
       await new Promise(r => setTimeout(r, 4000));
       const pollResp = await fetch('/api/get-rapport-job.php?jobId=' + encodeURIComponent(jobId));
       if (!pollResp.ok) throw new Error('Polling fejl ' + pollResp.status);
       const job = await pollResp.json();
+      if (spinnerMsg && job.debug) spinnerMsg.textContent = 'Worker: ' + job.debug + ' · forsøg ' + (attempt + 1);
       if (job.status === 'done') { data = { rapport: job.rapport }; break; }
       if (job.status === 'error') throw new Error(job.error || 'Ukendt fejl fra AI');
       // status === 'processing' — vent og prøv igen

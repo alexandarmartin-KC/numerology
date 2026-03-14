@@ -23,7 +23,9 @@ if (!$job) jsonOut(['error' => 'Job ikke fundet'], 404);
 if ($job['status'] === 'done') {
     jsonOut(['status' => 'done', 'rapport' => $job['result']]);
 } elseif ($job['status'] === 'error') {
+    // 'error'-feltet bruges også til diagnostik-info når status='processing'
     jsonOut(['status' => 'error', 'error' => $job['error'] ?: 'Ukendt fejl']);
 } else {
-    jsonOut(['status' => 'processing']);
+    // Returner launch-metode som diagnostik mens vi venter
+    jsonOut(['status' => 'processing', 'debug' => $job['error'] ?? null]);
 }

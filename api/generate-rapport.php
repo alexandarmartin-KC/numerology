@@ -198,17 +198,41 @@ $stmt->close();
 // Svar browseren med jobId
 echo json_encode(['jobId' => $jobId], JSON_UNESCAPED_UNICODE);
 
-// ─── Spawn baggrunds-PHP-process via exec() (ikke tilknyttet HTTP-forbindelsen) ───
-$script  = __DIR__ . '/run-rapport-job.php';
-$phpBin  = PHP_BINARY ?: 'php';
-$disabledFunctions = array_map('trim', explode(',', ini_get('disable_functions')));
+// ─── Spawn baggrunds-PHP-process via exec() ───
+$script = __DIR__ . '/run-rapport-job.php';
+$disabledFunctions = array_map('trim', explode(',', strtolower(ini_get('disable_functions'))));
 
+$launched = false;
 if (function_exists('exec') && !in_array('exec', $disabledFunctions)) {
-    // Fuldt uafhængig proces — overlever LiteSpeed's HTTP-timeout
-    $cmd = $phpBin . ' ' . escapeshellarg($script) . ' ' . escapeshellarg($jobId) . ' > /dev/null 2>&1 &';
-    exec($cmd);
-} else {
-    // Fallback: cURL fire-and-forget (virker kun hvis serveren tillader lange baggrundskald)
+    // Find PHP CLI binary (PHP_BINARY på LiteSpeed er lsphp — ikke egnet til CLI)
+    $phpCandidates = [
+        '/usr/local/bin/php',
+        '/usr/bin/php',
+        'php',
+        PHP_BINARY,
+    ];
+    foreach ($phpCandidates as $bin) {
+        if (!$bin) continue;
+        $cmd = escapeshellarg($bin) . ' ' . escapeshellarg($script) . ' ' . escapeshellarg($jobId) . ' > /dev/null 2>&1 &';
+        exec($cmd, $out, $ret);
+        if ($ret === 0 || $bin === end($phpCandidates)) {
+            $method = 'exec:' . $bin;
+            $s2 = $db->prepare("UPDATE rapport_jobs SET error=? WHERE id=?");
+            $s2->bind_param('ss', $method, $jobId);
+            $s2->execute();
+            $launched = true;
+            break;
+        }
+    }
+}
+
+if (!$launched) {
+    // Fallback: cURL fire-and-forget (fungerer ikke altid på LiteSpeed)
+    $method = 'curl-fallback';
+    $s2 = $db->prepare("UPDATE rapport_jobs SET error=? WHERE id=?");
+    $s2->bind_param('ss', $method, $jobId);
+    $s2->execute();
+
     $scheme    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host      = $_SERVER['HTTP_HOST'] ?? 'alexandarmartin.dk';
     $workerUrl = $scheme . '://' . $host . '/api/run-rapport-job.php';
