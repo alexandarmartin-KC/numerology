@@ -596,11 +596,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       if (!pollResp.ok) throw new Error('Polling fejl ' + pollResp.status);
       const job = await pollResp.json();
       if (spinnerMsg && job.debug) spinnerMsg.textContent = 'Worker: ' + job.debug + ' · forsøg ' + (attempt + 1);
-      if (job.status === 'done') { data = { rapport: job.rapport }; break; }
+      if (job.status === 'done') { data = { rapport: job.rapport, usage: job.usage }; break; }
       if (job.status === 'error') throw new Error(job.error || 'Ukendt fejl fra AI');
       // status === 'processing' — vent og prøv igen
     }
     if (!data) throw new Error('Rapport tog for lang tid (øverste grænse: 5 min)');
+    const jobUsage = data.usage || null;
 
     // Build cover page
     const planLabels = {
@@ -656,8 +657,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     document.getElementById('pdfBtn').disabled = false;
 
-    if (job.usage) {
-      const u = job.usage;
+    if (jobUsage) {
+      const u = jobUsage;
       const inputK  = Math.round((u.input_tokens || 0) / 1000 * 10) / 10;
       const cacheHit = Math.round((u.cache_read_input_tokens || 0) / 1000 * 10) / 10;
       const cacheNew = Math.round((u.cache_creation_input_tokens || 0) / 1000 * 10) / 10;
@@ -674,9 +675,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       usageEl.textContent = parts;
       document.getElementById('rapportOutput').appendChild(usageEl);
     }
-    if (data.usage) {
-      console.log('Claude usage:', data.usage);
-    }
+    if (jobUsage) console.log('Claude usage:', jobUsage);
   } catch (e) {
     errorBox.textContent = 'Fejl: ' + e.message;
     errorBox.classList.remove('d-none');
