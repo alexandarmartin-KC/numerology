@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/db.php';
 error_reporting(E_ERROR);
+@set_time_limit(0);
+@ini_set('max_execution_time', '300');
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -192,7 +194,8 @@ curl_setopt_array($ch, [
         'x-api-key: ' . $apiKey,
         'anthropic-version: 2023-06-01'
     ],
-    CURLOPT_TIMEOUT        => 120
+    CURLOPT_TIMEOUT        => 240,
+    CURLOPT_CONNECTTIMEOUT => 30
 ]);
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
