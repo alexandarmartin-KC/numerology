@@ -411,7 +411,19 @@ document.addEventListener('input', e => {
     if (eRes.ok) {
       const dbE = await eRes.json();
       const obj = {};
-      dbE.forEach(e => { obj[e.tal] = { keywords: e.keywords, beskrivelse: e.beskrivelse }; });
+      // Byg opslag fra rent numerisk nøgle (fx "10") til compound-nøgle (fx "10/1")
+      // Håndterer tilfælde hvor DB gemmer "10" i stedet for "10/1" (INT-kolonne)
+      const talToKey = {};
+      AAR_ENERGY_KEYS.forEach(k => {
+        talToKey[k] = k;
+        const num = k.split('/')[0];
+        if (num !== k) talToKey[num] = k;
+      });
+      dbE.forEach(e => {
+        const tal = String(e.tal);
+        const key = talToKey[tal] || tal;
+        obj[key] = { keywords: e.keywords, beskrivelse: e.beskrivelse };
+      });
       if (Object.keys(obj).length) localStorage.setItem(AAR_ENERGY_KEY, JSON.stringify(obj));
     }
     if (cRes.ok) {

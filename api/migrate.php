@@ -221,4 +221,44 @@ $allCols = [];
 while ($row = $colRes->fetch_assoc()) $allCols[] = $row['Field'];
 $results['content_generated_kolonner'] = $allCols;
 
+// ─── aarstalsraekker_energies: konverter 'tal' til VARCHAR og compound-format ───
+// Problemet: hvis 'tal' er INT, gemmes "10/1" som 10 og JS kan ikke finde den
+$aarColCheck = $db->query("SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='aarstalsraekker_energies' AND COLUMN_NAME='tal'");
+if ($aarColCheck && $aarRow = $aarColCheck->fetch_assoc()) {
+    $dataType = strtolower($aarRow['DATA_TYPE']);
+    if (in_array($dataType, ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'])) {
+        $ok = $db->query("ALTER TABLE aarstalsraekker_energies MODIFY COLUMN tal VARCHAR(10) NOT NULL DEFAULT ''");
+        $results['aarstalsraekker_energies.tal_varchar'] = $ok ? 'KONVERTERET til VARCHAR(10)' : 'FEJL: ' . $db->error;
+    } else {
+        $results['aarstalsraekker_energies.tal_varchar'] = "Allerede $dataType — ingen ændring nødvendig";
+    }
+    // Opdater rækker der bruger rent numerisk nøgle (fx "10") til compound-format (fx "10/1")
+    $updated = 0;
+    for ($i = 10; $i <= 31; $i++) {
+        $r = $i;
+        while ($r > 9) {
+            $s = (string)$r; $r = 0;
+            for ($j = 0; $j < strlen($s); $j++) $r += (int)$s[$j];
+        }
+        $compound = $i . '/' . $r;
+        $numStr   = (string)$i;
+        // Tjek om der allerede eksisterer en række med compound-format
+        $exists = $db->query("SELECT id FROM aarstalsraekker_energies WHERE tal='" . $db->real_escape_string($compound) . "' LIMIT 1");
+        if ($exists && $exists->num_rows > 0) {
+            // Compound-format eksisterer allerede — slet evt. numerisk dublet
+            $db->query("DELETE FROM aarstalsraekker_energies WHERE tal='" . $db->real_escape_string($numStr) . "'");
+        } else {
+            // Ingen compound-række — konverter numerisk til compound hvis den findes
+            $plain = $db->query("SELECT id FROM aarstalsraekker_energies WHERE tal='" . $db->real_escape_string($numStr) . "' LIMIT 1");
+            if ($plain && $plain->num_rows > 0) {
+                $db->query("UPDATE aarstalsraekker_energies SET tal='" . $db->real_escape_string($compound) . "' WHERE tal='" . $db->real_escape_string($numStr) . "'");
+                $updated++;
+            }
+        }
+    }
+    $results['aarstalsraekker_energies.tal_update'] = "$updated rækker opdateret til compound-format (fx 10→10/1)";
+} else {
+    $results['aarstalsraekker_energies.tal'] = "Tabel/kolonne 'aarstalsraekker_energies.tal' ikke fundet";
+}
+
 echo json_encode(['ok' => true, 'migrations' => $results], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
