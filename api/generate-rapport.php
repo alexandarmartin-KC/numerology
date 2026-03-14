@@ -206,7 +206,7 @@ $workerUrl = $scheme . '://' . $host . '/api/run-rapport-job.php';
 
 $fireAndForget = curl_init($workerUrl);
 curl_setopt_array($fireAndForget, [
-    CURLOPT_RETURNTRANSFER => false,
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => json_encode(['jobId' => $jobId, 'apiKey' => $apiKey]),
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
