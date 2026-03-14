@@ -21,7 +21,8 @@ $stmt->close();
 if (!$job) jsonOut(['error' => 'Job ikke fundet'], 404);
 
 if ($job['status'] === 'done') {
-    jsonOut(['status' => 'done', 'rapport' => $job['result']]);
+    $usage = json_decode($job['error'] ?? '{}', true) ?: [];
+    jsonOut(['status' => 'done', 'rapport' => $job['result'], 'usage' => $usage]);
 } elseif ($job['status'] === 'error') {
     // 'error'-feltet bruges også til diagnostik-info når status='processing'
     jsonOut(['status' => 'error', 'error' => $job['error'] ?: 'Ukendt fejl']);

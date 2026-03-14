@@ -656,8 +656,26 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     document.getElementById('pdfBtn').disabled = false;
 
+    if (job.usage) {
+      const u = job.usage;
+      const inputK  = Math.round((u.input_tokens || 0) / 1000 * 10) / 10;
+      const cacheHit = Math.round((u.cache_read_input_tokens || 0) / 1000 * 10) / 10;
+      const cacheNew = Math.round((u.cache_creation_input_tokens || 0) / 1000 * 10) / 10;
+      const output   = u.output_tokens || 0;
+      const parts = [
+        `Input: ${inputK}k tokens`,
+        cacheHit  ? `Cache hit: ${cacheHit}k` : null,
+        cacheNew  ? `Cache oprettet: ${cacheNew}k` : null,
+        `Output: ${output} tokens`,
+      ].filter(Boolean).join(' · ');
+      const usageEl = document.createElement('div');
+      usageEl.className = 'text-muted small text-center mt-2';
+      usageEl.style.opacity = '0.6';
+      usageEl.textContent = parts;
+      document.getElementById('rapportOutput').appendChild(usageEl);
+    }
     if (data.usage) {
-      console.log('OpenAI usage:', data.usage);
+      console.log('Claude usage:', data.usage);
     }
   } catch (e) {
     errorBox.textContent = 'Fejl: ' + e.message;

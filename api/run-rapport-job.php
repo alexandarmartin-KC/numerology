@@ -86,6 +86,7 @@ if ($httpCode !== 200) {
 }
 
 $rapport = $data['content'][0]['text'] ?? '';
-$stmt = $db->prepare("UPDATE rapport_jobs SET status='done', result=?, payload=NULL WHERE id=?");
-$stmt->bind_param('ss', $rapport, $jobId);
+$usage   = json_encode($data['usage'] ?? [], JSON_UNESCAPED_UNICODE);
+$stmt = $db->prepare("UPDATE rapport_jobs SET status='done', result=?, error=?, payload=NULL WHERE id=?");
+$stmt->bind_param('sss', $rapport, $usage, $jobId);
 $stmt->execute();
