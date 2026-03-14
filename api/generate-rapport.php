@@ -1,18 +1,33 @@
 <?php
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(0);
+ob_start();
+
+// Shutdown handler: fanger fatale PHP-fejl og returnerer JSON
+register_shutdown_function(function() {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        ob_end_clean();
+        if (!headers_sent()) header('Content-Type: application/json; charset=utf-8');
+        http_response_code(500);
+        echo json_encode(['error' => 'PHP fejl: ' . $err['message'] . ' i ' . basename($err['file']) . ':' . $err['line']]);
+    }
+});
+
 require_once __DIR__ . '/db.php';
-error_reporting(E_ERROR);
 @set_time_limit(300);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { ob_end_clean(); http_response_code(200); exit; }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { ob_end_clean(); http_response_code(405); echo json_encode(['error' => 'Method not allowed']); exit; }
 
 // db.php har allerede inkluderet .env.php, så $_ANTHROPIC_API_KEY er sat
 $apiKey = getenv('ANTHROPIC_API_KEY') ?: ($_ANTHROPIC_API_KEY ?? '');
-if (!$apiKey) { http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
+if (!$apiKey) { ob_end_clean(); http_response_code(500); echo json_encode(['error' => 'ANTHROPIC_API_KEY ikke konfigureret']); exit; }
 
 $body      = json_decode(file_get_contents('php://input'), true) ?? [];
 $diamond   = $body['diamond'] ?? null;
@@ -20,7 +35,7 @@ $aar       = $body['aarstalsraekker'] ?? [];
 $k         = $body['knowledge'] ?? [];
 $language  = in_array($body['language'] ?? '', ['da','en','de','sv','no']) ? $body['language'] : 'da';
 
-if (!$diamond || !$k) { http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit; }
+if (!$diamond || !$k) { ob_end_clean(); http_response_code(400); echo json_encode(['error' => 'Manglende data']); exit; }
 
 // ─── Language config ───
 $langConfig = [
@@ -199,13 +214,15 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlErr  = curl_error($ch);
 curl_close($ch);
 
-if ($curlErr) { http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $curlErr]); exit; }
+if ($curlErr) { ob_end_clean(); http_response_code(500); echo json_encode(['error' => 'cURL fejl: ' . $curlErr]); exit; }
 $data = json_decode($response, true);
 if ($httpCode !== 200) {
     $apiMsg = $data['error']['message'] ?? $response;
+    ob_end_clean();
     http_response_code(500);
     echo json_encode(['error' => 'Claude API fejl (HTTP ' . $httpCode . '): ' . $apiMsg]);
     exit;
 }
 $rapport = $data['content'][0]['text'] ?? '';
+ob_end_clean();
 echo json_encode(['rapport' => $rapport], JSON_UNESCAPED_UNICODE);
