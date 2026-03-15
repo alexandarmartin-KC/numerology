@@ -32,8 +32,8 @@
       --clr-muted:         #8c8c9b;
       --clr-border:        rgba(201,168,76,0.15);
       --clr-border-bright: rgba(201,168,76,0.4);
-      --font-heading:      '''Cormorant Garamond''', Georgia, serif;
-      --font-body:         '''Montserrat''', system-ui, sans-serif;
+      --font-heading:      'Cormorant Garamond', Georgia, serif;
+      --font-body:         'Montserrat', system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,7 +52,7 @@
       content: "";
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='''0 0 256 256''' xmlns='''http://www.w3.org/2000/svg'''%3E%3Cfilter id='''noise'''%3E%3CfeTurbulence type='''fractalNoise''' baseFrequency='''0.9''' numOctaves='''4''' stitchTiles='''stitch'''/%3E%3C/filter%3E%3Crect width='''100%25''' height='''100%25''' filter='''url(%23noise)''' opacity='''0.03'''/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 0;
       opacity: 0.4;
@@ -163,7 +163,7 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       text-decoration: none;
-      border-radius: 2px;
+      border-radius: 50px;
       transition: all 0.3s;
     }
     .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.3); }
@@ -241,7 +241,7 @@
       border-top: 2px solid var(--clr-gold); border-radius: 4px; padding: 52px 56px; position: relative;
     }
     .excerpt-card::before {
-      content: "C"; font-family: var(--font-heading); font-size: 120px; font-weight: 300;
+      content: "\201C"; font-family: var(--font-heading); font-size: 120px; font-weight: 300;
       color: var(--clr-gold-dim); position: absolute; top: -20px; left: 32px; line-height: 1; opacity: 0.4;
     }
     .excerpt-text {
@@ -282,7 +282,7 @@
     .form-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--clr-text-dim); margin-bottom: 8px; }
     .form-input {
       width: 100%; background: var(--clr-surface-2); border: 1px solid var(--clr-border);
-      border-radius: 2px; padding: 14px 16px; color: var(--clr-text);
+      border-radius: 50px; padding: 14px 20px; color: var(--clr-text);
       font-family: var(--font-body); font-size: 13px; font-weight: 300; outline: none; transition: border-color 0.3s;
     }
     .form-input:focus { border-color: var(--clr-gold-dim); }
@@ -293,7 +293,7 @@
       background: var(--clr-gold); color: var(--clr-bg);
       font-family: var(--font-body); font-size: 11px; font-weight: 700;
       letter-spacing: 3px; text-transform: uppercase; text-align: center;
-      border: none; border-radius: 2px; cursor: pointer; margin-top: 28px; transition: all 0.3s;
+      border: none; border-radius: 50px; cursor: pointer; margin-top: 28px; transition: all 0.3s;
     }
     .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,168,76,0.3); }
     .btn-order:disabled { opacity: 0.55; cursor: wait; transform: none; box-shadow: none; }
@@ -341,7 +341,8 @@
     .confirm-edit:hover { color: var(--clr-gold); background: var(--clr-gold-faint); }
     .confirm-edit svg { width: 15px; height: 15px; }
     .confirm-actions { display: flex; gap: 0.75rem; }
-    .confirm-actions button { flex: 1; padding: 0.75rem; border-radius: 2px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; font-family: var(--font-body); }
+    .confirm-actions button { flex: 1; padding: 0.75rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; font-family: var(--font-body); }
+    .btn-back { background: transparent; border: 1px solid var(--clr-border-bright) !important; color: var(--clr-text); }
     .btn-confirm { background: var(--clr-gold); color: var(--clr-bg); }
     .btn-confirm:disabled { opacity: 0.55; cursor: wait; }
 
