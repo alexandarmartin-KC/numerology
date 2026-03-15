@@ -350,8 +350,9 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* reveal: visible by default; JS adds .below-fold to elements off-screen */
+    .reveal.below-fold { opacity: 0; transform: translateY(28px); }
+    .reveal.below-fold.visible { opacity: 1; transform: translateY(0); transition: opacity 0.7s, transform 0.7s; }
 
     @media (max-width: 700px) {
       nav { padding: 16px 20px; }
@@ -631,13 +632,7 @@
 </footer>
 
 <script>
-// Synchronously mark elements already in viewport as visible before first paint
-document.querySelectorAll('.reveal').forEach(el => {
-  if (el.getBoundingClientRect().top < window.innerHeight) {
-    el.classList.add('visible');
-  }
-});
-// Scroll-triggered reveal for everything else
+// Only hide elements confirmed below the fold; everything else stays visible
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -646,7 +641,12 @@ const revealObserver = new IntersectionObserver(entries => {
     }
   });
 }, { threshold: 0.1 });
-document.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.reveal').forEach(el => {
+  if (el.getBoundingClientRect().top > window.innerHeight) {
+    el.classList.add('below-fold');
+    revealObserver.observe(el);
+  }
+});
 
 (function () {
   const API_URL = "/api/create-checkout";
