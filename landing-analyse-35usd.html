@@ -16,24 +16,24 @@
   <meta name="twitter:image" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --clr-bg:            #080b14;
-      --clr-surface:       #0d1020;
-      --clr-surface-2:     #111528;
+      --clr-bg:            #0b0b12;
+      --clr-surface:       #13131f;
+      --clr-surface-2:     #1a1a2e;
       --clr-gold:          #c9a84c;
-      --clr-gold-light:    #e8c97a;
+      --clr-gold-light:    #e8d5a3;
       --clr-gold-dim:      #8a6020;
       --clr-gold-faint:    rgba(201,168,76,0.08);
-      --clr-text:          #e8e0d0;
+      --clr-text:          #e8e4da;
       --clr-text-dim:      #7a7060;
-      --clr-text-muted:    #4a4840;
-      --clr-muted:         #8c8c9b;
+      --clr-text-muted:    #7c7c8a;
+      --clr-muted:         #7c7c8a;
       --clr-border:        rgba(201,168,76,0.15);
       --clr-border-bright: rgba(201,168,76,0.4);
       --font-heading:      'Cormorant Garamond', Georgia, serif;
-      --font-body:         'Montserrat', system-ui, sans-serif;
+      --font-body:         'Inter', system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,7 +45,7 @@
       color: var(--clr-text);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      line-height: 1.7;
+      line-height: 1.6;
     }
 
     body::before {
@@ -72,13 +72,14 @@
     }
     .nav-logo {
       font-family: var(--font-heading);
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--clr-text);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--clr-gold);
       text-decoration: none;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
-    .nav-logo span { color: var(--clr-gold); }
+    .nav-logo span { color: var(--clr-gold-light); }
+    .nav-logo:hover { color: var(--clr-gold-light); }
     .nav-cta {
       font-size: 10px;
       font-weight: 700;
@@ -154,19 +155,19 @@
     }
     .btn-hero {
       display: inline-block;
-      padding: 20px 52px;
-      background: var(--clr-gold);
+      padding: 0.9rem 2.4rem;
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
       color: var(--clr-bg);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 3px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
       text-transform: uppercase;
       text-decoration: none;
       border-radius: 50px;
-      transition: all 0.3s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.3); }
-    .hero-meta { font-size: 11px; color: var(--clr-text-muted); letter-spacing: 1px; }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,168,76,0.3); }
+    .hero-meta { font-size: 0.78rem; color: var(--clr-muted); letter-spacing: 1px; }
 
     /* HOOK */
     .hook {
@@ -280,20 +281,24 @@
     .form-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--clr-text-dim); margin-bottom: 8px; }
     .form-input {
       width: 100%; background: var(--clr-surface-2); border: 1px solid var(--clr-border);
-      border-radius: 50px; padding: 14px 20px; color: var(--clr-text);
-      font-family: var(--font-body); font-size: 13px; font-weight: 300; outline: none; transition: border-color 0.3s;
+      border-radius: 50px; padding: 0.9rem 1.2rem; color: var(--clr-text);
+      font-family: var(--font-body); font-size: 1rem; font-weight: 300; outline: none; transition: border-color 0.2s;
+      color-scheme: dark;
     }
-    .form-input:focus { border-color: var(--clr-gold-dim); }
-    .form-input::placeholder { color: var(--clr-text-muted); }
+    .form-input:focus { border-color: var(--clr-gold); }
+    .form-input::placeholder { color: var(--clr-muted); }
+    .form-input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg); cursor: pointer;
+    }
     .form-hint { font-size: 11px; color: var(--clr-text-muted); margin-top: 6px; font-weight: 300; }
     .btn-order {
-      display: block; width: 100%; padding: 20px;
-      background: var(--clr-gold); color: var(--clr-bg);
-      font-family: var(--font-body); font-size: 11px; font-weight: 700;
-      letter-spacing: 3px; text-transform: uppercase; text-align: center;
-      border: none; border-radius: 50px; cursor: pointer; margin-top: 28px; transition: all 0.3s;
+      display: block; width: 100%; padding: 0.9rem;
+      background: linear-gradient(135deg, var(--clr-gold), #b8943e); color: var(--clr-bg);
+      font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; text-align: center;
+      border: none; border-radius: 50px; cursor: pointer; margin-top: 28px; transition: transform 0.2s, box-shadow 0.2s;
     }
-    .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,168,76,0.3); }
+    .btn-order:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,168,76,0.3); }
     .btn-order:disabled { opacity: 0.55; cursor: wait; transform: none; box-shadow: none; }
     .order-guarantees { display: flex; justify-content: center; gap: 28px; margin-top: 20px; flex-wrap: wrap; }
     .guarantee-item { font-size: 10px; color: var(--clr-text-muted); letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
