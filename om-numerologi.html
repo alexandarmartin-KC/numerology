@@ -695,12 +695,14 @@
       list-style: none; padding: 0; margin: 0 0 2rem;
     }
     .pricing-features li {
+      display: flex; align-items: flex-start; gap: 12px;
       padding: 0.5rem 0;
       font-size: 0.92rem; font-weight: 300;
       color: var(--clr-text);
-      border-bottom: 1px solid rgba(201,168,76,0.06);
+      border-bottom: 1px solid var(--clr-border);
     }
     .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li::before { content: '✦'; color: var(--clr-gold); font-size: 0.625rem; margin-top: 4px; flex-shrink: 0; }
     .pricing-card-body .btn-gold,
     .pricing-card-body .btn-outline-gold {
       width: 100%; text-align: center;

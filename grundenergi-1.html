@@ -533,15 +533,14 @@
       text-align: left;
     }
     .pricing-features li {
-      padding: 0.5rem 0; padding-left: 1.4rem; position: relative;
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 0.5rem 0;
       font-size: 0.92rem; font-weight: 300;
       color: var(--clr-text);
-      border-bottom: 1px solid rgba(201,168,76,0.06);
+      border-bottom: 1px solid var(--clr-border);
     }
     .pricing-features li:last-child { border-bottom: none; }
-    .pricing-features li::before {
-      content: '✓'; position: absolute; left: 0; color: var(--clr-gold); font-weight: 600;
-    }
+    .pricing-features li::before { content: '✦'; color: var(--clr-gold); font-size: 0.625rem; margin-top: 4px; flex-shrink: 0; }
     .pricing-features li.highlight { font-weight: 400; }
     .pricing-description {
       font-size: 0.88rem; font-weight: 300; font-style: italic;
