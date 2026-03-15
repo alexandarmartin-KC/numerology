@@ -15,7 +15,7 @@ define('DB_HOST',        getenv('DB_HOST')        ?: ($_DB_HOST        ?: 'local
 define('DB_USER',        getenv('DB_USER')        ?: ($_DB_USER        ?: ''));
 define('DB_PASS',        getenv('DB_PASS')        ?: ($_DB_PASS        ?: ''));
 define('DB_NAME',        getenv('DB_NAME')        ?: ($_DB_NAME        ?: ''));
-define('CFG_ALLOWED_ORIGIN',          getenv('ALLOWED_ORIGIN')          ?: ($_ALLOWED_ORIGIN          ?: 'https://numerology-olive-kappa.vercel.app'));
+define('CFG_ALLOWED_ORIGIN',          getenv('ALLOWED_ORIGIN')          ?: ($_ALLOWED_ORIGIN          ?: 'https://alexandarmartin.dk'));
 define('CFG_ADMIN_KEY',               getenv('ADMIN_API_KEY')           ?: ($_ADMIN_API_KEY           ?: ''));
 define('CFG_STRIPE_WEBHOOK_SECRET',   getenv('STRIPE_WEBHOOK_SECRET')   ?: ($_STRIPE_WEBHOOK_SECRET   ?: ''));
 define('CFG_MAIL_FROM',               getenv('MAIL_FROM')               ?: ($_MAIL_FROM               ?: ''));
