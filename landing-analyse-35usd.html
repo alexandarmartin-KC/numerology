@@ -654,30 +654,27 @@
 <script>
 (function () {
   const API_URL = "/api/create-checkout";
-  const modal = document.getElementById("confirmModal");
+  const modal      = document.getElementById("confirmModal");
   const confirmName  = document.getElementById("confirmName");
   const confirmBirth = document.getElementById("confirmBirth");
   const confirmEmail = document.getElementById("confirmEmail");
   const btnBack    = document.getElementById("confirmBack");
   const btnConfirm = document.getElementById("confirmPay");
-  let pendingData = null;
-  let pendingBtn  = null;
 
   function formatDate(dateStr) {
-    const [y, m, d] = dateStr.split("-");
-    return d + "-" + m + "-" + y;
+    if (!dateStr) return "";
+    const parts = dateStr.split("-");
+    if (parts.length === 3) return parts[2] + "-" + parts[1] + "-" + parts[0];
+    return dateStr;
   }
+
   function closeModal() {
-    modal.classList.remove("active");
-    pendingData = null;
-    if (pendingBtn) {
-      pendingBtn.disabled = false;
-      pendingBtn.textContent = pendingBtn.dataset.originalText;
-      pendingBtn = null;
-    }
+    if (modal) modal.classList.remove("active");
   }
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-  btnBack.addEventListener("click", closeModal);
+
+  if (modal)    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  if (btnBack)  btnBack.addEventListener("click", closeModal);
+
   document.querySelectorAll(".confirm-edit[data-edit]").forEach(editBtn => {
     editBtn.addEventListener("click", () => {
       const fieldName = editBtn.dataset.edit;
@@ -686,50 +683,79 @@
       if (input) { input.focus(); input.select(); }
     });
   });
-  btnConfirm.addEventListener("click", async () => {
-    btnConfirm.disabled = true;
-    btnConfirm.textContent = "Please wait…";
-    try {
-      const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pendingData) });
-      const data = await res.json();
-      window.location.href = data.url;
-    } catch (err) {
-      alert(err.message);
-      btnConfirm.disabled = false;
-      btnConfirm.textContent = "Confirm & pay";
-    }
-  });
+
+  if (btnConfirm) {
+    btnConfirm.addEventListener("click", async () => {
+      if (!pendingData) return;
+      btnConfirm.disabled = true;
+      btnConfirm.textContent = "Please wait…";
+      try {
+        const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pendingData) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Something went wrong.");
+        window.location.href = data.url;
+      } catch (err) {
+        alert(err.message);
+        btnConfirm.disabled = false;
+        btnConfirm.textContent = "Confirm & pay";
+      }
+    });
+  }
+
+  let pendingData = null;
+  let pendingBtn  = null;
+
   document.querySelectorAll("[data-checkout]").forEach(btn => {
     btn.dataset.originalText = btn.textContent;
-    btn.addEventListener("click", () => {
-      const form      = document.querySelector(".hero-form");
+    btn.addEventListener("click", async () => {
+      const form       = document.querySelector(".hero-form");
+      if (!form) return;
       const nameInput  = form.querySelector("input[name=fullName]");
       const birthInput = form.querySelector("input[name=birthDate]");
       const emailInput = form.querySelector("input[name=email]");
+      if (!nameInput || !birthInput || !emailInput) return;
+
       const fullName  = nameInput.value.trim();
       const birthDate = birthInput.value;
       const email     = emailInput.value.trim();
 
       // Validate
       let firstEmpty = null;
-      [nameInput, birthInput, emailInput].forEach(el => {
-        if (!el.value.trim()) {
-          el.style.borderColor = 'rgba(201,100,80,0.8)';
+      [[nameInput, fullName], [birthInput, birthDate], [emailInput, email]].forEach(([el, val]) => {
+        if (!val) {
+          el.style.borderColor = "rgba(220,80,60,0.9)";
           if (!firstEmpty) firstEmpty = el;
         } else {
-          el.style.borderColor = '';
+          el.style.borderColor = "";
         }
       });
       if (firstEmpty) { firstEmpty.focus(); return; }
 
-      confirmName.textContent  = fullName;
-      confirmBirth.textContent = formatDate(birthDate);
-      confirmEmail.textContent = email;
-      pendingData = { fullName, birthDate, email, currency: "usd", plan: "foundation" };
-      pendingBtn  = btn;
-      btnConfirm.disabled = false;
-      btnConfirm.textContent = "Confirm & pay";
-      modal.classList.add("active");
+      // If modal is available, show confirmation
+      if (modal && confirmName && confirmBirth && confirmEmail) {
+        confirmName.textContent  = fullName;
+        confirmBirth.textContent = formatDate(birthDate);
+        confirmEmail.textContent = email;
+        pendingData = { fullName, birthDate, email, currency: "usd", plan: "foundation" };
+        pendingBtn  = btn;
+        if (btnConfirm) { btnConfirm.disabled = false; btnConfirm.textContent = "Confirm & pay"; }
+        modal.classList.add("active");
+        return;
+      }
+
+      // Fallback: go directly to checkout
+      btn.disabled = true;
+      btn.textContent = "Please wait…";
+      try {
+        const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fullName, birthDate, email, currency: "usd", plan: "foundation" }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Something went wrong.");
+        window.location.href = data.url;
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+        btn.textContent = btn.dataset.originalText;
+      }
     });
   });
 }());
