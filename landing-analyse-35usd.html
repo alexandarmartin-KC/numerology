@@ -518,7 +518,7 @@
       <div class="order-price"><sup>$</sup>35</div>
     </div>
     <div class="order-body">
-      <form id="orderForm" class="hero-form" onsubmit="return false;">
+      <form id="orderForm" class="hero-form" novalidate>
         <div class="form-group">
           <label class="form-label" for="fullName">Full name</label>
           <input id="fullName" name="fullName" type="text" class="form-input" placeholder="As it appears on official documents" autocomplete="name" required>
@@ -670,7 +670,7 @@ if (orderForm) {
 
     if (btn) { btn.disabled = true; btn.textContent = 'Please wait\u2026'; }
 
-    fetch('/api/create-checkout', {
+    fetch('/api/create-checkout.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName: name, birthDate: birth, email: mail, currency: 'usd', plan: 'foundation' })
