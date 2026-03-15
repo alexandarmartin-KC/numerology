@@ -350,10 +350,8 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    /* reveal: visible by default, animated in when JS adds .js-loaded to html */
-    .reveal { transition: opacity 0.7s ease, transform 0.7s ease; }
-    html.js-loaded .reveal { opacity: 0; transform: translateY(24px); }
-    html.js-loaded .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 700px) {
       nav { padding: 16px 20px; }
@@ -400,43 +398,43 @@
 <section class="lp-section">
   <p class="section-label reveal">What’s included</p>
   <h2 class="section-title reveal">Everything in your Blueprint</h2>
-  <div class="receive-grid reveal">
-    <div class="receive-item">
+  <div class="receive-grid">
+    <div class="receive-item reveal">
       <div class="receive-icon">I</div>
       <div class="receive-text">
         <h4>Core Energy Analysis</h4>
         <p>The fundamental vibration you were born with — and how it shapes everything else.</p>
       </div>
     </div>
-    <div class="receive-item">
+    <div class="receive-item reveal" style="transition-delay:0.08s">
       <div class="receive-icon">II</div>
       <div class="receive-text">
         <h4>Full Diamond Calculation</h4>
         <p>Every position in your numerological structure, mapped and interpreted.</p>
       </div>
     </div>
-    <div class="receive-item">
+    <div class="receive-item reveal" style="transition-delay:0.16s">
       <div class="receive-icon">III</div>
       <div class="receive-text">
         <h4>Strengths &amp; Blind Spots</h4>
         <p>What you naturally excel at — and where your energy works against you.</p>
       </div>
     </div>
-    <div class="receive-item">
+    <div class="receive-item reveal" style="transition-delay:0.24s">
       <div class="receive-icon">IV</div>
       <div class="receive-text">
         <h4>Recurring Patterns</h4>
         <p>The themes that show up again and again in your choices and relationships.</p>
       </div>
     </div>
-    <div class="receive-item">
+    <div class="receive-item reveal" style="transition-delay:0.32s">
       <div class="receive-icon">V</div>
       <div class="receive-text">
         <h4>Name Warnings</h4>
         <p>Specific tendencies your name warns you about — and how to work with them consciously.</p>
       </div>
     </div>
-    <div class="receive-item">
+    <div class="receive-item reveal" style="transition-delay:0.40s">
       <div class="receive-icon">VI</div>
       <div class="receive-text">
         <h4>10-Page PDF Report</h4>
@@ -461,8 +459,8 @@
 </section>
 
 <section class="fit-section">
-  <div class="fit-grid reveal">
-    <div class="fit-card yes">
+  <div class="fit-grid">
+    <div class="fit-card yes reveal">
       <p class="fit-card-label">This is for you if</p>
       <ul class="fit-list">
         <li>You want to understand your own patterns more clearly</li>
@@ -471,7 +469,7 @@
         <li>You’re ready to look at yourself honestly</li>
       </ul>
     </div>
-    <div class="fit-card no">
+    <div class="fit-card no reveal" style="transition-delay:0.1s">
       <p class="fit-card-label">Not for you if</p>
       <ul class="fit-list">
         <li>You’re looking for predictions about specific future events</li>
@@ -485,18 +483,18 @@
 <section class="how-section">
   <p class="section-label reveal">Process</p>
   <h2 class="section-title reveal">How it works</h2>
-  <div class="how-steps reveal">
-    <div class="how-step">
+  <div class="how-steps">
+    <div class="how-step reveal">
       <div class="how-num">01</div>
       <h4>You enter your name and birthday</h4>
       <p>Your full name exactly as it appears on official documents, and your date of birth. This is the foundation of the entire analysis.</p>
     </div>
-    <div class="how-step">
+    <div class="how-step reveal" style="transition-delay:0.1s">
       <div class="how-num">02</div>
       <h4>The model calculates</h4>
       <p>A specialised numerological model runs your name through a fixed calculation structure — every position in the diamond, precisely computed.</p>
     </div>
-    <div class="how-step">
+    <div class="how-step reveal" style="transition-delay:0.2s">
       <div class="how-num">03</div>
       <h4>Your report arrives</h4>
       <p>A personal 10-page PDF is generated and sent directly to your inbox. Detailed, structured, and written for you specifically.</p>
@@ -633,16 +631,15 @@
 </footer>
 
 <script>
-document.documentElement.classList.add('js-loaded');
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
     if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add("visible"), i * 80);
+      entry.target.classList.add('visible');
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1 });
-document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 (function () {
   const API_URL = "/api/create-checkout";
