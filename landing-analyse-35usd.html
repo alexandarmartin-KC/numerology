@@ -518,22 +518,22 @@
       <div class="order-price"><sup>$</sup>35</div>
     </div>
     <div class="order-body">
-      <div class="hero-form">
+      <form id="orderForm" class="hero-form" onsubmit="return false;">
         <div class="form-group">
           <label class="form-label" for="fullName">Full name</label>
-          <input id="fullName" name="fullName" type="text" class="form-input" placeholder="As it appears on official documents" autocomplete="name">
+          <input id="fullName" name="fullName" type="text" class="form-input" placeholder="As it appears on official documents" autocomplete="name" required>
           <p class="form-hint">Use your full legal name — first, middle, and last.</p>
         </div>
         <div class="form-group">
           <label class="form-label" for="birthDate">Date of birth</label>
-          <input id="birthDate" name="birthDate" type="date" class="form-input" max="2015-12-31" min="1920-01-01">
+          <input id="birthDate" name="birthDate" type="date" class="form-input" max="2015-12-31" min="1920-01-01" required>
         </div>
         <div class="form-group">
           <label class="form-label" for="email">Email address</label>
-          <input id="email" name="email" type="email" class="form-input" placeholder="Your report will be sent here" autocomplete="email">
+          <input id="email" name="email" type="email" class="form-input" placeholder="Your report will be sent here" autocomplete="email" required>
         </div>
-      </div>
-      <button class="btn-order" type="button" data-checkout="order">Get My Blueprint — $35</button>
+        <button class="btn-order" type="submit">Get My Blueprint — $35</button>
+      </form>
       <div class="order-guarantees">
         <span class="guarantee-item">Instant delivery</span>
         <span class="guarantee-item">One-time purchase</span>
@@ -654,30 +654,26 @@
 }());
 
 /* ── Checkout ── */
-document.querySelectorAll('[data-checkout]').forEach(function (btn) {
-  btn.addEventListener('click', function () {
+var orderForm = document.getElementById('orderForm');
+if (orderForm) {
+  orderForm.addEventListener('submit', function (e) {
+    e.preventDefault();
     var nameEl  = document.getElementById('fullName');
     var birthEl = document.getElementById('birthDate');
     var emailEl = document.getElementById('email');
-    var name    = nameEl  ? nameEl.value.trim()  : '';
-    var birth   = birthEl ? birthEl.value        : '';
-    var mail    = emailEl ? emailEl.value.trim() : '';
+    var name    = nameEl  ? nameEl.value.trim() : '';
+    var birth   = birthEl ? birthEl.value       : '';
+    var mail    = emailEl ? emailEl.value.trim(): '';
+    var btn     = orderForm.querySelector('button[type=submit]');
 
-    if (!name)  { if (nameEl)  { nameEl.style.borderColor  = '#e03c3c'; nameEl.focus();  } return; }
-    if (!birth) { if (birthEl) { birthEl.style.borderColor = '#e03c3c'; birthEl.focus(); } return; }
-    if (!mail || mail.indexOf('@') < 0) { if (emailEl) { emailEl.style.borderColor = '#e03c3c'; emailEl.focus(); } return; }
+    if (!name || !birth || !mail || mail.indexOf('@') < 0) return;
 
-    if (nameEl)  nameEl.style.borderColor  = '';
-    if (birthEl) birthEl.style.borderColor = '';
-    if (emailEl) emailEl.style.borderColor = '';
-
-    btn.disabled    = true;
-    btn.textContent = 'Please wait\u2026';
+    if (btn) { btn.disabled = true; btn.textContent = 'Please wait\u2026'; }
 
     fetch('/api/create-checkout', {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ fullName: name, birthDate: birth, email: mail, currency: 'usd', plan: 'foundation' })
+      body: JSON.stringify({ fullName: name, birthDate: birth, email: mail, currency: 'usd', plan: 'foundation' })
     })
     .then(function (res) {
       return res.json().then(function (d) { return { ok: res.ok, d: d }; });
@@ -688,11 +684,10 @@ document.querySelectorAll('[data-checkout]').forEach(function (btn) {
     })
     .catch(function (err) {
       alert(err.message);
-      btn.disabled    = false;
-      btn.textContent = 'Get My Blueprint \u2014 $35';
+      if (btn) { btn.disabled = false; btn.textContent = 'Get My Blueprint \u2014 $35'; }
     });
   });
-});
+}
 
 /* ── Pre-fill from gratis flow ── */
 (function () {
