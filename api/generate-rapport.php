@@ -219,9 +219,11 @@ if (function_exists('exec') && !in_array('exec', $disabledFunctions)) {
     ];
     foreach ($phpCandidates as $bin) {
         if (!$bin) continue;
+        // Tjek at binæret faktisk eksisterer og er eksekverbart før vi prøver
+        if (!is_executable($bin) && !in_array($bin, ['php', PHP_BINARY])) continue;
         $cmd = escapeshellarg($bin) . ' ' . escapeshellarg($script) . ' ' . escapeshellarg($jobId) . ' > /dev/null 2>&1 &';
         exec($cmd, $out, $ret);
-        if ($ret === 0 || $bin === end($phpCandidates)) {
+        if ($ret === 0) {
             $method = 'exec:' . $bin;
             $s2 = $db->prepare("UPDATE rapport_jobs SET error=? WHERE id=?");
             $s2->bind_param('ss', $method, $jobId);
@@ -251,7 +253,8 @@ if (!$launched) {
         CURLOPT_TIMEOUT        => 1,
         CURLOPT_CONNECTTIMEOUT => 5,
         CURLOPT_NOSIGNAL       => 1,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
     ]);
     curl_exec($faf);
     curl_close($faf);

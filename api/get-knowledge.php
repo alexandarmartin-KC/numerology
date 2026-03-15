@@ -102,6 +102,12 @@ $knowledge = [
     // Gratis beregning
     'gratisBeregning'          => $gratis ?: new stdClass(),
 
+    // Energibilleder (hvilke energier har et billede_url i DB)
+    'energiesWithImages'       => array_values(array_map(
+        fn($e) => $e['display'] ?? (string)$e['id'],
+        array_filter($rows['energies'], fn($e) => !empty($e['billede_url']))
+    )),
+
     // Meta
     'meta'                     => $rows['meta'],
 ];
