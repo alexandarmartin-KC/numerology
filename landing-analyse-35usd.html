@@ -350,9 +350,8 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .reveal { transition: opacity 0.7s, transform 0.7s; }
-    html.js-loaded .reveal { opacity: 0; transform: translateY(30px); }
-    html.js-loaded .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 700px) {
       nav { padding: 16px 20px; }
@@ -632,6 +631,13 @@
 </footer>
 
 <script>
+// Synchronously mark elements already in viewport as visible before first paint
+document.querySelectorAll('.reveal').forEach(el => {
+  if (el.getBoundingClientRect().top < window.innerHeight) {
+    el.classList.add('visible');
+  }
+});
+// Scroll-triggered reveal for everything else
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -639,9 +645,8 @@ const revealObserver = new IntersectionObserver(entries => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-document.documentElement.classList.add('js-loaded');
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal:not(.visible)').forEach(el => revealObserver.observe(el));
 
 (function () {
   const API_URL = "/api/create-checkout";
