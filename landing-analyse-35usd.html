@@ -287,6 +287,7 @@
     }
     .form-input:focus { border-color: var(--clr-gold); }
     .form-input::placeholder { color: var(--clr-muted); }
+    .form-input:not(:placeholder-shown) { border-color: rgba(201,168,76,0.3); }
     .form-input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(0.7) sepia(1) saturate(2) hue-rotate(10deg); cursor: pointer;
     }
@@ -702,9 +703,25 @@
     btn.dataset.originalText = btn.textContent;
     btn.addEventListener("click", () => {
       const form      = document.querySelector(".hero-form");
-      const fullName  = form.querySelector("input[name=fullName]").value.trim();
-      const birthDate = form.querySelector("input[name=birthDate]").value;
-      const email     = form.querySelector("input[name=email]").value.trim();
+      const nameInput  = form.querySelector("input[name=fullName]");
+      const birthInput = form.querySelector("input[name=birthDate]");
+      const emailInput = form.querySelector("input[name=email]");
+      const fullName  = nameInput.value.trim();
+      const birthDate = birthInput.value;
+      const email     = emailInput.value.trim();
+
+      // Validate
+      let firstEmpty = null;
+      [nameInput, birthInput, emailInput].forEach(el => {
+        if (!el.value.trim()) {
+          el.style.borderColor = 'rgba(201,100,80,0.8)';
+          if (!firstEmpty) firstEmpty = el;
+        } else {
+          el.style.borderColor = '';
+        }
+      });
+      if (firstEmpty) { firstEmpty.focus(); return; }
+
       confirmName.textContent  = fullName;
       confirmBirth.textContent = formatDate(birthDate);
       confirmEmail.textContent = email;
