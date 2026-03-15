@@ -3,845 +3,724 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personal Numerological Reading — 35 USD</title>
-  <meta name="description" content="Order a personal numerological reading based on your full name. Structured PDF report with digital delivery immediately after payment.">
-  <!-- Open Graph -->
+  <title>Blueprint — Strategic Numerology</title>
+  <meta name="description" content="A personal numerological report built from your full name and date of birth. Revealing energy patterns, strengths, and recurring themes. Delivered instantly.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Personal Numerological Reading — 35 USD">
-  <meta property="og:description" content="Order a personal numerological reading based on your full name. Structured PDF report with digital delivery immediately after payment.">
+  <meta property="og:title" content="Blueprint — Strategic Numerology">
+  <meta property="og:description" content="A personal numerological report built from your full name and date of birth. Delivered instantly as a PDF.">
   <meta property="og:image" content="">
-  <meta property="og:url" content="https://numerology-olive-kappa.vercel.app/landing-analyse-35usd.html">
-  <!-- Twitter Card -->
+  <meta property="og:url" content="https://alexandarmartin.dk/landing-analyse-35usd.html">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Personal Numerological Reading — 35 USD">
-  <meta name="twitter:description" content="Order a personal numerological reading based on your full name. Structured PDF report with digital delivery immediately after payment.">
+  <meta name="twitter:title" content="Blueprint — Strategic Numerology">
+  <meta name="twitter:description" content="A personal numerological report built from your full name and date of birth. Delivered instantly as a PDF.">
   <meta name="twitter:image" content="">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --clr-bg: #0b0b12;
-      --clr-surface: #13131f;
-      --clr-surface-2: #1a1a2e;
-      --clr-gold: #c9a84c;
-      --clr-gold-light: #e8d5a3;
-      --clr-text: #e8e4da;
-      --clr-muted: #8c8c9b;
-      --clr-border: rgba(201,168,76,0.15);
+      --clr-bg:            #080b14;
+      --clr-surface:       #0d1020;
+      --clr-surface-2:     #111528;
+      --clr-gold:          #c9a84c;
+      --clr-gold-light:    #e8c97a;
+      --clr-gold-dim:      #8a6020;
+      --clr-gold-faint:    rgba(201,168,76,0.08);
+      --clr-text:          #e8e0d0;
+      --clr-text-dim:      #7a7060;
+      --clr-text-muted:    #4a4840;
+      --clr-muted:         #8c8c9b;
+      --clr-border:        rgba(201,168,76,0.15);
       --clr-border-bright: rgba(201,168,76,0.4);
-      --font-heading: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
+      --font-heading:      '''Cormorant Garamond''', Georgia, serif;
+      --font-body:         '''Montserrat''', system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
     body {
-      margin: 0;
+      font-family: var(--font-body);
       background: var(--clr-bg);
       color: var(--clr-text);
-      font-family: var(--font-body);
-      line-height: 1.7;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
     }
 
-    .container {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-
-    .section {
-      padding: 2.5rem 0;
-      border-top: 1px solid var(--clr-border);
-    }
-    .section:first-of-type { border-top: none; }
-
-    h1, h2 {
-      font-family: var(--font-heading);
-      line-height: 1.2;
-      margin: 0 0 1rem;
-    }
-    h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
-    h2 { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--clr-gold-light); }
-
-    p { margin: 0 0 1rem; color: #ddd8ca; }
-    .muted { color: var(--clr-muted); }
-
-    /* ─── LOGO BAR ─── */
-    .logo-bar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(11,11,18,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--clr-border);
-      height: 64px;
-      display: flex; align-items: center;
-      padding: 0 1.5rem;
-    }
-    .logo-bar__brand {
-      font-family: var(--font-heading);
-      font-size: 1.5rem; font-weight: 700;
-      color: var(--clr-gold);
-      text-decoration: none; letter-spacing: 0.5px;
-      display: flex; flex-direction: column; line-height: 1.15;
-    }
-    .logo-bar__brand:hover { color: var(--clr-gold-light); }
-    .logo-bar__brand .brandline {
-      font-family: var(--font-body);
-      font-size: 0.55rem; font-weight: 400;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--clr-muted); opacity: 0.7;
-    }
-
-    .hero {
-      position: relative;
-      padding: 7rem 0 3rem;
-      text-align: center;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 80% 60% at 20% 80%, rgba(26,26,46,0.5) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .hero-diamond {
-      position: absolute; top: 50%; left: 50%;
-      width: 500px; height: 500px;
-      transform: translate(-50%, -50%) rotate(45deg);
-      border: 1px solid rgba(201,168,76,0.08);
-      border-radius: 4px;
-      pointer-events: none;
-      animation: diamond-pulse 8s ease-in-out infinite;
-    }
-    .hero-diamond:nth-child(2) {
-      width: 350px; height: 350px;
-      border-color: rgba(201,168,76,0.05);
-      animation-delay: -2s; animation-duration: 10s;
-    }
-    .hero-diamond:nth-child(3) {
-      width: 200px; height: 200px;
-      border-color: rgba(201,168,76,0.04);
-      animation-delay: -4s; animation-duration: 12s;
-    }
-    @keyframes diamond-pulse {
-      0%, 100% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1); }
-      50% { opacity: 0.6; transform: translate(-50%, -50%) rotate(45deg) scale(1.05); }
-    }
-    .hero > * { position: relative; z-index: 1; }
-    .hero > .hero-diamond { position: absolute; z-index: 0; }
-    .hero h1 { max-width: 560px; margin-left: auto; margin-right: auto; }
-    .hero p {
-      max-width: 520px;
-      margin-left: auto;
-      margin-right: auto;
-      color: #d8d2c5;
-      font-size: 0.95rem;
-    }
-
-    .hero-form {
-      max-width: 420px;
-      margin: 1.5rem auto 0;
-      display: grid;
-      gap: 1.25rem;
-      text-align: left;
-    }
-    .hero-field {
-      display: flex;
-      flex-direction: column;
-    }
-    .hero-field label {
-      display: block;
-      font-size: 0.65rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--clr-muted);
-      margin-bottom: 6px;
-    }
-    .hero-field input {
-      width: 100%;
-      border: 1px solid var(--clr-border);
-      background: var(--clr-surface-2);
-      color: var(--clr-text);
-      border-radius: 50px;
-      padding: 0.7rem 1.1rem;
-      font-size: 0.9rem;
-      font-family: var(--font-body);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .hero-field input:focus {
-      border-color: var(--clr-gold);
-    }
-    .hero-field input::placeholder { color: var(--clr-muted); }
-    .hero-help {
-      margin-top: 0.5rem;
-      color: var(--clr-muted);
-      font-size: 0.76rem;
-      line-height: 1.5;
-      padding-left: 0.25rem;
-    }
-
-    .cta-btn {
-      display: flex; align-items: center; justify-content: center;
-      margin: 1.75rem auto 0;
-      padding: 0.85rem 2.2rem;
-      border-radius: 50px;
-      border: none;
-      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
-      color: #0b0b12;
-      font-family: var(--font-body);
-      font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      min-width: 280px;
-    }
-    .cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(201,168,76,0.3);
-    }
-    .cta-btn:disabled {
-      opacity: 0.55;
-      cursor: wait;
-      transform: none; box-shadow: none;
-    }
-
-    .trust-line {
-      margin-top: 0.6rem;
-      font-size: 0.75rem; font-weight: 300;
-      color: var(--clr-muted);
-      text-align: center;
-    }
-
-
-    .card {
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: 14px;
-      padding: 1.1rem 1.25rem;
-    }
-
-    ul {
-      margin: 0.6rem 0 0;
-      padding-left: 1.2rem;
-      color: #ddd8ca;
-    }
-    li { margin-bottom: 0.5rem; }
-
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .excerpt {
-      font-size: 0.96rem;
-      color: #d8d2c5;
-      border-left: 2px solid rgba(201,168,76,0.4);
-      padding-left: 0.8rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .faq-item {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(201,168,76,0.09);
-    }
-    .faq-item:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-    .faq-item strong {
-      display: block;
-      margin-bottom: 0.35rem;
-      color: var(--clr-gold-light);
-    }
-
-    .footer-cta {
-      text-align: center;
-      padding-bottom: 4.5rem;
-    }
-
-    /* Confirmation modal */
-    .confirm-overlay {
-      display: none;
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 1.25rem;
-    }
-    .confirm-overlay.active { display: flex; }
-    .confirm-box {
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: 16px;
-      padding: 2.2rem 2rem;
-      max-width: 460px;
-      width: 100%;
-      text-align: center;
-    }
-    .confirm-box h3 {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      color: var(--clr-gold-light);
-      margin: 0 0 0.4rem;
-    }
-    .confirm-box .confirm-sub {
-      color: var(--clr-muted);
-      font-size: 0.88rem;
-      margin-bottom: 1.5rem;
-    }
-    .confirm-detail {
-      background: rgba(201,168,76,0.06);
-      border: 1px solid var(--clr-border);
-      border-radius: 10px;
-      padding: 1.1rem 1.2rem;
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    .confirm-detail .confirm-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.45rem 0;
-    }
-    .confirm-detail .confirm-row:not(:last-child) {
-      border-bottom: 1px solid var(--clr-border);
-    }
-    .confirm-detail .confirm-label {
-      color: var(--clr-muted);
-      font-size: 0.85rem;
-    }
-    .confirm-detail .confirm-value {
-      font-weight: 500;
-      color: var(--clr-gold-light);
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .confirm-edit {
-      background: none;
-      border: none;
-      color: var(--clr-muted);
-      cursor: pointer;
-      padding: 0.2rem;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      transition: color 0.15s, background 0.15s;
-    }
-    .confirm-edit:hover {
-      color: var(--clr-gold);
-      background: rgba(201,168,76,0.1);
-    }
-    .confirm-edit svg {
-      width: 15px;
-      height: 15px;
-    }
-    .confirm-actions {
-      display: flex;
-      gap: 0.75rem;
-    }
-    .confirm-actions button {
-      flex: 1;
-      padding: 0.75rem;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.15s;
-    }
-    .btn-back {
-      background: transparent;
-      border: 1px solid var(--clr-border) !important;
-      color: var(--clr-text);
-    }
-    .btn-confirm {
-      background: linear-gradient(135deg, var(--clr-gold), #b8943e);
-      color: #0b0b12;
-    }
-    .btn-confirm:disabled {
-      opacity: 0.55;
-      cursor: wait;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='''0 0 256 256''' xmlns='''http://www.w3.org/2000/svg'''%3E%3Cfilter id='''noise'''%3E%3CfeTurbulence type='''fractalNoise''' baseFrequency='''0.9''' numOctaves='''4''' stitchTiles='''stitch'''/%3E%3C/filter%3E%3Crect width='''100%25''' height='''100%25''' filter='''url(%23noise)''' opacity='''0.03'''/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
     }
 
-    @media (max-width: 760px) {
-      .section { padding: 2.6rem 0; }
-      .split { grid-template-columns: 1fr; }
-      .hero-form { text-align: left; }
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--clr-border);
+      background: rgba(8,11,20,0.92);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--clr-text);
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    .nav-logo span { color: var(--clr-gold); }
+    .nav-cta {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--clr-gold);
+      text-decoration: none;
+      border: 1px solid var(--clr-border-bright);
+      padding: 8px 18px;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--clr-gold-faint); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--clr-gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(48px, 8vw, 90px);
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.4s;
+    }
+    .hero-title em { font-style: italic; color: var(--clr-gold); }
+    .hero-subtitle {
+      font-family: var(--font-heading);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--clr-text-dim);
+      margin-bottom: 48px;
+      max-width: 560px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.6s;
+    }
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+    .btn-hero {
+      display: inline-block;
+      padding: 20px 52px;
+      background: var(--clr-gold);
+      color: var(--clr-bg);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.3); }
+    .hero-meta { font-size: 11px; color: var(--clr-text-muted); letter-spacing: 1px; }
+
+    /* HOOK */
+    .hook {
+      padding: 100px 24px;
+      max-width: 740px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hook-text {
+      font-family: var(--font-heading);
+      font-size: clamp(22px, 3.5vw, 34px);
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--clr-text);
+    }
+    .hook-text em { font-style: italic; color: var(--clr-gold); }
+    .divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--clr-gold), transparent);
+      margin: 48px auto;
+    }
+
+    /* SECTIONS */
+    .lp-section { padding: 80px 24px; max-width: 900px; margin: 0 auto; }
+    .section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--clr-gold); margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 300; margin-bottom: 48px; line-height: 1.2;
+    }
+
+    /* RECEIVE GRID */
+    .receive-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px; background: var(--clr-border);
+      border: 1px solid var(--clr-border); border-radius: 4px; overflow: hidden;
+    }
+    .receive-item {
+      background: var(--clr-surface); padding: 28px 32px;
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .receive-icon {
+      font-size: 18px; color: var(--clr-gold); flex-shrink: 0; margin-top: 2px;
+      font-family: var(--font-heading); font-weight: 300; line-height: 1; width: 20px; text-align: center;
+    }
+    .receive-text h4 { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px; color: var(--clr-text); }
+    .receive-text p { font-size: 12px; color: var(--clr-text-dim); font-weight: 300; line-height: 1.6; margin: 0; }
+
+    /* FIT */
+    .fit-section { padding: 80px 24px; max-width: 900px; margin: 0 auto; }
+    .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .fit-card { border: 1px solid var(--clr-border); border-radius: 4px; padding: 36px; background: var(--clr-surface); }
+    .fit-card.yes { border-color: rgba(201,168,76,0.3); }
+    .fit-card.no  { border-color: rgba(255,255,255,0.06); }
+    .fit-card-label { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+    .fit-card.yes .fit-card-label { color: var(--clr-gold); }
+    .fit-card.no  .fit-card-label { color: var(--clr-text-muted); }
+    .fit-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+    .fit-list li { font-size: 13px; font-weight: 300; color: var(--clr-text); line-height: 1.5; display: flex; gap: 12px; align-items: flex-start; }
+    .fit-list li::before { flex-shrink: 0; margin-top: 2px; font-size: 10px; }
+    .fit-card.yes .fit-list li::before { content: "✦"; color: var(--clr-gold); }
+    .fit-card.no  .fit-list li::before { content: "—"; color: var(--clr-text-muted); }
+
+    /* EXCERPT */
+    .excerpt-section { padding: 80px 24px; max-width: 760px; margin: 0 auto; text-align: center; }
+    .excerpt-card {
+      background: var(--clr-surface); border: 1px solid var(--clr-border);
+      border-top: 2px solid var(--clr-gold); border-radius: 4px; padding: 52px 56px; position: relative;
+    }
+    .excerpt-card::before {
+      content: "C"; font-family: var(--font-heading); font-size: 120px; font-weight: 300;
+      color: var(--clr-gold-dim); position: absolute; top: -20px; left: 32px; line-height: 1; opacity: 0.4;
+    }
+    .excerpt-text {
+      font-family: var(--font-heading); font-size: clamp(18px, 2.5vw, 24px); font-weight: 300;
+      font-style: italic; line-height: 1.7; color: var(--clr-text); margin-bottom: 28px; position: relative; z-index: 1;
+    }
+    .excerpt-text + .excerpt-text { padding-top: 28px; border-top: 1px solid var(--clr-border); }
+    .excerpt-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--clr-text-muted); margin-top: 28px; }
+
+    /* HOW */
+    .how-section { padding: 80px 24px; max-width: 900px; margin: 0 auto; }
+    .how-steps {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px;
+      background: var(--clr-border); border: 1px solid var(--clr-border);
+      border-radius: 4px; overflow: hidden; margin-top: 48px;
+    }
+    .how-step { background: var(--clr-surface); padding: 36px 32px; }
+    .how-num {
+      font-family: var(--font-heading); font-size: 48px; font-weight: 300;
+      color: var(--clr-gold-dim); line-height: 1; margin-bottom: 16px; opacity: 0.5;
+    }
+    .how-step h4 { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--clr-text); }
+    .how-step p { font-size: 12px; color: var(--clr-text-dim); font-weight: 300; line-height: 1.7; margin: 0; }
+
+    /* ORDER */
+    .order-section { padding: 80px 24px 100px; max-width: 680px; margin: 0 auto; }
+    .order-card {
+      background: var(--clr-surface); border: 1px solid var(--clr-border-bright);
+      border-top: 2px solid var(--clr-gold); border-radius: 4px; overflow: hidden;
+    }
+    .order-header { padding: 40px 48px 32px; border-bottom: 1px solid var(--clr-border); text-align: center; }
+    .order-product { font-family: var(--font-heading); font-size: 36px; font-weight: 300; margin-bottom: 4px; }
+    .order-tagline { font-size: 11px; color: var(--clr-gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-weight: 500; }
+    .order-price { font-family: var(--font-heading); font-size: 64px; font-weight: 300; color: var(--clr-gold-light); line-height: 1; }
+    .order-price sup { font-size: 28px; vertical-align: top; margin-top: 12px; display: inline-block; }
+    .order-body { padding: 40px 48px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--clr-text-dim); margin-bottom: 8px; }
+    .form-input {
+      width: 100%; background: var(--clr-surface-2); border: 1px solid var(--clr-border);
+      border-radius: 2px; padding: 14px 16px; color: var(--clr-text);
+      font-family: var(--font-body); font-size: 13px; font-weight: 300; outline: none; transition: border-color 0.3s;
+    }
+    .form-input:focus { border-color: var(--clr-gold-dim); }
+    .form-input::placeholder { color: var(--clr-text-muted); }
+    .form-hint { font-size: 11px; color: var(--clr-text-muted); margin-top: 6px; font-weight: 300; }
+    .btn-order {
+      display: block; width: 100%; padding: 20px;
+      background: var(--clr-gold); color: var(--clr-bg);
+      font-family: var(--font-body); font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; text-align: center;
+      border: none; border-radius: 2px; cursor: pointer; margin-top: 28px; transition: all 0.3s;
+    }
+    .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(201,168,76,0.3); }
+    .btn-order:disabled { opacity: 0.55; cursor: wait; transform: none; box-shadow: none; }
+    .order-guarantees { display: flex; justify-content: center; gap: 28px; margin-top: 20px; flex-wrap: wrap; }
+    .guarantee-item { font-size: 10px; color: var(--clr-text-muted); letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+    .guarantee-item::before { content: "✦"; color: var(--clr-gold-dim); font-size: 8px; }
+
+    /* FAQ */
+    .faq-section { padding: 60px 24px 80px; max-width: 680px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--clr-border); padding: 24px 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-size: 13px; font-weight: 600; color: var(--clr-text); margin-bottom: 10px; letter-spacing: 0.3px; }
+    .faq-a { font-size: 13px; color: var(--clr-text-dim); font-weight: 300; line-height: 1.7; margin: 0; }
+
+    /* FOOTER */
+    .site-footer { background: var(--clr-surface); border-top: 1px solid var(--clr-border); padding: 3.5rem 1.5rem 2rem; font-size: 0.88rem; color: var(--clr-muted); }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 2.5rem; max-width: 960px; margin: 0 auto; }
+    @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; gap: 2rem; } }
+    .footer-col h4 { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 600; color: var(--clr-gold-light); margin: 0 0 1rem; letter-spacing: 0.3px; }
+    .footer-col p { margin: 0 0 0.3rem; line-height: 1.6; }
+    .footer-col a { color: var(--clr-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--clr-gold-light); }
+    .footer-col .footer-brand { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: var(--clr-gold); display: block; margin-bottom: 0.6rem; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 0.4rem; }
+    .footer-social { display: flex; flex-direction: column; gap: 1.4rem; align-items: flex-start; }
+    .footer-social a { display: flex; align-items: center; gap: 0.5rem; color: var(--clr-muted); }
+    .footer-social a:hover { color: var(--clr-gold-light); }
+    .footer-social img { width: 24px; height: 24px; object-fit: contain; opacity: 0.8; transition: opacity 0.2s; }
+    .footer-social a:hover img { opacity: 1; }
+    .footer-bottom { text-align: center; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--clr-border); font-size: 0.78rem; color: rgba(124,124,138,0.6); }
+
+    /* CONFIRM MODAL */
+    .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 1.25rem; }
+    .confirm-overlay.active { display: flex; }
+    .confirm-box { background: var(--clr-surface); border: 1px solid var(--clr-border); border-radius: 4px; padding: 2.2rem 2rem; max-width: 460px; width: 100%; text-align: center; }
+    .confirm-box h3 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--clr-gold-light); margin: 0 0 0.4rem; }
+    .confirm-box .confirm-sub { color: var(--clr-muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+    .confirm-detail { background: var(--clr-gold-faint); border: 1px solid var(--clr-border); border-radius: 4px; padding: 1.1rem 1.2rem; text-align: left; margin-bottom: 1.5rem; }
+    .confirm-detail .confirm-row { display: flex; justify-content: space-between; padding: 0.45rem 0; }
+    .confirm-detail .confirm-row:not(:last-child) { border-bottom: 1px solid var(--clr-border); }
+    .confirm-detail .confirm-label { color: var(--clr-muted); font-size: 0.85rem; }
+    .confirm-detail .confirm-value { font-weight: 500; color: var(--clr-gold-light); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
+    .confirm-edit { background: none; border: none; color: var(--clr-muted); cursor: pointer; padding: 0.2rem; border-radius: 2px; display: flex; align-items: center; transition: color 0.15s, background 0.15s; }
+    .confirm-edit:hover { color: var(--clr-gold); background: var(--clr-gold-faint); }
+    .confirm-edit svg { width: 15px; height: 15px; }
+    .confirm-actions { display: flex; gap: 0.75rem; }
+    .confirm-actions button { flex: 1; padding: 0.75rem; border-radius: 2px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; font-family: var(--font-body); }
+    .btn-confirm { background: var(--clr-gold); color: var(--clr-bg); }
+    .btn-confirm:disabled { opacity: 0.55; cursor: wait; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 700px) {
+      nav { padding: 16px 20px; }
+      .receive-grid { grid-template-columns: 1fr; }
+      .fit-grid { grid-template-columns: 1fr; }
+      .how-steps { grid-template-columns: 1fr; }
+      .excerpt-card { padding: 40px 28px; }
+      .order-header { padding: 32px 28px 24px; }
+      .order-body { padding: 28px; }
+      .order-guarantees { gap: 16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── LOGO BAR ─── -->
-  <header class="logo-bar">
-    <a class="logo-bar__brand" href="index.html">StrategicNumerology<span class="brandline">Understand yourself. Plan your timing.</span></a>
-  </header>
+<nav>
+  <a href="index.html" class="nav-logo">Strategic<span>Numerology</span></a>
+  <a href="#order" class="nav-cta">Get Blueprint — $35</a>
+</nav>
 
-  <main>
-    <section class="hero">
-      <div class="hero-diamond"></div>
-      <div class="hero-diamond"></div>
-      <div class="hero-diamond"></div>
-      <div class="container">
-      <h1>Get a <span style="color:var(--clr-gold-light)">personal</span> numerological reading based on your <span style="color:var(--clr-gold-light)">full name</span></h1>
-      <p>A structured and detailed report generated via a specially developed numerological analysis model. Delivered digitally immediately after ordering.</p>
+<section class="hero">
+  <p class="hero-eyebrow">Strategic Numerology · Blueprint</p>
+  <h1 class="hero-title">Your name holds a<br><em>structure</em> you haven’t read yet</h1>
+  <p class="hero-subtitle">A personal report built from your full name and date of birth — revealing the energy patterns, strengths, and recurring themes that define how you move through the world.</p>
+  <div class="hero-actions">
+    <a href="#order" class="btn-hero">Get My Blueprint — $35</a>
+    <p class="hero-meta">10-page PDF · Delivered instantly · One-time purchase</p>
+  </div>
+</section>
 
-      <form class="hero-form" action="#" method="post" novalidate>
-        <div class="hero-field">
-          <label for="fullName">Full name</label>
-          <input id="fullName" name="fullName" type="text" placeholder="Enter your full name" autocomplete="name">
-          <div class="hero-help">The name must be entered exactly as it appears on your official documents – no nicknames.</div>
-        </div>
-        <div class="hero-field">
-          <label for="birthDate">Date of birth</label>
-          <input id="birthDate" name="birthDate" type="text" placeholder="dd/mm/yyyy">
-          <div class="hero-help">Enter your date of birth as recorded on your official documents.</div>
-        </div>
-        <div class="hero-field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="your@email.com" autocomplete="email">
-          <div class="hero-help">The report will be sent to this address.</div>
-        </div>
-      </form>
+<section class="hook">
+  <div class="divider"></div>
+  <p class="hook-text reveal">
+    Most people sense that certain patterns keep repeating in their lives.<br>
+    The same friction, the same strengths, the same blind spots.<br><br>
+    <em>Numerology gives that pattern a name.</em><br><br>
+    Your Blueprint is a structured reading of the energy encoded in your full name.
+    Not predictions. Not generalisations. A precise map of what drives you —
+    and what works against you.
+  </p>
+  <div class="divider"></div>
+</section>
 
-      <button class="cta-btn" type="button" data-checkout="hero">Get my reading – $35</button>
-      <div class="trust-line">Digital delivery · One-time purchase · No subscription</div>
+<section class="lp-section">
+  <p class="section-label reveal">What’s included</p>
+  <h2 class="section-title reveal">Everything in your Blueprint</h2>
+  <div class="receive-grid reveal">
+    <div class="receive-item">
+      <div class="receive-icon">I</div>
+      <div class="receive-text">
+        <h4>Core Energy Analysis</h4>
+        <p>The fundamental vibration you were born with — and how it shapes everything else.</p>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>What you receive</h2>
-        <div class="card">
-          <ul>
-            <li>Personal reading based on your full name</li>
-            <li>Overview of your core vibrations and life themes</li>
-            <li>Description of strengths and areas for development</li>
-            <li>Insight into your patterns and decision-making tendencies</li>
-            <li>12-page PDF report</li>
-            <li>Immediate delivery after payment</li>
-          </ul>
-        </div>
+    </div>
+    <div class="receive-item">
+      <div class="receive-icon">II</div>
+      <div class="receive-text">
+        <h4>Full Diamond Calculation</h4>
+        <p>Every position in your numerological structure, mapped and interpreted.</p>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>How does it work?</h2>
-        <div class="card">
-          <p>The reading is generated via a specially built numerological analysis model, based on classical numerological principles and fixed calculation structures.</p>
-          <p>The model ensures a consistent, detailed and personal report – without generic standard answers.</p>
-        </div>
+    </div>
+    <div class="receive-item">
+      <div class="receive-icon">III</div>
+      <div class="receive-text">
+        <h4>Strengths &amp; Blind Spots</h4>
+        <p>What you naturally excel at — and where your energy works against you.</p>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>This reading is for you if you:</h2>
-        <div class="split">
-          <div class="card">
-            <ul>
-              <li>Want greater self-insight</li>
-              <li>Are curious about your personal patterns</li>
-              <li>Want to better understand your strengths and challenges</li>
-              <li>Prefer a structured perspective over loose interpretations</li>
-            </ul>
-          </div>
-          <div class="card">
-            <p><strong>Not for you if you expect concrete predictions about the future or quick solutions without reflection.</strong></p>
-          </div>
-        </div>
+    </div>
+    <div class="receive-item">
+      <div class="receive-icon">IV</div>
+      <div class="receive-text">
+        <h4>Recurring Patterns</h4>
+        <p>The themes that show up again and again in your choices and relationships.</p>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>Sample excerpt</h2>
-        <div class="card">
-          <p class="excerpt">"Your core vibration shows a strong tendency to create structure around your decisions. You thrive best when the framework is clear and your responsibilities are concretely defined."</p>
-          <p class="excerpt">"A recurring pattern in your profile is the balance between the need for control and the desire for freedom. When you work consciously with this tension, your choices become more precise and less reactive."</p>
-        </div>
+    </div>
+    <div class="receive-item">
+      <div class="receive-icon">V</div>
+      <div class="receive-text">
+        <h4>Name Warnings</h4>
+        <p>Specific tendencies your name warns you about — and how to work with them consciously.</p>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>FAQ</h2>
-        <div class="card">
-          <div class="faq-item">
-            <strong>Is the reading personal?</strong>
-            <p>Yes, it is generated individually based on the name you enter.</p>
-          </div>
-          <div class="faq-item">
-            <strong>Is it written manually?</strong>
-            <p>The reading is generated automatically via a specially developed model designed to deliver consistent and structured numerological interpretations.</p>
-          </div>
-          <div class="faq-item">
-            <strong>When will I receive it?</strong>
-            <p>Immediately after payment.</p>
-          </div>
-          <div class="faq-item">
-            <strong>Is there a subscription?</strong>
-            <p>No, it is a one-time purchase.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section footer-cta">
-      <div class="container">
-        <h2>Get insight into your personal numerological structure</h2>
-
-        <form class="hero-form" action="#" method="post" novalidate>
-          <div class="hero-field">
-            <label for="fullName2">Full name</label>
-            <input id="fullName2" name="fullName" type="text" placeholder="Enter your full name" autocomplete="name">
-            <div class="hero-help">The name must be entered exactly as it appears on your official documents – no nicknames.</div>
-          </div>
-          <div class="hero-field">
-            <label for="birthDate2">Date of birth</label>
-            <input id="birthDate2" name="birthDate" type="text" placeholder="dd/mm/yyyy">
-            <div class="hero-help">Enter your date of birth as recorded on your official documents.</div>
-          </div>
-          <div class="hero-field">
-            <label for="email2">Email</label>
-            <input id="email2" name="email" type="email" placeholder="your@email.com" autocomplete="email">
-            <div class="hero-help">The report will be sent to this address.</div>
-          </div>
-        </form>
-
-        <button class="cta-btn" type="button" data-checkout="footer">Order your reading – $35</button>
-        <div class="trust-line">Digital delivery · One-time purchase · No subscription</div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Confirmation modal -->
-  <div class="confirm-overlay" id="confirmModal">
-    <div class="confirm-box">
-      <h3>Confirm your details</h3>
-      <p class="confirm-sub">Your reading is generated from these details. Please verify they are correct.</p>
-      <div class="confirm-detail">
-        <div class="confirm-row">
-          <span class="confirm-label">Full name</span>
-          <span class="confirm-value">
-            <button class="confirm-edit" type="button" data-edit="fullName" title="Edit name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-            <span id="confirmName"></span>
-          </span>
-        </div>
-        <div class="confirm-row">
-          <span class="confirm-label">Date of birth</span>
-          <span class="confirm-value">
-            <button class="confirm-edit" type="button" data-edit="birthDate" title="Edit date of birth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-            <span id="confirmBirth"></span>
-          </span>
-        </div>
-        <div class="confirm-row">
-          <span class="confirm-label">Email</span>
-          <span class="confirm-value">
-            <button class="confirm-edit" type="button" data-edit="email" title="Edit email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-            <span id="confirmEmail"></span>
-          </span>
-        </div>
-      </div>
-      <div class="confirm-actions">
-        <button class="btn-back" type="button" id="confirmBack">Edit details</button>
-        <button class="btn-confirm" type="button" id="confirmPay">Confirm &amp; pay</button>
+    </div>
+    <div class="receive-item">
+      <div class="receive-icon">VI</div>
+      <div class="receive-text">
+        <h4>10-Page PDF Report</h4>
+        <p>Delivered instantly. Written in flowing prose — not bullet points or generic summaries.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <script>
-  (function () {
-    const API_URL = '/api/create-checkout';
-    const modal = document.getElementById('confirmModal');
-    const confirmName = document.getElementById('confirmName');
-    const confirmBirth = document.getElementById('confirmBirth');
-    const confirmEmail = document.getElementById('confirmEmail');
-    const btnBack = document.getElementById('confirmBack');
-    const btnConfirm = document.getElementById('confirmPay');
+<section class="excerpt-section">
+  <p class="section-label reveal" style="text-align:center;">From a real report</p>
+  <h2 class="section-title reveal" style="text-align:center;">What it reads like</h2>
+  <div class="excerpt-card reveal">
+    <p class="excerpt-text">
+      “Your greatest challenge runs deep — in the very fuel tank that is meant to supply you with energy and belief in your own dreams. There is a pattern in your system that again and again places you in situations where your own ambitions must yield. Where you take on responsibility that is not yours. Where you invest yourself fully in something — and still end up with the feeling of having lost, even though you technically won.”
+    </p>
+    <p class="excerpt-text">
+      “Your name carries a specific and important warning. The force you possess — your eloquence, your presence, your ability to move and influence people — is real and powerful. But in a system that is out of balance, this force can turn. Your power of persuasion can be used against yourself. You can talk yourself into things you should have said no to. Convince yourself that situations are better than they are. Seduce yourself into believing in people or opportunities that turn out to be illusions.”
+    </p>
+    <p class="excerpt-label">Sample excerpt · Names removed for privacy</p>
+  </div>
+</section>
 
-    let pendingData = null;
-    let pendingBtn = null;
-    // Format date to DD-MM-YYYY for display
-    function formatDate(dateStr) {
-      const [y, m, d] = dateStr.split('-');
-      return `${d}-${m}-${y}`;
-    }
+<section class="fit-section">
+  <div class="fit-grid reveal">
+    <div class="fit-card yes">
+      <p class="fit-card-label">This is for you if</p>
+      <ul class="fit-list">
+        <li>You want to understand your own patterns more clearly</li>
+        <li>You’re curious why certain situations keep repeating</li>
+        <li>You want a structured perspective — not vague generalisations</li>
+        <li>You’re ready to look at yourself honestly</li>
+      </ul>
+    </div>
+    <div class="fit-card no">
+      <p class="fit-card-label">Not for you if</p>
+      <ul class="fit-list">
+        <li>You’re looking for predictions about specific future events</li>
+        <li>You want quick fixes without any self-reflection</li>
+        <li>You expect a horoscope-style reading with generic answers</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-    // Close modal
-    function closeModal() {
-      modal.classList.remove('active');
-      pendingData = null;
-      if (pendingBtn) {
-        pendingBtn.disabled = false;
-        pendingBtn.textContent = pendingBtn.dataset.originalText;
-        pendingBtn = null;
-      }
-    }
+<section class="how-section">
+  <p class="section-label reveal">Process</p>
+  <h2 class="section-title reveal">How it works</h2>
+  <div class="how-steps reveal">
+    <div class="how-step">
+      <div class="how-num">01</div>
+      <h4>You enter your name and birthday</h4>
+      <p>Your full name exactly as it appears on official documents, and your date of birth. This is the foundation of the entire analysis.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-num">02</div>
+      <h4>The model calculates</h4>
+      <p>A specialised numerological model runs your name through a fixed calculation structure — every position in the diamond, precisely computed.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-num">03</div>
+      <h4>Your report arrives</h4>
+      <p>A personal 10-page PDF is generated and sent directly to your inbox. Detailed, structured, and written for you specifically.</p>
+    </div>
+  </div>
+</section>
 
-    // Close on overlay click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Back button
-    btnBack.addEventListener('click', closeModal);
-
-    // Edit buttons — close modal and focus the relevant field
-    document.querySelectorAll('.confirm-edit[data-edit]').forEach(editBtn => {
-      editBtn.addEventListener('click', () => {
-        const fieldName = editBtn.dataset.edit;
-        const section = pendingBtn ? pendingBtn.closest('section') : null;
-        closeModal();
-        const form = section ? section.querySelector('.hero-form') : document.querySelector('.hero-form');
-        if (form) {
-          const input = form.querySelector(`input[name="${fieldName}"]`);
-          if (input) { input.focus(); input.select(); }
-        }
-      });
-    });
-
-    // Confirm & pay
-    btnConfirm.addEventListener('click', async () => {
-      if (!pendingData) return;
-      btnConfirm.disabled = true;
-      btnConfirm.textContent = 'Please wait\u2026';
-
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(pendingData),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Something went wrong.');
-        }
-
-        window.location.href = data.url;
-      } catch (err) {
-        alert(err.message);
-        btnConfirm.disabled = false;
-        btnConfirm.textContent = 'Confirm & pay';
-      }
-    });
-
-    // CTA buttons
-    const buttons = document.querySelectorAll('[data-checkout]');
-
-    buttons.forEach(btn => {
-      btn.dataset.originalText = btn.textContent;
-
-      btn.addEventListener('click', () => {
-        const section = btn.closest('section');
-        const form = section ? section.querySelector('.hero-form') : null;
-
-        let fullName = '';
-        let birthDate = '';
-        let email = '';
-
-        if (form) {
-          fullName = form.querySelector('input[name="fullName"]').value.trim();
-          birthDate = form.querySelector('input[name="birthDate"]').value;
-          email = form.querySelector('input[name="email"]').value.trim();
-        }
-
-        // Validate
-        if (!fullName) {
-          alert('Please enter your full name.');
-          if (form) form.querySelector('input[name="fullName"]').focus();
-          return;
-        }
-        if (!birthDate) {
-          alert('Please enter your date of birth.');
-          if (form) form.querySelector('input[name="birthDate"]').focus();
-          return;
-        }
-        if (!email) {
-          alert('Please enter your email.');
-          if (form) form.querySelector('input[name="email"]').focus();
-          return;
-        }
-
-        // Show confirmation modal
-        confirmName.textContent = fullName;
-        confirmBirth.textContent = formatDate(birthDate);
-        confirmEmail.textContent = email;
-        pendingData = { fullName, birthDate, email, currency: 'usd', plan: 'foundation' };
-        pendingBtn = btn;
-        btnConfirm.disabled = false;
-        btnConfirm.textContent = 'Confirm & pay';
-        modal.classList.add('active');
-      });
-    });
-  })();
-
-  // dd/mm/åååå placeholder trick
-  ['birthDate', 'birthDate2'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('focus', function() { el.type = 'date'; });
-    el.addEventListener('blur',  function() { if (!el.value) el.type = 'text'; });
-  });
-
-  // Forudfyld navn + fødselsdato fra gratis beregner
-  (function() {
-    var saved;
-    try { saved = JSON.parse(localStorage.getItem('gratisUserData') || 'null'); } catch(_) {}
-    if (!saved) return;
-    ['fullName', 'fullName2'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el && !el.value) el.value = saved.name || '';
-    });
-    if (saved.birthDate) {
-      ['birthDate', 'birthDate2'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el && !el.value) {
-          el.type = 'date';
-          el.value = saved.birthDate;
-        }
-      });
-    }
-  }());
-  </script>
-  <style>
-    .site-footer {
-      background: var(--clr-surface);
-      border-top: 1px solid var(--clr-border);
-      padding: 3.5rem 1.5rem 2rem;
-      font-size: 0.88rem;
-      color: var(--clr-muted);
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.2fr;
-      gap: 2.5rem;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    @media (max-width: 640px) {
-      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
-    }
-    .footer-col h4 {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--clr-gold-light);
-      margin: 0 0 1rem;
-      letter-spacing: 0.3px;
-    }
-    .footer-col p {
-      margin: 0 0 0.3rem;
-      line-height: 1.6;
-    }
-    .footer-col a {
-      color: var(--clr-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-col a:hover {
-      color: var(--clr-gold-light);
-    }
-    .footer-col .footer-brand {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--clr-gold);
-      display: block;
-      margin-bottom: 0.6rem;
-    }
-    .footer-links {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .footer-links li {
-      margin-bottom: 0.4rem;
-    }
-    .footer-social {
-      display: flex;
-      flex-direction: column;
-      gap: 1.4rem;
-      align-items: flex-start;
-    }
-    .footer-social a {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--clr-muted);
-    }
-    .footer-social a:hover {
-      color: var(--clr-gold-light);
-    }
-    .footer-social img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-    .footer-social a:hover img {
-      opacity: 1;
-    }
-    .footer-bottom {
-      text-align: center;
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--clr-border);
-      font-size: 0.78rem;
-      color: rgba(124,124,138,0.6);
-    }
-  </style>
-
-  <footer class="site-footer">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <h4>Social</h4>
-        <div class="footer-social">
-          <a href="https://facebook.com" target="_blank" rel="noopener">
-            <img src="assets/images/facebook-logo.png" alt="Facebook">
-            Facebook
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener">
-            <img src="assets/images/instagram-white.svg" alt="Instagram">
-            Instagram
-          </a>
+<section class="order-section" id="order">
+  <div class="order-card reveal">
+    <div class="order-header">
+      <div class="order-product">Blueprint</div>
+      <div class="order-tagline">Your name. Your energy. Your patterns.</div>
+      <div class="order-price"><sup>$</sup>35</div>
+    </div>
+    <div class="order-body">
+      <div class="hero-form">
+        <div class="form-group">
+          <label class="form-label" for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" class="form-input" placeholder="As it appears on official documents" autocomplete="name">
+          <p class="form-hint">Use your full legal name — first, middle, and last.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="birthDate">Date of birth</label>
+          <input id="birthDate" name="birthDate" type="text" class="form-input" placeholder="dd/mm/yyyy">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input id="email" name="email" type="email" class="form-input" placeholder="Your report will be sent here" autocomplete="email">
         </div>
       </div>
-      <div class="footer-col">
-        <h4>Sider</h4>
-        <ul class="footer-links">
-          <li><a href="index.html">Forside</a></li>
-          <li><a href="grundenergi-1.html">Grundenergier</a></li>
-          <li><a href="produkter.html">Produkter</a></li>
-          <li><a href="om-numerologi.html">Om numerologi</a></li>
-          <li><a href="om-os.html">Om os</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Info</h4>
-        <span class="footer-brand">StrategicNumerology</span>
-        <p>Copenhagen, Denmark</p>
-        <p><a href="mailto:info@strategicnumerology.com">info@strategicnumerology.com</a></p>
+      <button class="btn-order" type="button" data-checkout="order">Get My Blueprint — $35</button>
+      <div class="order-guarantees">
+        <span class="guarantee-item">Instant delivery</span>
+        <span class="guarantee-item">One-time purchase</span>
+        <span class="guarantee-item">No subscription</span>
       </div>
     </div>
-    <div class="footer-bottom">
-      &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
+  </div>
+</section>
+
+<section class="faq-section">
+  <p class="section-label reveal">FAQ</p>
+  <div class="faq-item reveal">
+    <p class="faq-q">Is the report actually personal?</p>
+    <p class="faq-a">Yes. It is generated individually based on your exact full name. Two people with different names will receive entirely different reports.</p>
+  </div>
+  <div class="faq-item reveal">
+    <p class="faq-q">Is it written by a person?</p>
+    <p class="faq-a">The report is generated by a specialised numerological analysis model built on classical numerological principles and fixed calculation structures. It is designed to deliver consistent, detailed, and personal interpretations — not generic answers.</p>
+  </div>
+  <div class="faq-item reveal">
+    <p class="faq-q">When will I receive it?</p>
+    <p class="faq-a">Immediately after payment. The report is sent directly to your inbox as a PDF.</p>
+  </div>
+  <div class="faq-item reveal">
+    <p class="faq-q">Is there a subscription?</p>
+    <p class="faq-a">No. This is a one-time purchase with no recurring charges.</p>
+  </div>
+  <div class="faq-item reveal">
+    <p class="faq-q">What name should I use?</p>
+    <p class="faq-a">Your full legal name as it appears on official documents — including all middle names. The analysis is based on the complete name structure, so accuracy matters.</p>
+  </div>
+</section>
+
+<div class="confirm-overlay" id="confirmModal">
+  <div class="confirm-box">
+    <h3>Confirm your details</h3>
+    <p class="confirm-sub">Your reading is generated from these details. Please verify they are correct.</p>
+    <div class="confirm-detail">
+      <div class="confirm-row">
+        <span class="confirm-label">Full name</span>
+        <span class="confirm-value">
+          <button class="confirm-edit" type="button" data-edit="fullName" title="Edit name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+          <span id="confirmName"></span>
+        </span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-label">Date of birth</span>
+        <span class="confirm-value">
+          <button class="confirm-edit" type="button" data-edit="birthDate" title="Edit date of birth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+          <span id="confirmBirth"></span>
+        </span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-label">Email</span>
+        <span class="confirm-value">
+          <button class="confirm-edit" type="button" data-edit="email" title="Edit email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+          <span id="confirmEmail"></span>
+        </span>
+      </div>
     </div>
-  </footer>
+    <div class="confirm-actions">
+      <button class="btn-back" type="button" id="confirmBack">Edit details</button>
+      <button class="btn-confirm" type="button" id="confirmPay">Confirm &amp; pay</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Social</h4>
+      <div class="footer-social">
+        <a href="https://facebook.com" target="_blank" rel="noopener">
+          <img src="assets/images/facebook-logo.png" alt="Facebook">
+          Facebook
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener">
+          <img src="assets/images/instagram-white.svg" alt="Instagram">
+          Instagram
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Sider</h4>
+      <ul class="footer-links">
+        <li><a href="index.html">Forside</a></li>
+        <li><a href="grundenergi-1.html">Grundenergier</a></li>
+        <li><a href="produkter.html">Produkter</a></li>
+        <li><a href="om-numerologi.html">Om numerologi</a></li>
+        <li><a href="om-os.html">Om os</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Info</h4>
+      <span class="footer-brand">StrategicNumerology</span>
+      <p>Copenhagen, Denmark</p>
+      <p><a href="mailto:info@strategicnumerology.com">info@strategicnumerology.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 StrategicNumerology &mdash; CVR/VAT: 123456789
+  </div>
+</footer>
+
+<script>
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add("visible"), i * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+(function () {
+  const API_URL = "/api/create-checkout";
+  const modal = document.getElementById("confirmModal");
+  const confirmName  = document.getElementById("confirmName");
+  const confirmBirth = document.getElementById("confirmBirth");
+  const confirmEmail = document.getElementById("confirmEmail");
+  const btnBack    = document.getElementById("confirmBack");
+  const btnConfirm = document.getElementById("confirmPay");
+  let pendingData = null;
+  let pendingBtn  = null;
+
+  function formatDate(dateStr) {
+    const [y, m, d] = dateStr.split("-");
+    return d + "-" + m + "-" + y;
+  }
+  function closeModal() {
+    modal.classList.remove("active");
+    pendingData = null;
+    if (pendingBtn) {
+      pendingBtn.disabled = false;
+      pendingBtn.textContent = pendingBtn.dataset.originalText;
+      pendingBtn = null;
+    }
+  }
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  btnBack.addEventListener("click", closeModal);
+  document.querySelectorAll(".confirm-edit[data-edit]").forEach(editBtn => {
+    editBtn.addEventListener("click", () => {
+      const fieldName = editBtn.dataset.edit;
+      closeModal();
+      const input = document.querySelector("input[name=" + JSON.stringify(fieldName) + "]");
+      if (input) { input.focus(); input.select(); }
+    });
+  });
+  btnConfirm.addEventListener("click", async () => {
+    btnConfirm.disabled = true;
+    btnConfirm.textContent = "Please wait…";
+    try {
+      const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(pendingData) });
+      const data = await res.json();
+      window.location.href = data.url;
+    } catch (err) {
+      alert(err.message);
+      btnConfirm.disabled = false;
+      btnConfirm.textContent = "Confirm & pay";
+    }
+  });
+  document.querySelectorAll("[data-checkout]").forEach(btn => {
+    btn.dataset.originalText = btn.textContent;
+    btn.addEventListener("click", () => {
+      const form      = document.querySelector(".hero-form");
+      const fullName  = form.querySelector("input[name=fullName]").value.trim();
+      const birthDate = form.querySelector("input[name=birthDate]").value;
+      const email     = form.querySelector("input[name=email]").value.trim();
+      confirmName.textContent  = fullName;
+      confirmBirth.textContent = formatDate(birthDate);
+      confirmEmail.textContent = email;
+      pendingData = { fullName, birthDate, email, currency: "usd", plan: "foundation" };
+      pendingBtn  = btn;
+      btnConfirm.disabled = false;
+      btnConfirm.textContent = "Confirm & pay";
+      modal.classList.add("active");
+    });
+  });
+}());
+
+var birthEl = document.getElementById("birthDate");
+if (birthEl) {
+  birthEl.addEventListener("focus", function() { this.type = "date"; });
+}
+
+(function() {
+  var saved;
+  try { saved = JSON.parse(localStorage.getItem("gratisUserData") || "null"); } catch(_) {}
+  var nameEl = document.getElementById("fullName");
+  if (saved.birthDate) {
+    var dateEl = document.getElementById("birthDate");
+  }
+}());
+<\/script>
+
 </body>
 </html>
