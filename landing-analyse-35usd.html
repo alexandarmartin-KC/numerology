@@ -350,8 +350,9 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal { transition: opacity 0.7s, transform 0.7s; }
+    html.js-loaded .reveal { opacity: 0; transform: translateY(30px); }
+    html.js-loaded .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 700px) {
       nav { padding: 16px 20px; }
@@ -638,8 +639,9 @@ const revealObserver = new IntersectionObserver(entries => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.15 });
+}, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+document.documentElement.classList.add('js-loaded');
 
 (function () {
   const API_URL = "/api/create-checkout";
