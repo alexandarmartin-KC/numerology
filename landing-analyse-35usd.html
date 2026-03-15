@@ -518,7 +518,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="birthDate">Date of birth</label>
-          <input id="birthDate" name="birthDate" type="text" class="form-input" placeholder="dd/mm/yyyy">
+          <input id="birthDate" name="birthDate" type="date" class="form-input" max="2015-12-31" min="1920-01-01">
         </div>
         <div class="form-group">
           <label class="form-label" for="email">Email address</label>
@@ -712,18 +712,14 @@
   });
 }());
 
-var birthEl = document.getElementById("birthDate");
-if (birthEl) {
-  birthEl.addEventListener("focus", function() { this.type = "date"; });
-}
-
 (function() {
   var saved;
   try { saved = JSON.parse(localStorage.getItem("gratisUserData") || "null"); } catch(_) {}
+  if (!saved) return;
   var nameEl = document.getElementById("fullName");
-  if (saved.birthDate) {
-    var dateEl = document.getElementById("birthDate");
-  }
+  var dateEl = document.getElementById("birthDate");
+  if (saved.name && nameEl) nameEl.value = saved.name;
+  if (saved.birthDate && dateEl) dateEl.value = saved.birthDate;
 }());
 <\/script>
 
