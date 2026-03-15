@@ -350,9 +350,9 @@
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    /* reveal: visible by default; JS adds .below-fold to elements off-screen */
-    .reveal.below-fold { opacity: 0; transform: translateY(28px); transition: opacity 0.7s, transform 0.7s; }
-    .reveal.below-fold.visible { opacity: 1; transform: translateY(0); }
+    /* reveal: identical to index.html */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 700px) {
       nav { padding: 16px 20px; }
@@ -385,7 +385,7 @@
 
 <section class="hook">
   <div class="divider"></div>
-  <p class="hook-text reveal">
+  <p class="hook-text">
     Most people sense that certain patterns keep repeating in their lives.<br>
     The same friction, the same strengths, the same blind spots.<br><br>
     <em>Numerology gives that pattern a name.</em><br><br>
@@ -632,7 +632,7 @@
 </footer>
 
 <script>
-// Only hide elements confirmed below the fold; everything else stays visible
+const reveals = document.querySelectorAll('.reveal');
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -640,13 +640,8 @@ const revealObserver = new IntersectionObserver(entries => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => {
-  if (el.getBoundingClientRect().top > window.innerHeight) {
-    el.classList.add('below-fold');
-    revealObserver.observe(el);
-  }
-});
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObserver.observe(el));
 
 (function () {
   const API_URL = "/api/create-checkout";
