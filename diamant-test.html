@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <title>Diamant Test</title>
+  <style>
+    body { background: #111; display: flex; flex-direction: column; align-items: center; padding: 2rem; font-family: system-ui, sans-serif; color: #e8e4da; }
+    h2 { color: #c9a84c; margin-bottom: 1rem; }
+    form { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    input { padding: .5rem .8rem; border-radius: 6px; border: 1px solid #444; background: #1a1a28; color: #e8e4da; font-size: 1rem; }
+    button { padding: .5rem 1.4rem; background: #c9a84c; color: #111; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #e2c47a; }
+    #diamond-wrap { width: min(90vw, 600px); }
+    #info { margin-top: 1.5rem; background: #1a1f2e; border-radius: 8px; padding: 1rem 1.5rem; max-width: 600px; width: 100%; font-size: .85rem; line-height: 1.9; }
+    #info strong { color: #c9a84c; }
+  </style>
+</head>
+<body>
+  <h2>Diamant — live test</h2>
+  <form id="form">
+    <input id="name" placeholder="Fuldt navn" value="Anne Marie Jensen" style="width:220px">
+    <input id="bdate" type="date" value="1985-06-14">
+    <button type="submit">Beregn</button>
+  </form>
+  <div id="diamond-wrap"></div>
+  <div id="info"></div>
+
+  <script src="assets/js/diamondEngine.js"></script>
+  <script src="assets/js/diamondRendererCover.js"></script>
+  <script>
+    document.getElementById('form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name  = document.getElementById('name').value.trim();
+      const bdate = document.getElementById('bdate').value;
+      if (!name || !bdate) return;
+
+      let result;
+      try {
+        result = computeDiamond(name, bdate);
+      } catch(err) {
+        document.getElementById('info').innerHTML = `<span style="color:salmon">${err.message}</span>`;
+        return;
+      }
+
+      const wrap = document.getElementById('diamond-wrap');
+      wrap.innerHTML = '';
+      renderDiamondCover(wrap, result.diamond);
+
+      const d = result.diamond;
+      const livslinje = d.livslinje.map(e => `${e.name}: ${e.display}`).join(' → ');
+      document.getElementById('info').innerHTML = `
+        <strong>Navn:</strong> ${result.input.fullName}<br>
+        <strong>Fødselsdato:</strong> ${result.input.birthDate.day}/${result.input.birthDate.month}/${result.input.birthDate.year}<br>
+        <br>
+        <strong>Grundenergi (top):</strong> ${d.grundenergi.display}<br>
+        <strong>Livslinje:</strong> ${livslinje}<br>
+        <strong>Bundtal:</strong> ${d.bundtal.display}<br>
+        <strong>Aura ØV:</strong> ${d.aura.auraUpperLeft.display} &nbsp; <strong>Aura ØH:</strong> ${d.aura.auraUpperRight.display}<br>
+        <strong>Aura NV:</strong> ${d.aura.auraLowerLeft.display} &nbsp; <strong>Aura NH:</strong> ${d.aura.auraLowerRight.display}<br>
+        <strong>Hjertecenter:</strong> ${d.body.hjertecenter.centerTal.display}<br>
+        <strong>Solarplexus:</strong> ${d.body.solarplexus.centerTal.display}<br>
+        <strong>Rygraden:</strong> ${d.rygraden.display}<br>
+        <strong>Søjletal:</strong> ${d.soejletal.compound}/${d.soejletal.reduced}
+      `;
+    });
+
+    // Auto-beregn ved load
+    document.getElementById('form').dispatchEvent(new Event('submit'));
+  </script>
+</body>
+</html>

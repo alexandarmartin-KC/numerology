@@ -37,10 +37,6 @@ $lang = $langConfig[$language];
 function buildSystemPrompt(array $k, array $lang): string {
     $p = "{$lang['intro']}\n\nVIGTIGE REGLER:\n{$lang['rule']}\n- Du må KUN bruge den viden der er givet nedenfor. Opfind IKKE ny numerologisk viden.\n- Specielle regler skal fortolkes isoleret ud fra deres egen beskrivelse — bland IKKE energibeskrivelser ind i fortolkningen af specielle regler.\n- Livslinjen er IKKE en bevægelse eller et sekventielt forløb. Fornavn, mellemnavne og efternavn bidrager hver med deres energi, men alle energier er til stede samtidig. Fortolk dem IKKE som en rejse fra fornavn til efternavn.\n- Skriv i et varmt, personligt, men professionelt sprog.\n";
 
-    if (!empty($k['energiesWithImages'])) {
-        $p .= "\nBILLEDER:\nFølgende grundtal-energier har et tilknyttet billede: " . implode(', ', $k['energiesWithImages']) . ".\n";
-        $p .= "Når du første gang omtaler en af disse energier i rapporten, indsæt pladsholder [BILLEDE:X] på en ny linje (hvor X er grundtallet). Fx [BILLEDE:1] for energi 1. Brug kun hver pladsholder én gang.\n";
-    }
     if (!empty($k['rapportGlobalInstruction'])) $p .= "\n## Overordnet instruktion\n{$k['rapportGlobalInstruction']}\n";
     if (!empty($k['aboutNumerology'])) $p .= "\n## Om numerologi\n{$k['aboutNumerology']}\n";
     if (!empty($k['defRent'])) $p .= "\n## Definition: Rent numeroskop\n{$k['defRent']}\n";

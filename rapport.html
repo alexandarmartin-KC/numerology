@@ -618,9 +618,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       .replace(/^#\s+.+$/m, '')
       .trim();
 
-    // Render rapport (markdown-ish → simple HTML, then inject images)
+    // Render rapport (markdown-ish → simple HTML)
     let rapportHTML = markdownToHTML(cleanRapport);
-    rapportHTML = injectEnergyImages(rapportHTML);
 
     // Build all pages as DOM nodes
     const rapportOutput = document.getElementById('rapportOutput');
