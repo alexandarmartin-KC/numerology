@@ -518,7 +518,7 @@
       <div class="order-price"><sup>$</sup>35</div>
     </div>
     <div class="order-body">
-      <form id="orderForm" class="hero-form" novalidate>
+      <form id="orderForm" class="hero-form" action="javascript:void(0)" onsubmit="handleOrder(event)">
         <div class="form-group">
           <label class="form-label" for="fullName">Full name</label>
           <input id="fullName" name="fullName" type="text" class="form-input" placeholder="As it appears on official documents" autocomplete="name" required>
@@ -654,38 +654,40 @@
 }());
 
 /* ── Checkout ── */
-var orderForm = document.getElementById('orderForm');
-if (orderForm) {
-  orderForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var nameEl  = document.getElementById('fullName');
-    var birthEl = document.getElementById('birthDate');
-    var emailEl = document.getElementById('email');
-    var name    = nameEl  ? nameEl.value.trim() : '';
-    var birth   = birthEl ? birthEl.value       : '';
-    var mail    = emailEl ? emailEl.value.trim(): '';
-    var btn     = orderForm.querySelector('button[type=submit]');
+function handleOrder(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var nameEl  = document.getElementById('fullName');
+  var birthEl = document.getElementById('birthDate');
+  var emailEl = document.getElementById('email');
+  var btn     = document.querySelector('#orderForm button[type=submit]');
+  var name    = nameEl  ? nameEl.value.trim() : '';
+  var birth   = birthEl ? birthEl.value       : '';
+  var mail    = emailEl ? emailEl.value.trim(): '';
 
-    if (!name || !birth || !mail || mail.indexOf('@') < 0) return;
+  if (!name || !birth || !mail || mail.indexOf('@') < 0) {
+    if (!name  && nameEl)  nameEl.style.borderColor  = '#e03c3c';
+    if (!birth && birthEl) birthEl.style.borderColor = '#e03c3c';
+    if ((!mail || mail.indexOf('@') < 0) && emailEl) emailEl.style.borderColor = '#e03c3c';
+    return;
+  }
 
-    if (btn) { btn.disabled = true; btn.textContent = 'Please wait\u2026'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Please wait…'; }
 
-    fetch('/api/create-checkout.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName: name, birthDate: birth, email: mail, currency: 'usd', plan: 'foundation' })
-    })
-    .then(function (res) {
-      return res.json().then(function (d) { return { ok: res.ok, d: d }; });
-    })
-    .then(function (r) {
-      if (!r.ok) throw new Error(r.d.error || 'Payment error. Please try again.');
-      window.location.href = r.d.url;
-    })
-    .catch(function (err) {
-      alert(err.message);
-      if (btn) { btn.disabled = false; btn.textContent = 'Get My Blueprint \u2014 $35'; }
-    });
+  fetch('/api/create-checkout.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fullName: name, birthDate: birth, email: mail, currency: 'usd', plan: 'foundation' })
+  })
+  .then(function (res) {
+    return res.json().then(function (d) { return { ok: res.ok, d: d }; });
+  })
+  .then(function (r) {
+    if (!r.ok) throw new Error(r.d.error || 'Payment error. Please try again.');
+    window.location.href = r.d.url;
+  })
+  .catch(function (err) {
+    alert(err.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'Get My Blueprint — $35'; }
   });
 }
 
