@@ -664,10 +664,13 @@ function handleOrder() {
   var birth   = birthEl ? birthEl.value       : '';
   var mail    = emailEl ? emailEl.value.trim(): '';
 
-  if (!name || !birth || !mail || mail.indexOf('@') < 0) {
-    if (!name  && nameEl)  nameEl.style.borderColor  = '#e03c3c';
-    if (!birth && birthEl) birthEl.style.borderColor = '#e03c3c';
-    if ((!mail || mail.indexOf('@') < 0) && emailEl) emailEl.style.borderColor = '#e03c3c';
+  var nameParts = name.split(/\s+/);
+  var hasFullName = nameParts.length >= 2 && nameParts[0].length > 0 && nameParts[1].length > 0;
+
+  if (!hasFullName || !birth || !mail || mail.indexOf('@') < 0) {
+    if (!hasFullName && nameEl) { nameEl.style.borderColor = '#e03c3c'; alert('Please enter both first name and last name.'); nameEl.focus(); }
+    else if (!birth && birthEl) { birthEl.style.borderColor = '#e03c3c'; }
+    else if ((!mail || mail.indexOf('@') < 0) && emailEl) { emailEl.style.borderColor = '#e03c3c'; }
     return;
   }
 
