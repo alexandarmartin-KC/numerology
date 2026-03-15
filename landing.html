@@ -499,19 +499,18 @@ section { position: relative; z-index: 1; }
   <div class="plans-grid">
     <!-- Direction -->
     <div class="plan-card">
-      <div class="plan-name">Direction</div>
-      <div class="plan-tagline">See when you are at your strongest</div>
+      <div class="plan-name">Foresight</div>
+      <div class="plan-tagline">Know what's coming — and how to use it</div>
       <div class="plan-price"><sup>$</sup>75</div>
-      <div class="plan-pages">20–25 page personal report</div>
+      <div class="plan-pages">12 page personal report</div>
       <ul class="feature-list">
         <li>Everything in Blueprint</li>
-        <li>Personal Yearly Cycles mapped out</li>
-        <li>Analysis of your next 9+ years</li>
-        <li>Periods of momentum and progress</li>
-        <li>Periods to consolidate and adjust</li>
-        <li>Strategic decision windows</li>
+        <li>Your personal energy forecast for the next 4 years</li>
+        <li>Which years are for building — and which are for launching</li>
+        <li>When to push, when to wait, and why</li>
+        <li>How to use your timing instead of fighting it</li>
       </ul>
-      <button type="button" class="btn-outline-gold" data-plan="direction" onclick="openModal('direction')">Plan With Awareness — $75</button>
+      <button type="button" class="btn-outline-gold" data-plan="direction" onclick="openModal('direction')">Get My Foresight — $75</button>
     </div>
     <!-- Activation -->
     <div class="plan-card">
@@ -520,7 +519,7 @@ section { position: relative; z-index: 1; }
       <div class="plan-price"><sup>$</sup>149</div>
       <div class="plan-pages">30–35 page personal report</div>
       <ul class="feature-list">
-        <li>Everything in Direction</li>
+        <li>Everything in Foresight</li>
         <li>Analysis of name variations</li>
         <li>Calculation of your optimal name</li>
         <li>Current vs. alternative name comparison</li>
@@ -542,7 +541,7 @@ section { position: relative; z-index: 1; }
       <tr>
         <th></th>
         <th>Blueprint</th>
-        <th>Direction</th>
+        <th>Foresight</th>
         <th>Activation</th>
       </tr>
     </thead>
@@ -578,7 +577,7 @@ section { position: relative; z-index: 1; }
     Get My Blueprint — $35
   </button>
   <p style="margin-top:16px; font-size:11px; color: var(--clr-muted)">
-    Blueprint · Direction · Activation — all available above
+    Blueprint · Foresight · Activation — all available above
   </p>
 </section>
 
@@ -625,7 +624,7 @@ reveals.forEach(el => observer.observe(el));
 (function () {
   const planConfig = {
     foundation: { label: 'Blueprint Report', usd: '$35' },
-    direction:  { label: 'Direction Report',  usd: '$75' },
+    direction:  { label: 'Foresight Report',  usd: '$75' },
     activation: { label: 'Activation Report', usd: '$149' },
   };
 

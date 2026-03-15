@@ -213,7 +213,7 @@
           <label class="form-label fw-bold">Plan</label>
           <select id="plan" class="form-select">
             <option value="foundation">Blueprint</option>
-            <option value="direction">Direction</option>
+            <option value="direction">Foresight</option>
             <option value="activation">Activation</option>
           </select>
         </div>
@@ -606,7 +606,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     // Build cover page
     const planLabels = {
       foundation: 'Blueprint Analyse',
-      direction:  'Direction Analyse',
+      direction:  'Foresight Analyse',
       activation: 'Activation Analyse'
     };
     const selectedPlan = document.getElementById('plan')?.value || 'foundation';
